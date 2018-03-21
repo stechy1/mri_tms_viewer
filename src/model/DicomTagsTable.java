@@ -7,12 +7,12 @@ import ij.plugin.DICOM;
 
 public class DicomTagsTable extends JTable {
 
-	public DicomTagsTable(DICOM tableData) {
-		super();
-		this.setModel(new DicomTagsTableModel(tableData));
-	}
-	
-	public DicomTagsTable() {
-		this(null);
-	}
+    public DicomTagsTable(DICOM tableData) {
+        super();
+        this.setModel(new DicomTagsTableModel(tableData));
+    }
+
+    public DicomTagsTable() {
+        this(null);
+    }
 }

@@ -7,11 +7,10 @@ import model.dialogWindow.group.GroupModel;
 
 public class ListGroupItem extends JPanel {
 
-	
-	
-	public ListGroupItem(GroupModel model) {
-		
-		ListGroupItemController controller = new ListGroupItemController(this, model);
-	}
+
+    public ListGroupItem(GroupModel model) {
+
+        ListGroupItemController controller = new ListGroupItemController(this, model);
+    }
 
 }

@@ -8,9 +8,9 @@ import controller.UtilityClass;
 
 public class DateTest {
 
-	@Test
-	public void test() {
-		UtilityClass.getFolderName();
-	}
+    @Test
+    public void test() {
+        UtilityClass.getFolderName();
+    }
 
 }

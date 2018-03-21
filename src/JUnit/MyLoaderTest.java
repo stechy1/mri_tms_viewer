@@ -8,10 +8,10 @@ import view.dialogWindow.MyLoader;
 
 public class MyLoaderTest {
 
-	@Test
-	public void test() {
-		new MyLoader();
-		
-	}
+    @Test
+    public void test() {
+        new MyLoader();
+
+    }
 
 }
