@@ -93,9 +93,8 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
             for (String fileName : folder.list()) {
                 if (fileName.endsWith(".dcm")) {
-                    this.model.getMriDicom()
-                        .add(loadDicom(folder.getAbsolutePath() + "\\" + fileName));
-
+                    //this.model.getMriDicom().add(loadDicom(folder.getAbsolutePath() + "\\" + fileName));
+                    this.model.getMriDicom().add(loadDicom(new File(folder.getAbsolutePath(), fileName).toString()));
                 }
             }
             //Collections.sort(this.model.getMriDicom());
@@ -115,8 +114,8 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
             for (String fileName : folder.list()) {
                 if (fileName.endsWith(".dcm")) {
-                    this.model.getTmsDicom()
-                        .add(loadDicom(folder.getAbsolutePath() + "\\" + fileName));
+                    //this.model.getTmsDicom().add(loadDicom(folder.getAbsolutePath() + "\\" + fileName));
+                    this.model.getTmsDicom().add(loadDicom(new File(folder.getAbsolutePath(), fileName).toString()));
                     //loader.incProgress();
                 }
             }
