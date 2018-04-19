@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.zcu.dvm.tms.controller.MainController">
+  <padding>
+    <Insets topRightBottomLeft="8.0" />
+  </padding>
+  <left>
+    <VBox spacing="8.0">
+      <Button prefWidth="180.0" text="Načti MRI" />
+      <Button prefWidth="180.0" text="Načti TMS" />
+      <Button prefWidth="180.0" text="Informace o snímku" />
+      <Button prefWidth="180.0" text="Ulož aktuální obrázek" />
+      <Button prefWidth="180.0" text="Ulož všechny obrázky" />
+      <Button prefWidth="180.0" text="Ulož skupiny" />
+      <Region VBox.vgrow="ALWAYS" />
+      <Button prefWidth="180.0" text="Nastavení" />
+    </VBox>
+  </left>
+  <right>
+    <VBox spacing="8.0">
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Snímek">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <Slider max="256.0" prefWidth="170.0" snapToTicks="true" />
+      </HBox>
+      <Label text="Úprava zobrazení" />
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Jas">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <Slider max="100" min="0" prefWidth="170.0" />
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Kontrast">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <Slider max="100" min="0" prefWidth="170.0" />
+      </HBox>
+      <Label text="Aktivní bod" />
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Skupina">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <ComboBox prefWidth="170.0" promptText="Vyberte skupinu..." />
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Amplituda">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <TextField prefWidth="170.0" promptText="Amplituda" />
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Latence">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <TextField prefWidth="170.0" promptText="Latence" />
+      </HBox>
+      <Label text="Informace o pacientovi" />
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Jméno">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <TextField prefWidth="170.0" />
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Datum měření MRI">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <TextField prefWidth="170.0" promptText="yyyy/mm/dd" />
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+        <Label text="Datum měření TMS">
+               <HBox.margin>
+                  <Insets right="8.0" />
+               </HBox.margin></Label>
+        <TextField prefWidth="170.0" promptText="yyyy/mm/dd" />
+      </HBox>
+    </VBox>
+  </right>
+</BorderPane>
