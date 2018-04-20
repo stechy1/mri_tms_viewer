@@ -1,81 +1,79 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package model;
 
+import controller.UtilityClass;
 import java.awt.geom.Ellipse2D;
-
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-
-import controller.Configuration;
 import model.dialogWindow.group.GroupModel;
 
-import static controller.Configuration.SELECTION_TRESSHOLD;
-import static controller.UtilityClass.*;
-
-public class MyPoint extends Ellipse2D implements Serializable {
-    static final long serialVersionUID = 4480238155639864038L;
-
-    private double x, y, z, height = 0, widht = 0;
-    private double amplitude, latency;
-
+public class MyPoint
+extends Ellipse2D
+implements Serializable {
+    private double x;
+    private double y;
+    private double z;
+    private double height = 0.0;
+    private double widht = 0.0;
+    private double amplitude;
+    private double latency;
+    private int pixelValue;
     private int minSize = 5;
-
     private GroupModel group;
-
     private boolean ignoreSize = true;
 
-
-    public MyPoint(double x, double y, double height, double width) {
-        super();
+    public MyPoint(double x, double y, double height, double width, int pixelValue) {
         this.x = x;
         this.y = y;
-
-        if (!ignoreSize) {
+        this.pixelValue = pixelValue;
+        if (!this.ignoreSize) {
             this.height = height;
             this.widht = width;
         }
+        if (this.height < (double)this.minSize) {
+            this.height = this.minSize;
+        }
+        if (this.widht < (double)this.minSize) {
+            this.widht = this.minSize;
+        }
+    }
 
-		if (this.height < minSize) {
-			this.height = minSize;
-		}
-		if (this.widht < minSize) {
-			this.widht = minSize;
-		}
+    public MyPoint(double x, double y, double radius, int pixelValue) {
+        this(x, y, radius, radius, pixelValue);
     }
 
     public MyPoint(double x, double y, double radius) {
-        this(x, y, radius, radius);
+        this(x, y, radius, radius, 0);
     }
 
     public MyPoint(double x, double y) {
-        this(x, y, 0);
+        this(x, y, 0.0);
     }
 
     public MyPoint() {
-        this(0, 0);
+        this(0.0, 0.0);
     }
-
 
     @Override
     public Rectangle2D getBounds2D() {
-        return new Rectangle2D.Double(this.getX() - SELECTION_TRESSHOLD,
-            this.getY() - SELECTION_TRESSHOLD,
-            this.getWidth() + SELECTION_TRESSHOLD, this.getHeight() + SELECTION_TRESSHOLD);
+        return new Rectangle2D.Double(this.getX() - 10.0, this.getY() - 10.0, this.getWidth() + 10.0, this.getHeight() + 10.0);
     }
 
     @Override
     public double getHeight() {
-        return height;
+        return this.height;
     }
 
     @Override
     public double getWidth() {
-        return widht;
+        return this.widht;
     }
 
     @Override
     public double getX() {
-        return x;
+        return this.x;
     }
 
     public void setX(double x) {
@@ -84,7 +82,7 @@ public class MyPoint extends Ellipse2D implements Serializable {
 
     @Override
     public double getY() {
-        return y;
+        return this.y;
     }
 
     public void setY(double y) {
@@ -96,12 +94,39 @@ public class MyPoint extends Ellipse2D implements Serializable {
     }
 
     public double getZ() {
-        return z;
+        return this.z;
+    }
+
+    public int getPixelValue() {
+        return this.pixelValue;
+    }
+
+    public void setPixelValue(int pixelValue) {
+        this.pixelValue = pixelValue;
+    }
+
+    public void setAmplitude(double amplitude) {
+        this.amplitude = amplitude;
+    }
+
+    public void calculateAmplitude(int maxValue, int minValue, int maxResponse, int minResponse) {
+        this.amplitude = minResponse + (maxResponse - minResponse) / (maxValue - minValue) * (this.pixelValue - minValue);
+    }
+
+    public double getAmplitude() {
+        return this.amplitude;
+    }
+
+    public void setLatency(double latency) {
+        this.latency = latency;
+    }
+
+    public double getLatency() {
+        return this.latency;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -122,43 +147,29 @@ public class MyPoint extends Ellipse2D implements Serializable {
     }
 
     public double distance(MyPoint point) {
-
         double x = this.getCenterX() - point.getCenterX();
         double y = this.getCenterY() - point.getCenterY();
-
         double ret = Math.hypot(x, y);
-
-        //double ret = Math.pow(x*x + y*y, 1/2);
-
         return Math.abs(ret);
     }
 
-    @Override
     public String toString() {
         return "x: " + this.getCenterX() + ", y: " + this.getCenterY();
     }
 
     public String exportPoint() {
-        return this.getX() + "," + this.getY() + "," + this.getHeight() + "," +
-            this.getGroup().getName();
-
+        return String.valueOf(this.getX()) + "," + this.getY() + "," + this.getHeight() + "," + this.getGroup().getName();
     }
 
     public void importPoint(String in) {
-        String[] tokens = in.split(Configuration.GROUP_COMMA);
-        for (int i = 0; i < tokens.length; i++) {
-            this.setX(stringToDouble(tokens[0]));
-            this.setY(stringToDouble(tokens[1]));
-            this.height = stringToDouble(tokens[2]);
+        String[] tokens = in.split(",");
+        int i = 0;
+        while (i < tokens.length) {
+            this.setX(UtilityClass.stringToDouble(tokens[0]));
+            this.setY(UtilityClass.stringToDouble(tokens[1]));
+            this.height = UtilityClass.stringToDouble(tokens[2]);
+            ++i;
         }
     }
-
-    public double getAmplitude() {
-        return amplitude;
-    }
-
-    //TODO
-    public double getLatency() {
-        return latency;
-    }
 }
+

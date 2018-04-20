@@ -1,11 +1,15 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package controller;
 
 import enums.Controllers;
 import enums.DicomTags;
 import ij.plugin.DICOM;
 import ij.util.DicomTools;
+import java.awt.Component;
 import java.io.File;
-import java.text.DateFormat;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFileChooser;
@@ -13,40 +17,29 @@ import javax.swing.JOptionPane;
 import view.MainWindow;
 
 public class UtilityClass {
-
-
-    /**
-     * Methods for show notification in dialog windows and on CLI
-     *
-     * @param text text to show
-     * @param title title of dialog
-     */
     public static void showInfoNotification(String text, String title) {
-        showNotification(text, title, JOptionPane.INFORMATION_MESSAGE);
+        UtilityClass.showNotification(text, title, 1);
     }
 
     public static void showAlertNotification(String text, String title) {
-        showNotification(text, title, JOptionPane.WARNING_MESSAGE);
+        UtilityClass.showNotification(text, title, 2);
     }
 
     public static void showInfoNotification(String text) {
-        showInfoNotification(text, "");
+        UtilityClass.showInfoNotification(text, "");
     }
 
     public static void showAlertNotification(String text) {
-        showAlertNotification(text, "");
+        UtilityClass.showAlertNotification(text, "");
     }
 
     private static void showNotification(String text, String title, int type) {
-        if (type == JOptionPane.INFORMATION_MESSAGE) {
+        if (type == 1) {
             System.out.println(text);
         } else {
             System.err.println(text);
         }
-
-        JOptionPane.showMessageDialog(
-            (MainWindow) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView(), text,
-            title, type);
+        JOptionPane.showMessageDialog((MainWindow)MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView(), text, title, type);
     }
 
     public static String getTagValue(DICOM dcm, DicomTags tag) {
@@ -62,41 +55,34 @@ public class UtilityClass {
     }
 
     public static boolean showConfirmDialog(String message, String title) {
-        int retVal = JOptionPane.showConfirmDialog(
-            (MainWindow) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView(),
-            message, title, JOptionPane.INFORMATION_MESSAGE);
-        return retVal == JOptionPane.OK_OPTION ? true : false;
+        int retVal = JOptionPane.showConfirmDialog((MainWindow)MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView(), message, title, 1);
+        return retVal == 0;
     }
 
     public static boolean showConfirmDialog(String message) {
-        return showConfirmDialog(message, "Info");
+        return UtilityClass.showConfirmDialog(message, "Info");
     }
 
     public static String getFolderName() {
-
-        DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         Date date = new Date();
         return sdf.format(date);
     }
 
     public static File chooseSaveLocation() {
-
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("."));
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int retVal = chooser.showOpenDialog(
-            (MainWindow) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView());
-        if (retVal == JFileChooser.APPROVE_OPTION) {
-            //String path = chooser.getSelectedFile().getPath() + "//" + getFolderName();
-
-            File dir = new File(chooser.getSelectedFile().getPath(), getFolderName());
+        chooser.setFileSelectionMode(1);
+        int retVal = chooser.showOpenDialog((MainWindow)MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView());
+        if (retVal == 0) {
+            String path = String.valueOf(chooser.getSelectedFile().getPath()) + "//" + UtilityClass.getFolderName();
+            File dir = new File(path);
             if (!dir.exists()) {
                 dir.mkdir();
             }
             return dir;
-        } else {
-            return null;
         }
-
+        return null;
     }
 }
+

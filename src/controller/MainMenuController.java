@@ -1,17 +1,20 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package controller;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import enums.Controllers;
 import exceptions.NotYetImplementedException;
 import interfaces.IController;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import view.MainMenu;
 import view.MainWindow;
 import view.dialogWindow.AboutWindow;
 
-public class MainMenuController implements IController, ActionListener {
-
+public class MainMenuController
+implements IController,
+ActionListener {
     private MainMenu view;
 
     public MainMenuController(MainMenu view) {
@@ -20,58 +23,55 @@ public class MainMenuController implements IController, ActionListener {
 
     @Override
     public void notifyController() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void notifyAllControllers() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public Controllers getType() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Object getView() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Object getModel() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setModel(Object model) {
-        // TODO Auto-generated method stub
-
     }
 
-    @Override
+    /*
+     * Exception decompiling
+     */
     public void actionPerformed(ActionEvent ae) {
-        switch (ae.getActionCommand()) {
-            case "close":
-                ((MainWindowController) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL))
-                    .exitProgram();
+        String var2;
+        switch((var2 = ae.getActionCommand()).hashCode()) {
+            case 94756344:
+                if (var2.equals("close")) {
+                    ((MainWindowController) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL)).exitProgram();
+                    return;
+                }
                 break;
-            case "contact":
-                new AboutWindow();
-                break;
-            default:
-                try {
-                    throw new NotYetImplementedException(
-                        "Akce u menu nebyla definovana: " + ae.getActionCommand());
-                } catch (NotYetImplementedException e) {
-                    e.printStackTrace();
+            case 951526432:
+                if (var2.equals("contact")) {
+                    new AboutWindow();
+                    return;
                 }
         }
-    }
 
+        try {
+            throw new NotYetImplementedException("Akce u menu nebyla definovana: " + ae.getActionCommand());
+        } catch (NotYetImplementedException var4) {
+            var4.printStackTrace();
+        }
+    }
 }
+

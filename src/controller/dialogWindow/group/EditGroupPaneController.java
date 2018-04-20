@@ -1,34 +1,35 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package controller.dialogWindow.group;
-
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JColorChooser;
 
 import enums.Controllers;
 import interfaces.IController;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JColorChooser;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import view.dialogWindow.options.groups.sub.EditGroupPane;
 
-public class EditGroupPaneController implements IController, ActionListener {
-
+public class EditGroupPaneController
+implements IController,
+ActionListener {
     private EditGroupPane view;
     private GroupModel model;
 
     public EditGroupPaneController(EditGroupPane view, GroupModel model) {
         this.view = view;
         this.model = model;
-        notifyController();
+        this.notifyController();
     }
-
 
     @Override
     public void notifyController() {
         if (this.model != null) {
             this.view.getTfTitle().setText(this.model.getName());
-            this.view.getBtnChangeColor().setForeground(this.model.getColor());
+            this.view.getBtnChangeColor().setForeground(this.model.getLayerColor());
         }
         this.view.getComponentPane().revalidate();
         this.view.getComponentPane().updateUI();
@@ -55,27 +56,37 @@ public class EditGroupPaneController implements IController, ActionListener {
 
     @Override
     public void setModel(Object model) {
-        this.model = (GroupModel) model;
+        this.model = (GroupModel)model;
     }
 
+    /*
+     * Exception decompiling
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "changeColor":
-                Color newColor = JColorChooser.showDialog(
-                    (MainWindow) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView(),
-                    "Vyberte barvu skupiny", this.model.getColor());
-                if (newColor != null) {
-                    this.model.setColor(newColor);
+        String var2;
+        switch((var2 = e.getActionCommand()).hashCode()) {
+            case -1680475757:
+                if (var2.equals("changeColor")) {
+                    Color newColor = JColorChooser
+                        .showDialog((MainWindow)MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView(), "Vyberte barvu skupiny", this.model.getLayerColor());
+                    if (newColor != null) {
+                        this.model.setLayerColor(newColor);
+                    }
+
+                    this.notifyController();
                 }
-                notifyController();
                 break;
-            case "save":
-                if (this.model != null && this.view != null) {
-                    this.model.setName(this.view.getTfTitle().getText());
+            case 3522941:
+                if (var2.equals("save")) {
+                    if (this.model != null && this.view != null) {
+                        this.model.setName(this.view.getTfTitle().getText());
+                    }
+
+                    this.view.dispose();
                 }
-                this.view.dispose();
-                break;
         }
+
     }
 }
+

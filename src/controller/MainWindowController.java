@@ -1,32 +1,28 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package controller;
-
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import javax.swing.JOptionPane;
 
 import enums.Controllers;
 import exceptions.NotYetImplementedException;
 import interfaces.IController;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import javax.swing.JOptionPane;
 import view.MainWindow;
 
-public class MainWindowController implements IController, WindowListener {
-
-
+public class MainWindowController
+implements IController,
+WindowListener {
     private MainWindow view;
 
     public MainWindowController(MainWindow view) {
         this.view = view;
     }
 
-    /**
-     * Metoda, ktera cely program ukonci
-     */
     public void exitProgram() {
-        int retVal = JOptionPane
-            .showConfirmDialog(this.view, "Opravdu chcete ukoncit tento program",
-                "Uzavrit aplikaci", JOptionPane.OK_CANCEL_OPTION);
-        if (retVal == JOptionPane.OK_OPTION) {
+        int retVal = JOptionPane.showConfirmDialog(this.view, "Opravdu chcete ukoncit tento program", "Uzavrit aplikaci", 2);
+        if (retVal == 0) {
             System.exit(0);
         }
     }
@@ -35,9 +31,10 @@ public class MainWindowController implements IController, WindowListener {
     public void notifyController() {
         try {
             throw new NotYetImplementedException();
-        } catch (NotYetImplementedException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (NotYetImplementedException e) {
             e.printStackTrace();
+            return;
         }
     }
 
@@ -45,9 +42,10 @@ public class MainWindowController implements IController, WindowListener {
     public void notifyAllControllers() {
         try {
             throw new NotYetImplementedException();
-        } catch (NotYetImplementedException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (NotYetImplementedException e) {
             e.printStackTrace();
+            return;
         }
     }
 
@@ -63,20 +61,17 @@ public class MainWindowController implements IController, WindowListener {
 
     @Override
     public Object getModel() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setModel(Object model) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void windowClosing(WindowEvent arg0) {
-        exitProgram();
+        this.exitProgram();
     }
-
 
     @Override
     public void windowActivated(WindowEvent arg0) {
@@ -102,3 +97,4 @@ public class MainWindowController implements IController, WindowListener {
     public void windowOpened(WindowEvent arg0) {
     }
 }
+

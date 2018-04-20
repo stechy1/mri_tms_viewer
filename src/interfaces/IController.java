@@ -1,9 +1,11 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package interfaces;
 
 import enums.Controllers;
 
 public interface IController {
-
     public void notifyController();
 
     public void notifyAllControllers();
@@ -14,5 +16,6 @@ public interface IController {
 
     public Object getModel();
 
-    public void setModel(Object model);
+    public void setModel(Object var1);
 }
+

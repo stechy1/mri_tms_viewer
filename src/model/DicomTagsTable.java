@@ -1,14 +1,16 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package model;
 
+import ij.plugin.DICOM;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
+import model.DicomTagsTableModel;
 
-import ij.plugin.DICOM;
-
-public class DicomTagsTable extends JTable {
-
+public class DicomTagsTable
+extends JTable {
     public DicomTagsTable(DICOM tableData) {
-        super();
         this.setModel(new DicomTagsTableModel(tableData));
     }
 
@@ -16,3 +18,4 @@ public class DicomTagsTable extends JTable {
         this(null);
     }
 }
+

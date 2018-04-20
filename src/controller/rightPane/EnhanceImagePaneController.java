@@ -1,20 +1,26 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package controller.rightPane;
-
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import enums.Controllers;
 import interfaces.IController;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import model.ImagePanelModel;
+import model.MyDicom;
 import view.MainWindow;
 import view.rightPane.subPane.EnhanceImagePane;
 
-public class EnhanceImagePaneController implements IController, ChangeListener, MouseWheelListener {
-
+public class EnhanceImagePaneController
+implements IController,
+ChangeListener,
+MouseWheelListener {
     private EnhanceImagePane view;
 
     public EnhanceImagePaneController(EnhanceImagePane view) {
@@ -23,19 +29,15 @@ public class EnhanceImagePaneController implements IController, ChangeListener, 
 
     @Override
     public void notifyController() {
-        ImagePanelModel ipm = (ImagePanelModel) MainWindow
-            .getController(Controllers.IMAGE_PANE_CTRL).getModel();
+        ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
         this.view.getBrightnessSlider().setValue(ipm.getBrightness());
-        this.view.getBrightnessLblValue().setText(ipm.getBrightness() + "%");
-
+        this.view.getBrightnessLblValue().setText(String.valueOf(ipm.getBrightness()) + "%");
         this.view.getContrastSlider().setValue(ipm.getContrast());
-        this.view.getContrastLblValue().setText(ipm.getContrast() + "%");
+        this.view.getContrastLblValue().setText(String.valueOf(ipm.getContrast()) + "%");
     }
 
     @Override
     public void notifyAllControllers() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -50,8 +52,7 @@ public class EnhanceImagePaneController implements IController, ChangeListener, 
 
     @Override
     public Object getModel() {
-        ImagePanelModel ipm = (ImagePanelModel) MainWindow
-            .getController(Controllers.IMAGE_PANE_CTRL).getModel();
+        ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
         if (ipm != null) {
             return ipm.getMriDicom().get(ipm.getActualSnapshot());
         }
@@ -61,19 +62,13 @@ public class EnhanceImagePaneController implements IController, ChangeListener, 
     @Deprecated
     @Override
     public void setModel(Object model) {
-
     }
-
 
     @Override
     public void stateChanged(ChangeEvent e) {
-
-        JSlider source = (JSlider) e.getSource();
-
+        JSlider source = (JSlider)e.getSource();
         if (source.getValueIsAdjusting()) {
-            ImagePanelModel ipm = (ImagePanelModel) MainWindow
-                .getController(Controllers.IMAGE_PANE_CTRL).getModel();
-
+            ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
             if (source == this.view.getBrightnessSlider()) {
                 ipm.setBrightness(this.view.getBrightnessSlider().getValue());
             } else if (source == this.view.getContrastSlider()) {
@@ -84,18 +79,14 @@ public class EnhanceImagePaneController implements IController, ChangeListener, 
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-
-        JSlider source = (JSlider) e.getSource();
+        JSlider source = (JSlider)e.getSource();
         int steps = e.getWheelRotation();
-        ImagePanelModel ipm = (ImagePanelModel) MainWindow
-            .getController(Controllers.IMAGE_PANE_CTRL).getModel();
-
+        ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
         if (source == this.view.getBrightnessSlider()) {
             ipm.setBrightness(ipm.getBrightness() + steps);
         } else if (source == this.view.getContrastSlider()) {
             ipm.setContrast(ipm.getContrast() + steps);
         }
-
     }
-
 }
+

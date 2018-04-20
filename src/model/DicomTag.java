@@ -1,16 +1,16 @@
+/*
+ * Decompiled with CFR 0_123.
+ */
 package model;
 
 public class DicomTag {
-
     private String group;
     private String element;
     private String description;
     private String vr;
     private String value;
 
-
     public DicomTag(String group, String element, String description, String vr, String value) {
-        super();
         this.group = group;
         this.element = element;
         this.description = description;
@@ -19,22 +19,23 @@ public class DicomTag {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public String getElement() {
-        return element;
+        return this.element;
     }
 
     public String getGroup() {
-        return group;
+        return this.group;
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public String getVr() {
-        return vr;
+        return this.vr;
     }
 }
+
