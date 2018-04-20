@@ -29,6 +29,8 @@ public class SettingSnapshotPaneController implements IController, ItemListener 
                 .getController(Controllers.IMAGE_PANE_CTRL).getModel();
             this.view.getCbGroup().setModel(new DefaultComboBoxModel<>(ipm.getGroups().toArray()));
             this.view.getCbGroup().setSelectedItem(this.model.getGroup());
+            this.view.getTfAmplitude().setText(Double.toString(this.model.getAmplitude()));
+            this.view.getTfLatency().setText(Double.toString(this.model.getLatency()));
         }
     }
 

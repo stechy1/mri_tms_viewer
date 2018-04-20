@@ -13,6 +13,7 @@ import static controller.Configuration.SELECTION_TRESSHOLD;
 import static controller.UtilityClass.*;
 
 public class MyPoint extends Ellipse2D implements Serializable {
+    static final long serialVersionUID = 4480238155639864038L;
 
     private double x, y, z, height = 0, widht = 0;
     private double amplitude, latency;
@@ -152,5 +153,12 @@ public class MyPoint extends Ellipse2D implements Serializable {
         }
     }
 
+    public double getAmplitude() {
+        return amplitude;
+    }
 
+    //TODO
+    public double getLatency() {
+        return latency;
+    }
 }

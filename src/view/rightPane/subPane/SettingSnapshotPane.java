@@ -123,4 +123,12 @@ public class SettingSnapshotPane extends JPanel {
     public JComboBox getCbGroup() {
         return cbGroup;
     }
+
+    public JTextField getTfAmplitude() {
+        return tfAmplitude;
+    }
+
+    public JTextField getTfLatency() {
+        return tfLatency;
+    }
 }
