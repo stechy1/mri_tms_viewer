@@ -75,7 +75,7 @@ public class UtilityClass {
         chooser.setFileSelectionMode(1);
         int retVal = chooser.showOpenDialog((MainWindow)MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView());
         if (retVal == 0) {
-            String path = String.valueOf(chooser.getSelectedFile().getPath()) + "//" + UtilityClass.getFolderName();
+            String path = String.valueOf(chooser.getSelectedFile().getPath()) + File.separator + UtilityClass.getFolderName();
             File dir = new File(path);
             if (!dir.exists()) {
                 dir.mkdir();

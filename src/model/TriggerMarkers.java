@@ -18,8 +18,8 @@ public class TriggerMarkers {
     private ArrayList<Response> responses = new ArrayList();
 
     public TriggerMarkers(String path) {
-        if (!path.endsWith("\\")) {
-            path = String.valueOf(path) + "\\";
+        if (!path.endsWith(File.separator)) {
+            path = String.valueOf(path) + File.separator;
         }
         String sessionXml = String.valueOf(path) + this.getSessionPath(path);
         String triggerDataXml = String.valueOf(sessionXml.substring(0, sessionXml.indexOf("Session.xml"))) + this.getTriggerPath(sessionXml);

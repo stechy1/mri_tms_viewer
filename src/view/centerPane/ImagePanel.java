@@ -107,6 +107,7 @@ extends JPanel {
                 }
             }
             catch (IndexOutOfBoundsException dcm) {
+		dcm.printStackTrace();
                 // empty catch block
             }
         }
@@ -149,7 +150,7 @@ extends JPanel {
             int i = 0;
             while (i < ipc.getModel().getMriDicom().size()) {
                 ipc.getModel().setActualSnapshot(i);
-                String path = String.valueOf(folderPath.getPath()) + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
+                String path = String.valueOf(folderPath.getPath()) + File.separator + "img_" + ipc.getModel().getActualSnapshot() + ".png";
                 this.paint(img.getGraphics());
                 ImageIO.write((RenderedImage)img, "png", new File(path));
                 ++i;
@@ -170,7 +171,7 @@ extends JPanel {
         try {
             ImagePaneController ipc = (ImagePaneController)MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
             File folderPath = UtilityClass.chooseSaveLocation();
-            String path = String.valueOf(folderPath.getPath()) + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
+            String path = String.valueOf(folderPath.getPath()) + File.separator + "img_" + ipc.getModel().getActualSnapshot() + ".png";
             ImageIO.write((RenderedImage)img, "png", new File(path));
             System.out.println("panel saved as image");
         }

@@ -4,6 +4,7 @@
 package view.dialogWindow;
 
 import enums.Controllers;
+import java.io.File;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -51,7 +52,7 @@ extends JFrame {
         gbc_lblTitle.gridx = 0;
         gbc_lblTitle.gridy = 0;
         this.contentPane.add((Component)this.lblTitle, gbc_lblTitle);
-        this.lblImage = new JLabel(new ImageIcon("resources\\loading.gif"));
+        this.lblImage = new JLabel(new ImageIcon("resources"+File.separator+"loading.gif"));
         GridBagConstraints gbc_lblImage = new GridBagConstraints();
         gbc_lblImage.gridx = 0;
         gbc_lblImage.gridy = 1;

@@ -88,7 +88,7 @@ MouseListener {
             while (n2 < n) {
                 String fileName = arrstring[n2];
                 if (fileName.endsWith(".dcm")) {
-                    this.model.getMriDicom().add(this.loadDicom(String.valueOf(folder.getAbsolutePath()) + "\\" + fileName));
+                    this.model.getMriDicom().add(this.loadDicom(String.valueOf(folder.getAbsolutePath()) + File.separator + fileName));
                 }
                 ++n2;
             }
@@ -110,12 +110,12 @@ MouseListener {
             while (n2 < n) {
                 String fileName = arrstring[n2];
                 if (fileName.endsWith(".dcm")) {
-                    this.model.getTmsDicom().add(this.loadDicom(String.valueOf(folder.getAbsolutePath()) + "\\" + fileName));
+                    this.model.getTmsDicom().add(this.loadDicom(String.valueOf(folder.getAbsolutePath()) + File.separator + fileName));
                 }
                 ++n2;
             }
             Collections.sort(this.model.getTmsDicom());
-            File f = new File(String.valueOf(ImagePanelModel.tmsPath) + "//" + "groups.out");
+            File f = new File(String.valueOf(ImagePanelModel.tmsPath) + File.separator + "groups.out");
             if (f.exists()) {
                 if (UtilityClass.showConfirmDialog("Chcete na\u010d\u00edst data ze souboru")) {
                     this.importGroupsFromFile(f);
@@ -276,7 +276,7 @@ MouseListener {
                 if (this.model.getGroups().size() != 0) {
                     try {
                         try {
-                            fos = new FileOutputStream(String.valueOf(ImagePanelModel.tmsPath) + "//" + "groups.out");
+                            fos = new FileOutputStream(String.valueOf(ImagePanelModel.tmsPath) + File.separator + "groups.out");
                             oos = new ObjectOutputStream(fos);
                             oos.writeObject(this.model.getGroups());
                             oos.flush();
