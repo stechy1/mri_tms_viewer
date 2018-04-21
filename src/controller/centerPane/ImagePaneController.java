@@ -38,6 +38,7 @@ MouseListener {
     private ImagePanel view;
     private ImagePanelModel model;
     private MyLoader loader;
+    private MyPoint active;
 
     public ImagePaneController(ImagePanel view, ImagePanelModel model) {
         this.view = view;
@@ -396,6 +397,12 @@ MouseListener {
                     System.out.println("interakce");
                     SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController)MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
                     ctrl.setModel(point);
+                    if(active!=null) {
+		        active.setActive(false);
+                    }
+                    point.setActive(true);
+                    this.active = point;
+                    this.view.repaint();
                 }
             }
         }

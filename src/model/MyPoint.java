@@ -12,6 +12,7 @@ import model.dialogWindow.group.GroupModel;
 public class MyPoint
 extends Ellipse2D
 implements Serializable {
+    static final long serialVersionUID = 8581091178539691643L;
     private double x;
     private double y;
     private double z;
@@ -70,6 +71,20 @@ implements Serializable {
     public double getWidth() {
         return this.widht;
     }
+
+    public void setActive(boolean active) {
+        if(active){
+            this.x-=widht/2;
+            this.y-=height/2;
+            this.height*=2;
+            this.widht*=2;
+        }else{
+	    this.height/=2;
+	    this.widht/=2;
+            this.x+=widht/2;
+            this.y+=height/2;
+        }
+    } 
 
     @Override
     public double getX() {
