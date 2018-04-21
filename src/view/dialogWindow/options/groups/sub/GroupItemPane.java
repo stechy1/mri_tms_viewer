@@ -53,6 +53,8 @@ implements ActionListener {
         gbc_tfGroup.gridy = 0;
         this.add((Component)this.tfGroup, gbc_tfGroup);
         this.btnEdit = new JButton("Upravit");
+        this.btnEdit.setEnabled(!this.model.getName().equals("ignorovan\u00e9 body")
+            && !this.model.getName().equals("nep\u0159i\u0159azen\u00e9 body"));
         this.btnEdit.setActionCommand("edit");
         this.btnEdit.addActionListener(this);
         GridBagConstraints gbc_btnEdit = new GridBagConstraints();
