@@ -26,6 +26,8 @@ ActionListener {
 
     @Override
     public void notifyController() {
+        MainWindow.getController(Controllers.IMAGE_PANE_CTRL).notifyController();
+	this.view.getGroupsPane().initComponents();
         this.view.revalidate();
         this.view.updateUI();
     }
@@ -86,11 +88,10 @@ ActionListener {
                 }
                 this.create();
                 this.notifyController();
-                this.view.getGroupsPane().revalidate();
-                this.view.getGroupsPane().updateUI();
                 return;
             }
             this.assign();
+            this.notifyController();
             return;
         }
         try {

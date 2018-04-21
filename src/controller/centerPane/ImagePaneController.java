@@ -329,6 +329,7 @@ MouseListener {
         UtilityClass.showInfoNotification("Skupiny pro export neexistuj\u00ed!");
     }
 
+    @SuppressWarnings("unchecked")
     private void importGroupsFromFile(File f) {
         block13 : {
             Object objectinputstream = null;
@@ -339,7 +340,7 @@ MouseListener {
                     try {
                         is = new FileInputStream(f);
                         ois = new ObjectInputStream(is);
-                        this.getModel().setGroups((ArrayList)ois.readObject());
+                        this.getModel().setGroups((ArrayList<GroupModel>)ois.readObject());
                     }
                     catch (Exception e) {
                         e.printStackTrace();

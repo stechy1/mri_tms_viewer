@@ -33,6 +33,7 @@ ActionListener {
         }
         this.view.getComponentPane().revalidate();
         this.view.getComponentPane().updateUI();
+	
     }
 
     @Override
@@ -82,7 +83,9 @@ ActionListener {
                     if (this.model != null && this.view != null) {
                         this.model.setName(this.view.getTfTitle().getText());
                     }
-
+                    MainWindow.getController(Controllers.IMAGE_PANE_CTRL).notifyController();
+                    MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL).notifyController();
+                    MainWindow.getController(Controllers.GROUPS_OPTION_PANE_CTRL).notifyController();
                     this.view.dispose();
                 }
         }

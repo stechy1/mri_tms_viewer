@@ -14,9 +14,9 @@ import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 
 public class ImagePanelModel {
-    private List<MyDicom> mriDicom = new ArrayList<MyDicom>();
-    private List<MyDicom> tmsDicom = new ArrayList<MyDicom>();
-    private ArrayList<GroupModel> groups = new ArrayList();
+    private List<MyDicom> mriDicom = new ArrayList<>();
+    private List<MyDicom> tmsDicom = new ArrayList<>();
+    private ArrayList<GroupModel> groups = new ArrayList<>();
     public static String mriPath;
     public static String tmsPath;
     private int actualSnapshot = -1;

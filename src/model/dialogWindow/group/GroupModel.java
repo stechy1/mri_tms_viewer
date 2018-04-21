@@ -21,7 +21,7 @@ implements Serializable {
     private Color layerColor;
     private Color groupColor;
     private GroupVolume volume;
-    private ArrayList<MyPoint> points = new ArrayList();
+    private ArrayList<MyPoint> points = new ArrayList<>();
 
     public GroupModel(String name, MyPoint centroid, Color color) {
         this.name = name;

@@ -38,7 +38,7 @@ KeyListener {
     public void notifyController() {
         if (this.model != null) {
             ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
-            this.view.getCbGroup().setModel(new DefaultComboBoxModel<Object>(ipm.getGroups().toArray()));
+            this.view.getCbGroup().setModel(new DefaultComboBoxModel<GroupModel>(ipm.getGroups().toArray(new GroupModel[ipm.getGroups().size()])));
             this.view.getCbGroup().setSelectedItem(this.model.getGroup());
             this.view.getTfAmplitude().setText(String.valueOf(this.model.getAmplitude()));
             this.view.getTfLatency().setText(String.valueOf(this.model.getLatency()));

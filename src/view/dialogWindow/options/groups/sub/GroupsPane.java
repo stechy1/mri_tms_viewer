@@ -21,7 +21,7 @@ extends JPanel {
         this.initComponents();
     }
 
-    private void initComponents() {
+    public void initComponents() {
         this.removeAll();
         this.updateUI();
         ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();

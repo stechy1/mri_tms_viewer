@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class TriggerMarkers {
-    private ArrayList<Response> responses = new ArrayList();
+    private ArrayList<Response> responses = new ArrayList<>();
 
     public TriggerMarkers(String path) {
         if (!path.endsWith(File.separator)) {
