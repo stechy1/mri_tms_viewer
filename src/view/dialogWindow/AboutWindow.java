@@ -39,7 +39,7 @@ extends JFrame {
     }
 
     private void initComponents() {
-        this.setDefaultCloseOperation(3);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setBounds(100, 100, 300, 200);
         this.contentPane = new JPanel();
         this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
