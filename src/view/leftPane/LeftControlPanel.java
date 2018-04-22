@@ -28,6 +28,22 @@ extends JPanel {
         this.initComponents();
     }
 
+    public JButton getBtnSaveCurrentSnapshot() {
+        return this.btnSaveCurrentSnapshot;
+    }
+
+    public JButton getBtnSaveAllSnapshots() {
+        return this.btnSaveAllSnapshots;
+    }
+
+    public JButton getBtnSnapshotInfo() {
+        return this.btnSnapshotInfo;
+    }
+
+    public JButton getBtnSaveGroup() {
+        return this.btnSaveGroup;
+    }
+
     private void initComponents() {
         LeftControlPanelController controller = new LeftControlPanelController(this);
         MainWindow.addController(controller);
@@ -58,6 +74,7 @@ extends JPanel {
         this.btnSnapshotInfo = new JButton("Informace o snimku");
         this.btnSnapshotInfo.setActionCommand("snapshotInfo");
         this.btnSnapshotInfo.addActionListener(controller);
+        this.btnSnapshotInfo.setEnabled(false);
         GridBagConstraints gbc_btnSnapshotInfo = new GridBagConstraints();
         gbc_btnSnapshotInfo.insets = new Insets(0, 0, 5, 0);
         gbc_btnSnapshotInfo.fill = 1;
@@ -67,6 +84,7 @@ extends JPanel {
         this.btnSaveCurrentSnapshot = new JButton("Ulo\u017eit aktu\u00e1ln\u00ed obr\u00e1zek");
         this.btnSaveCurrentSnapshot.setActionCommand("saveCurrent");
         this.btnSaveCurrentSnapshot.addActionListener(controller);
+        this.btnSaveCurrentSnapshot.setEnabled(false);
         GridBagConstraints gbc_btnSaveCurrentSnapshot = new GridBagConstraints();
         gbc_btnSaveCurrentSnapshot.insets = new Insets(0, 0, 5, 0);
         gbc_btnSaveCurrentSnapshot.fill = 2;
@@ -76,6 +94,7 @@ extends JPanel {
         this.btnSaveAllSnapshots = new JButton("Ulo\u017eit v\u0161echny obr\u00e1zky");
         this.btnSaveAllSnapshots.setActionCommand("saveAll");
         this.btnSaveAllSnapshots.addActionListener(controller);
+        this.btnSaveAllSnapshots.setEnabled(false);
         GridBagConstraints gbc_btnSaveAllSnapshots = new GridBagConstraints();
         gbc_btnSaveAllSnapshots.insets = new Insets(0, 0, 5, 0);
         gbc_btnSaveAllSnapshots.gridx = 0;
@@ -84,6 +103,7 @@ extends JPanel {
         this.btnSaveGroup = new JButton("Ulo\u017e skupiny");
         this.btnSaveGroup.setActionCommand("saveGroup");
         this.btnSaveGroup.addActionListener(controller);
+        this.btnSaveGroup.setEnabled(false);
         GridBagConstraints gbc_btnSaveGroup = new GridBagConstraints();
         gbc_btnSaveGroup.fill = 1;
         gbc_btnSaveGroup.insets = new Insets(0, 0, 5, 0);

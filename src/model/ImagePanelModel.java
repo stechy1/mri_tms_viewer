@@ -158,7 +158,8 @@ public class ImagePanelModel {
                 GroupModel newGroup = myPoint.getGroup();
                 for (GroupModel group : this.groups) {
                     double dist;
-                    if (group.getName().equals("nep\u0159i\u0159azen\u00e9 body") || group.getName().equals("ignorovan\u00e9 body") || (dist = group.getCentroid().distance(myPoint)) >= minDist) continue;
+                    if (group.getName().equals("nep\u0159i\u0159azen\u00e9 body") || group.getName().equals("ignorovan\u00e9 body")
+                        || (dist = group.getCentroid().distance(myPoint)) >= minDist) continue;
                     minDist = dist;
                     newGroup = group;
                 }

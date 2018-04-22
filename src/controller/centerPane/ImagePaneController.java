@@ -371,6 +371,7 @@ MouseListener {
 
     @Override
     public void notifyController() {
+        MainWindow.getController(Controllers.LEFT_CONTROL_PANE_CTRL).notifyController();
         this.view.repaint();
     }
 
