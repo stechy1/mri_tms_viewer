@@ -36,12 +36,16 @@ KeyListener {
 
     @Override
     public void notifyController() {
+        ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
         if (this.model != null) {
-            ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
             this.view.getCbGroup().setModel(new DefaultComboBoxModel<GroupModel>(ipm.getGroups().toArray(new GroupModel[ipm.getGroups().size()])));
             this.view.getCbGroup().setSelectedItem(this.model.getGroup());
             this.view.getTfAmplitude().setText(String.valueOf(this.model.getAmplitude()));
             this.view.getTfLatency().setText(String.valueOf(this.model.getLatency()));
+        }else{
+            this.view.getCbGroup().setModel(new DefaultComboBoxModel<GroupModel>());
+            this.view.getTfAmplitude().setText("");
+            this.view.getTfLatency().setText("");
         }
     }
 
@@ -66,10 +70,8 @@ KeyListener {
 
     @Override
     public void setModel(Object model) {
-        if (model != null) {
-            this.model = (MyPoint)model;
-            this.notifyController();
-        }
+        this.model = (MyPoint)model;
+        this.notifyController();
     }
 
     @Override

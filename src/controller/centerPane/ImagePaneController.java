@@ -395,15 +395,23 @@ MouseListener {
         if (this.getModel().getActualSnapshot() != -1 && this.getModel().getGroups() != null && this.getModel().getGroups().size() != 0) {
             for (GroupModel group : this.getModel().getGroups()) {
                 for (MyPoint point : group.getPointFromLayer(this.model.getActualSnapshot())) {
-                    if (!point.contains((double)(e.getX() - this.view.getX_offset()) / this.view.getRatio(), (double)(e.getY() - this.view.getY_offset()) / this.view.getRatio())) continue;
-                    System.out.println("interakce");
+                    if (!point.contains((double)(e.getX() - this.view.getX_offset()) / this.view.getRatio(),
+                        (double)(e.getY() - this.view.getY_offset()) / this.view.getRatio())) {
+                        continue;
+                    }
+                    //System.out.println("interakce");
                     SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController)MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
-                    ctrl.setModel(point);
                     if(active!=null) {
 		        active.setActive(false);
                     }
-                    point.setActive(true);
-                    this.active = point;
+                    if(point!=active) {
+                        point.setActive(true);
+                        this.active = point;
+                        ctrl.setModel(point);
+                    }else{
+                        this.active = null;
+                        ctrl.setModel(null);
+                    }
                     this.view.repaint();
                 }
             }
