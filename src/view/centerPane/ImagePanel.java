@@ -1,16 +1,6 @@
 package view.centerPane;
-
-import static controller.UtilityClass.getTagValue;
-import static controller.UtilityClass.stringToDouble;
-
-import controller.Configuration;
-import controller.QuickHull;
-import controller.UtilityClass;
-import controller.centerPane.ImagePaneController;
-import enums.Controllers;
-import enums.DicomTags;
-import ij.plugin.DICOM;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,235 +10,249 @@ import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
+
+import controller.Configuration;
+import controller.QuickHull;
+import controller.UtilityClass;
+import controller.centerPane.ImagePaneController;
+import enums.Controllers;
+import enums.DicomTags;
+import ij.plugin.DICOM;
+import ij.util.DicomTools;
 import model.ImagePanelModel;
 import model.MyPoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 
-public class ImagePanel extends JPanel {
+import static controller.UtilityClass.*;
+
+public class ImagePanel extends JPanel{
 
 
-    private int x_offset, y_offset, img_width, img_height, basic_size;
-    private double ratio;
+	private int x_offset, y_offset, img_width, img_height, basic_size;
+	private double ratio;
+
+	public ImagePanel(ImagePanelModel model) {
 
 
-    public ImagePanel(ImagePanelModel model) {
+		ImagePaneController controller = new ImagePaneController(this, model);
+		MainWindow.addController(controller);
 
-        ImagePaneController controller = new ImagePaneController(this, model);
-        MainWindow.addController(controller);
+		this.addMouseWheelListener(controller);
+		this.addMouseListener(controller);
+	}
 
-        this.addMouseWheelListener(controller);
-        this.addMouseListener(controller);
-    }
+	public ImagePanel() {
+		this(new ImagePanelModel());
+	}
 
-    public ImagePanel() {
-        this(new ImagePanelModel());
-    }
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2 = (Graphics2D) g;
+		ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 
-        ImagePaneController ctrl = (ImagePaneController) MainWindow
-            .getController(Controllers.IMAGE_PANE_CTRL);
+		if(ctrl != null){
+			ImagePanelModel model = (ImagePanelModel) ctrl.getModel();
 
-        if (ctrl != null) {
-            ImagePanelModel model = (ImagePanelModel) ctrl.getModel();
+			if(model != null){
+				if(model.getActualSnapshot() != -1){
 
-            if (model != null) {
-                if (model.getActualSnapshot() != -1) {
+					try {
+						DICOM dcm = model.getMriDicom().get(model.getActualSnapshot());
+						BufferedImage img = dcm.getBufferedImage();
 
-                    try {
-                        DICOM dcm = model.getMriDicom().get(model.getActualSnapshot());
-                        BufferedImage img = dcm.getBufferedImage();
 
-                        //Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
-                        //druhy parametr kontrast...
-                        RescaleOp resOp = new RescaleOp(model.convertBrightness(),
-                            model.convertContrast(), null);
+						String pixSpaceRet = getTagValue(dcm, DicomTags.PIXEL_SPACING); 
+						
+						Configuration.pixelSpace = stringToDouble(pixSpaceRet.substring(0, pixSpaceRet.indexOf("\\")));
+						Configuration.sliceThickness = stringToDouble(getTagValue(dcm, DicomTags.SLICE_THICKNESS));
 
-                        resOp.filter(img, img);
+						//Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
+						//druhy parametr kontrast... 
+						RescaleOp resOp = new RescaleOp(model.convertBrightness(), model.convertContrast(), null);
 
-                        double widthRatio = (double) this.getWidth() / img.getWidth(null);
-                        double heightRatio = (double) this.getHeight() / img.getHeight(null);
+						resOp.filter(img, img);
 
-                        this.ratio = Math.min(widthRatio, heightRatio);
 
-                        this.img_width = (int) (img.getWidth(null) * ratio);
-                        this.img_height = (int) (img.getHeight(null) * ratio);
+						double widthRatio = (double) this.getWidth() / img.getWidth(null);
+						double heightRatio = (double) this.getHeight() / img.getHeight(null);
 
-                        this.x_offset = (int) (this.getWidth() - img_width) / 2;
-                        this.y_offset = (int) (this.getHeight() - img_height) / 2;
+						this.ratio = Math.min(widthRatio, heightRatio);
 
-                        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                        //g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+						this.img_width = (int) (img.getWidth(null) * ratio);
+						this.img_height = (int)(img.getHeight(null) * ratio);
 
-                        g2.drawImage(img, this.x_offset, this.y_offset, this.img_width,
-                            this.img_height, null);
+						this.x_offset = (int)(this.getWidth()-img_width)/2;
+						this.y_offset = (int)(this.getHeight()-img_height)/2;
 
-                        for (GroupModel group : model.getGroups()) {
-                            if (group.getPoints().size() != 0) {
 
-                                ArrayList<MyPoint> pointsToDraw = group
-                                    .getPointFromLayer(model.getActualSnapshot());
+						g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+						//g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+						//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                                g2.setColor(group.getColor());
 
-                                for (MyPoint myPoint : pointsToDraw) {
+						g2.drawImage(img, this.x_offset, this.y_offset, this.img_width, this.img_height , null);
 
-                                    g2.fillOval((int) (myPoint.getX() * ratio) + this.x_offset,
-                                        (int) (myPoint.getY() * ratio + this.y_offset),
-                                        (int) (myPoint.getWidth() * ratio),
-                                        (int) (myPoint.getHeight() * ratio));
-                                }
+						int groupIndex = 0;
+						int rowHeight = 16;
+						int rowSpace = 5;
 
-                                //vytvoreni obalky, musi obsahovat minimalne 3 body
-                                if (pointsToDraw.size() >= 3) {
-                                    if (!(group.getName().equals(Configuration.UNASSIGN_GROUP)
-                                        || group.getName().equals(Configuration.IGNORE_GROUP))) {
+						for (GroupModel	group : model.getGroups()) {
+							if(group.getPoints().size() != 0){
+								
+								
+								//vykresleni bodu z vrstvy
+								ArrayList<MyPoint> pointsInLayer = group.getPointFromLayer(model.getActualSnapshot());
+								
+								g2.setColor(group.getLayerColor());
 
-                                        ArrayList<MyPoint> hull = new QuickHull()
-                                            .quickHull(pointsToDraw);
-                                        for (int i = 0; i < hull.size(); i++) {
-                                            g2.setStroke(new BasicStroke(3));
-                                            g2.drawLine((int) (hull.get(i).getCenterX() * ratio
-                                                    + this.x_offset),
-                                                (int) (hull.get(i).getCenterY() * ratio
-                                                    + this.y_offset),
-                                                (int) (hull.get((i + 1) % hull.size()).getCenterX()
-                                                    * ratio + x_offset),
-                                                (int) (hull.get((i + 1) % hull.size()).getCenterY()
-                                                    * ratio + y_offset));
-                                        }
+								drawPoints(g2, pointsInLayer);
 
-                                        double area = 0.0;
+								//vytvoreni obalky, musi obsahovat minimalne 3 body
+								if(pointsInLayer.size() >=3){
+									if(! (group.getName().equals(Configuration.UNASSIGN_GROUP) || group.getName().equals(Configuration.IGNORE_GROUP))){
 
-                                        String pixelSpace = getTagValue(dcm,
-                                            DicomTags.PIXEL_SPACING);
-                                        pixelSpace = pixelSpace
-                                            .substring(0, pixelSpace.indexOf("\\"));
+										ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(pointsInLayer);
+										drawPoints(g2, hullPoint);
+										drawConvexCover(g2, hullPoint);
+										group.setArea(model.getActualSnapshot(), hullPoint);
+										drawAreaLabel(g2, hullPoint, group.getArea(model.getActualSnapshot()));
+									}
+								}
+								
+								
+//								Vykresleni vsech bodu ze skupiny do jedne roviny
+								ArrayList<MyPoint> pointsInGroup = group.getCopyOfPoints();
+								g2.setColor(group.getGroupColor());
+																
+//								//vytvoreni obalky, musi obsahovat minimalne 3 body
+								if(group.getPoints().size() >=3){
+									if(! (group.getName().equals(Configuration.UNASSIGN_GROUP) || group.getName().equals(Configuration.IGNORE_GROUP))){
 
-                                        double scale = stringToDouble(pixelSpace);
+										ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(pointsInGroup);
+										drawConvexCover(g2, hullPoint);
+									
+										g2.setFont(new Font("TimesRoman", Font.PLAIN, 15));
+										g2.drawString(String.format("%s: %.2f mm\u00B2", group.getName(), group.computeArea(hullPoint)), 
+												(int) (x_offset + rowSpace * ratio), 
+												(int) (y_offset + ((rowSpace + rowHeight)  * (groupIndex+1)) * ratio));
+										groupIndex++;
+									}
+								}
+							}
+						}
+					} catch (IndexOutOfBoundsException e) {
+						// TODO: handle exception
+					}
+				}
+			}
+		}
+	}
 
-                                        for (int i = 0; i < hull.size(); i++) {
-                                            MyPoint fromPoint = hull.get(i % hull.size());
-                                            MyPoint toPoint = hull.get((i + 1) % hull.size());
-                                            MyPoint overPoint = hull.get((i + 2) % hull.size());
+	private void drawAreaLabel(Graphics2D g2, ArrayList<MyPoint> points, double area) {
+		double maxX = points.get(0).getCenterX();
+		double maxY = points.get(0).getCenterY();
+		for (MyPoint myPoint : points) {
+			if(maxX < myPoint.getCenterX())
+				maxX = myPoint.getCenterX();
+			if(maxY < myPoint.getCenterY())
+				maxY = myPoint.getCenterY();
+		}
 
-                                            //TODO roznasobit pomerem pixel na mm
+		g2.setFont(new Font("TimesRoman", Font.PLAIN, 15));
+		g2.drawString(String.format("%.2f mm\u00b2", area), 
+				(int) ((maxX + 10) * ratio + this.x_offset), 
+				(int) ((maxY + 10) * ratio + this.y_offset));
+	}
 
-                                            double i1_x = toPoint.getCenterX() * scale;
-                                            double i2_y = overPoint.getCenterY() * scale;
-                                            double i0_y = fromPoint.getCenterY() * scale;
+	private void drawConvexCover(Graphics2D g2, ArrayList<MyPoint> Points) {
+		for (int i = 0; i < Points.size(); i++) {
+			g2.setStroke(new BasicStroke(3));
+			g2.drawLine((int) (Points.get(i).getCenterX() * ratio + this.x_offset), 
+					(int) (Points.get(i).getCenterY() * ratio + this.y_offset), 
+					(int) (Points.get((i+1)%Points.size()).getCenterX() * ratio + x_offset), 
+					(int) (Points.get((i+1)%Points.size()).getCenterY() * ratio + y_offset));
+		}
+	}
 
-                                            area += (i1_x * (i2_y - i0_y)) / 2;
-                                        }
+	private void drawPoints(Graphics2D g2, ArrayList<MyPoint> points) {
+		for (MyPoint myPoint : points) {
+			g2.fillOval((int) (myPoint.getX()*ratio) + this.x_offset, 
+					(int) (myPoint.getY()*ratio + this.y_offset), 
+					(int) (myPoint.getWidth()*ratio), 
+					(int) (myPoint.getHeight()*ratio));
+		}
+	}
 
-                                        area = Math.abs(area);
+	public void saveImages() {
+		BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		File folderPath = UtilityClass.chooseSaveLocation();
+		ImagePaneController ipc = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 
-                                        double maxX = hull.get(0).getCenterX();
-                                        double maxY = hull.get(0).getCenterY();
-                                        for (MyPoint myPoint : hull) {
-                                            if (maxX < myPoint.getCenterX()) {
-                                                maxX = myPoint.getCenterX();
-                                            }
-                                            if (maxY < myPoint.getCenterY()) {
-                                                maxY = myPoint.getCenterY();
-                                            }
-                                        }
 
-                                        g2.setFont(new Font("TimesRoman", Font.PLAIN, 15));
-                                        g2.drawString(String.format("%.2f mm\u00b2", area),
-                                            (int) ((maxX + 10) * ratio + this.x_offset),
-                                            (int) ((maxY + 10) * ratio + this.y_offset));
-                                    }
-                                }
-                            }
-                        }
-                    } catch (IndexOutOfBoundsException e) {
-                        // TODO: handle exception
-                    }
-                }
-            }
-        }
-    }
+		try {
+			//TODO dodelat ukladani
+			for(int i = 0 ; i < ipc.getModel().getMriDicom().size() ; i++){
+				ipc.getModel().setActualSnapshot(i);
+				String path = folderPath.getPath() + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
+				paint(img.getGraphics());
+				ImageIO.write(img, "png", new File(path));
+			}
 
-    public void saveImages() {
-        BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(),
-            BufferedImage.TYPE_INT_RGB);
-        File folderPath = UtilityClass.chooseSaveLocation();
-        ImagePaneController ipc = (ImagePaneController) MainWindow
-            .getController(Controllers.IMAGE_PANE_CTRL);
+			System.out.println("panel saved as image");
+		} catch(NullPointerException npe){
+			throw new NullPointerException();
+		} catch (Exception e) {
+			System.out.println("panel not saved" + e.getMessage());
+		}
+	}
 
-        try {
-            //TODO dodelat ukladani
-            for (int i = 0; i < ipc.getModel().getMriDicom().size(); i++) {
-                ipc.getModel().setActualSnapshot(i);
-                //String path = folderPath.getPath() + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
-                String path = new File(folderPath,
-                    "img_" + ipc.getModel().getActualSnapshot() + ".png").toString();
-                paint(img.getGraphics());
-                ImageIO.write(img, "png", new File(path));
-            }
+	public void saveImg() throws NullPointerException, FileNotFoundException {
+		BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		paint(img.getGraphics());
+		try {
+			//TODO dodelat ukladani
+			ImagePaneController ipc = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 
-            System.out.println("panel saved as image");
-        } catch (NullPointerException npe) {
-            throw new NullPointerException();
-        } catch (Exception e) {
-            System.out.println("panel not saved" + e.getMessage());
-        }
-    }
+			File folderPath = UtilityClass.chooseSaveLocation();
+			String path = folderPath.getPath() + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
 
-    public void saveImg() throws NullPointerException, FileNotFoundException {
-        BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(),
-            BufferedImage.TYPE_INT_RGB);
-        paint(img.getGraphics());
-        try {
-            //TODO dodelat ukladani
-            ImagePaneController ipc = (ImagePaneController) MainWindow
-                .getController(Controllers.IMAGE_PANE_CTRL);
+			ImageIO.write(img, "png", new File(path));
+			System.out.println("panel saved as image");
+		} catch(NullPointerException npe){
+			throw new NullPointerException();
+		} catch (Exception e) {
+			System.out.println("panel not saved" + e.getMessage());
+		}
+	}
 
-            File folderPath = UtilityClass.chooseSaveLocation();
-            //String path = folderPath.getPath() + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
-            String path = new File(folderPath, "img_" + ipc.getModel().getActualSnapshot() + ".png")
-                .toString();
+	public String getPaneInfo(){
+		return "x_offset: " + this.x_offset + ", y_offset: " + this.y_offset + ", width: " + this.img_width + ", height: " + this.img_height;
+	}
 
-            ImageIO.write(img, "png", new File(path));
-            System.out.println("panel saved as image");
-        } catch (NullPointerException npe) {
-            throw new NullPointerException();
-        } catch (Exception e) {
-            System.out.println("panel not saved" + e.getMessage());
-        }
-    }
+	public int getX_offset() {
+		return this.x_offset;
+	}
 
-    public String getPaneInfo() {
-        return "x_offset: " + this.x_offset + ", y_offset: " + this.y_offset + ", width: "
-            + this.img_width + ", height: " + this.img_height;
-    }
+	public int getY_offset() {
+		return this.y_offset;
+	}
 
-    public int getX_offset() {
-        return this.x_offset;
-    }
+	public int getImg_height() {
+		return img_height;
+	}
 
-    public int getY_offset() {
-        return this.y_offset;
-    }
+	public int getImg_width() {
+		return img_width;
+	}
 
-    public int getImg_height() {
-        return img_height;
-    }
-
-    public int getImg_width() {
-        return img_width;
-    }
-
-    public double getRatio() {
-        return this.ratio;
-    }
+	public double getRatio() {
+		return this.ratio;
+	}
 }

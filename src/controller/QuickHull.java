@@ -1,34 +1,37 @@
 package controller;
 
+import static controller.UtilityClass.getTagValue;
+import static controller.UtilityClass.stringToDouble;
+
 import java.util.ArrayList;
 
+import enums.DicomTags;
 import model.MyPoint;
 
-public class QuickHull {
+public class QuickHull{
 
-
-    public ArrayList<MyPoint> quickHull(ArrayList<MyPoint> points) {
+	
+	public ArrayList<MyPoint> quickHull(ArrayList<MyPoint> points){
 
         ArrayList<MyPoint> convexHull = new ArrayList<MyPoint>();
 
-        if (points.size() < 3) {
-            return (ArrayList<MyPoint>) points.clone();
-        }
+        if (points.size() < 3)
+        	return (ArrayList<MyPoint>) points.clone();
 
         int minPoint = -1, maxPoint = -1;
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
 
-        for (int i = 0; i < points.size(); i++) {
+        for (int i = 0; i < points.size(); i++){
 
-            if (points.get(i).getCenterX() < minX) {
+            if (points.get(i).getCenterX() < minX){
                 minX = points.get(i).getCenterX();
                 minPoint = i;
             }
 
-            if (points.get(i).getCenterX() > maxX) {
-                maxX = points.get(i).getCenterX();
-                maxPoint = i;
+            if (points.get(i).getCenterX() > maxX){
+            	maxX = points.get(i).getCenterX();
+            	maxPoint = i;
             }
         }
 
@@ -44,14 +47,13 @@ public class QuickHull {
         ArrayList<MyPoint> leftSet = new ArrayList<MyPoint>();
         ArrayList<MyPoint> rightSet = new ArrayList<MyPoint>();
 
-        for (int i = 0; i < points.size(); i++) {
-
-            MyPoint p = points.get(i);
-            if (pointLocation(A, B, p) == -1) {
-                leftSet.add(p);
-            } else if (pointLocation(A, B, p) == 1) {
-                rightSet.add(p);
-            }
+        for (int i = 0; i < points.size(); i++){
+        	
+        	MyPoint p = points.get(i);
+        	if (pointLocation(A, B, p) == -1)
+        		leftSet.add(p);
+        	else if (pointLocation(A, B, p) == 1)
+        		rightSet.add(p);
         }
 
         hullSet(A, B, rightSet, convexHull);
@@ -61,13 +63,12 @@ public class QuickHull {
 
     }
 
-    public double distance(MyPoint A, MyPoint B, MyPoint C) {
+    public double distance(MyPoint A, MyPoint B, MyPoint C){
 
         double ABx = B.getCenterX() - A.getCenterX();
         double ABy = B.getCenterY() - A.getCenterY();
-        double num =
-            ABx * (A.getCenterY() - C.getCenterY()) - ABy * (A.getCenterX() - C.getCenterX());
-
+        double num = ABx * (A.getCenterY() - C.getCenterY()) - ABy * (A.getCenterX() - C.getCenterX());
+        
         return Math.abs(num);
     }
 
@@ -75,11 +76,10 @@ public class QuickHull {
 
         int insertPosition = hull.indexOf(B);
 
-        if (set.size() == 0) {
-            return;
-        }
+        if (set.size() == 0)
+        	return;
 
-        if (set.size() == 1) {
+        if (set.size() == 1){
 
             MyPoint p = set.get(0);
             set.remove(p);
@@ -100,8 +100,8 @@ public class QuickHull {
             if (distance > dist)
 
             {
-                dist = distance;
-                furthestPoint = i;
+            	dist = distance;
+            	furthestPoint = i;
             }
 
         }
@@ -112,6 +112,7 @@ public class QuickHull {
 
         hull.add(insertPosition, P);
 
+ 
         // Determine who's to the left of AP
 
         ArrayList<MyPoint> leftSetAP = new ArrayList<MyPoint>();
@@ -125,20 +126,22 @@ public class QuickHull {
             if (pointLocation(A, P, M) == 1)
 
             {
-                leftSetAP.add(M);
+            	leftSetAP.add(M);
             }
         }
+
+ 
 
         // Determine who's to the left of PB
 
         ArrayList<MyPoint> leftSetPB = new ArrayList<MyPoint>();
 
-        for (int i = 0; i < set.size(); i++) {
+        for (int i = 0; i < set.size(); i++){
 
             MyPoint M = set.get(i);
 
-            if (pointLocation(P, B, M) == 1) {
-                leftSetPB.add(M);
+            if (pointLocation(P, B, M) == 1){
+            	leftSetPB.add(M);
             }
         }
 
@@ -148,22 +151,19 @@ public class QuickHull {
 
     public double pointLocation(MyPoint A, MyPoint B, MyPoint P) {
 
-        double cp1 = (B.getCenterX() - A.getCenterX()) * (P.getCenterY() - A.getCenterY())
-            - (B.getCenterY() - A.getCenterY()) * (P.getCenterX() - A.getCenterX());
+        double cp1 = (B.getCenterX() - A.getCenterX()) * (P.getCenterY() - A.getCenterY()) - (B.getCenterY() - A.getCenterY()) * (P.getCenterX() - A.getCenterX());
 
         if (cp1 > 0)
 
-        {
             return 1;
-        } else if (cp1 == 0)
 
-        {
+        else if (cp1 == 0)
+
             return 0;
-        } else
 
-        {
+        else
+
             return -1;
-        }
 
     }
-}
+  }
