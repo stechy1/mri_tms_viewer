@@ -1,36 +1,26 @@
 package controller.centerPane;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Stack;
-
-import javax.rmi.CORBA.Util;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
 import controller.Configuration;
 import controller.UtilityClass;
 import controller.rightPane.SettingSnapshotPaneController;
 import enums.Controllers;
 import interfaces.IController;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Stack;
 import model.ImagePanelModel;
 import model.MyDicom;
 import model.MyPoint;
@@ -83,17 +73,17 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 		if(folder != null){
 
-			new Thread(){
-				public void run() {
-					loader = new MyLoader();
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				};
-			}.start();
+//			new Thread(){
+//				public void run() {
+//					loader = new MyLoader();
+//					try {
+//						Thread.sleep(5000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				};
+//			}.start();
 
 			this.model.initMriDicomList();
 			this.model.initTmsDicomList();
@@ -102,14 +92,14 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 			for (String fileName : folder.list()) {
 				if(fileName.endsWith(".dcm")){
-					this.model.getMriDicom().add(loadDicom(folder.getAbsolutePath() + "\\" + fileName));
+					this.model.getMriDicom().add(loadDicom(folder.getAbsolutePath() + File.separator + fileName));
 				}
 			}
 			Collections.sort(this.model.getMriDicom());
 			this.model.setActualSnapshot(0);
 			notifyController();
 
-			loader.dispose();
+//			loader.dispose();
 		}
 	}
 
@@ -122,13 +112,13 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 			for (String fileName : folder.list()) {
 				if(fileName.endsWith(".dcm")){
-					this.model.getTmsDicom().add(loadDicom(folder.getAbsolutePath() + "\\" + fileName));
+					this.model.getTmsDicom().add(loadDicom(folder.getAbsolutePath() + File.separator + fileName));
 					//loader.incProgress();
 				}
 			}
 			Collections.sort(this.model.getTmsDicom());
 
-			File f = new File(ImagePanelModel.tmsPath + "//" + Configuration.GROUPS);
+			File f = new File(ImagePanelModel.tmsPath + File.separator + Configuration.GROUPS);
 
 			if(f.exists()){
 				if(UtilityClass.showConfirmDialog("Chcete načíst data ze souboru")){
@@ -328,7 +318,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			if(this.model.getGroups() != null){
 				if(this.model.getGroups().size() != 0){
 					try {
-						fos = new FileOutputStream(ImagePanelModel.tmsPath + "//" + Configuration.GROUPS);
+						fos = new FileOutputStream(ImagePanelModel.tmsPath + File.separator + Configuration.GROUPS);
 						oos = new ObjectOutputStream(fos);
 						oos.writeObject(this.model.getGroups());
 						oos.flush();

@@ -1,22 +1,15 @@
 package controller;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import enums.Controllers;
 import enums.DicomTags;
 import ij.plugin.DICOM;
 import ij.util.DicomTools;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import view.MainWindow;
 
 public class UtilityClass {
@@ -87,7 +80,7 @@ public class UtilityClass {
 	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	    int retVal = chooser.showOpenDialog((MainWindow) MainWindow.getController(Controllers.MAIN_WINDOW_CTRL).getView());
 	    if (retVal == JFileChooser.APPROVE_OPTION) {
-	    	String path = chooser.getSelectedFile().getPath() + "//" + getFolderName();
+	    	String path = chooser.getSelectedFile().getPath() + File.separator + getFolderName();
 	    	File dir = new File(path);
 	    	if(!dir.exists())
 	    		dir.mkdir();

@@ -1,6 +1,15 @@
 package view.centerPane;
+import static controller.UtilityClass.getTagValue;
+import static controller.UtilityClass.stringToDouble;
+
+import controller.Configuration;
+import controller.QuickHull;
+import controller.UtilityClass;
+import controller.centerPane.ImagePaneController;
+import enums.Controllers;
+import enums.DicomTags;
+import ij.plugin.DICOM;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,25 +19,12 @@ import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
-
-import controller.Configuration;
-import controller.QuickHull;
-import controller.UtilityClass;
-import controller.centerPane.ImagePaneController;
-import enums.Controllers;
-import enums.DicomTags;
-import ij.plugin.DICOM;
-import ij.util.DicomTools;
 import model.ImagePanelModel;
 import model.MyPoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
-
-import static controller.UtilityClass.*;
 
 public class ImagePanel extends JPanel{
 
@@ -200,7 +196,7 @@ public class ImagePanel extends JPanel{
 			//TODO dodelat ukladani
 			for(int i = 0 ; i < ipc.getModel().getMriDicom().size() ; i++){
 				ipc.getModel().setActualSnapshot(i);
-				String path = folderPath.getPath() + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
+				String path = folderPath.getPath() + File.separator + "img_" + ipc.getModel().getActualSnapshot() + ".png";
 				paint(img.getGraphics());
 				ImageIO.write(img, "png", new File(path));
 			}
@@ -221,7 +217,7 @@ public class ImagePanel extends JPanel{
 			ImagePaneController ipc = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 
 			File folderPath = UtilityClass.chooseSaveLocation();
-			String path = folderPath.getPath() + "//" + "img_" + ipc.getModel().getActualSnapshot() + ".png";
+			String path = folderPath.getPath() + File.separator + "img_" + ipc.getModel().getActualSnapshot() + ".png";
 
 			ImageIO.write(img, "png", new File(path));
 			System.out.println("panel saved as image");
