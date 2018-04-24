@@ -37,6 +37,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	private ImagePanelModel model; 	
 
 	private MyLoader loader;
+	private MyPoint active;
 
 	public ImagePaneController(ImagePanel view, ImagePanelModel model) {
 		this.view = view;
@@ -387,7 +388,8 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		//				UtilityClass.showInfoNotification("Skupiny pro export neexistují!");			
 		//		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	private void importGroupsFromFile(File f){
 		ObjectInputStream objectinputstream = null;
 		if(this.getModel().getGroups() != null){
@@ -444,6 +446,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 	@Override
 	public void notifyController() {
+		MainWindow.getController(Controllers.LEFT_CONTROL_PANE_CTRL).notifyController();
 		this.view.repaint();
 	}
 
@@ -481,7 +484,18 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 								//TODO dodelat interakci
 								System.out.println("interakce");
 								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
-								ctrl.setModel(point);
+								if(active!=null) {
+									active.setActive(false);
+								}
+								if(point!=active){
+									point.setActive(true);
+									this.active=point;
+									ctrl.setModel(point);
+								}else{
+									this.active=null;
+									ctrl.setModel(null);
+								}
+								this.view.repaint();
 							}
 						}
 					}

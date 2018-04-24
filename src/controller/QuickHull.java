@@ -16,7 +16,7 @@ public class QuickHull{
         ArrayList<MyPoint> convexHull = new ArrayList<MyPoint>();
 
         if (points.size() < 3)
-        	return (ArrayList<MyPoint>) points.clone();
+        	return new ArrayList<MyPoint>(points);
 
         int minPoint = -1, maxPoint = -1;
         double minX = Double.MAX_VALUE;

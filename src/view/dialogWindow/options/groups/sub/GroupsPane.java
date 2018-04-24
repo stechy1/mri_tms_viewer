@@ -21,7 +21,7 @@ public class GroupsPane extends JPanel {
 		initComponents();
 	}
 	
-	private void initComponents() {
+	public void initComponents() {
 		
 		this.removeAll();
 		

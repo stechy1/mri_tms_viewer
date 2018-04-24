@@ -27,6 +27,8 @@ public class GroupsOptionPaneController implements IController, ActionListener {
 	
 	@Override
 	public void notifyController() {
+		MainWindow.getController(Controllers.IMAGE_PANE_CTRL).notifyController();
+		this.view.getGroupsPane().initComponents();
 		this.view.revalidate();
 		this.view.updateUI();
 	}
@@ -68,11 +70,10 @@ public class GroupsOptionPaneController implements IController, ActionListener {
 		case "create":
 			create();
 			notifyController();
-			this.view.getGroupsPane().revalidate();
-			this.view.getGroupsPane().updateUI();
 			break;
 		case "assign":
 			assign();
+			notifyController();
 			break;
 		default: 
 			try {

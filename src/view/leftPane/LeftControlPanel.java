@@ -60,6 +60,7 @@ public class LeftControlPanel extends JPanel {
 		this.btnSnapshotInfo = new JButton("Informace o snimku");
 		this.btnSnapshotInfo.setActionCommand("snapshotInfo");
 		this.btnSnapshotInfo.addActionListener(controller);
+		this.btnSnapshotInfo.setEnabled(false);
 		GridBagConstraints gbc_btnSnapshotInfo = new GridBagConstraints();
 		gbc_btnSnapshotInfo.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSnapshotInfo.fill = GridBagConstraints.BOTH;
@@ -70,6 +71,7 @@ public class LeftControlPanel extends JPanel {
 		this.btnSaveCurrentSnapshot = new JButton("Uložit aktuální obrázek");
 		this.btnSaveCurrentSnapshot.setActionCommand("saveCurrent");
 		this.btnSaveCurrentSnapshot.addActionListener(controller);
+		this.btnSaveCurrentSnapshot.setEnabled(false);
 		GridBagConstraints gbc_btnSaveCurrentSnapshot = new GridBagConstraints();
 		gbc_btnSaveCurrentSnapshot.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveCurrentSnapshot.fill = GridBagConstraints.HORIZONTAL;
@@ -80,6 +82,7 @@ public class LeftControlPanel extends JPanel {
 		this.btnSaveAllSnapshots = new JButton("Uložit všechny obrázky");
 		this.btnSaveAllSnapshots.setActionCommand("saveAll");
 		this.btnSaveAllSnapshots.addActionListener(controller);
+		this.btnSaveAllSnapshots.setEnabled(false);
 		GridBagConstraints gbc_btnSaveAllSnapshots = new GridBagConstraints();
 		gbc_btnSaveAllSnapshots.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveAllSnapshots.gridx = 0;
@@ -89,6 +92,7 @@ public class LeftControlPanel extends JPanel {
 		this.btnSaveGroup = new JButton("Ulož skupiny");
 		this.btnSaveGroup.setActionCommand("saveGroup");
 		this.btnSaveGroup.addActionListener(controller);
+		this.btnSaveGroup.setEnabled(false);
 		GridBagConstraints gbc_btnSaveGroup = new GridBagConstraints();
 		gbc_btnSaveGroup.fill = GridBagConstraints.BOTH;
 		gbc_btnSaveGroup.insets = new Insets(0, 0, 5, 0);
@@ -106,6 +110,22 @@ public class LeftControlPanel extends JPanel {
 		gbc_btnSettings.gridx = 0;
 		gbc_btnSettings.gridy = 6;
 		add(this.btnSettings, gbc_btnSettings);
+	}
+
+	public JButton getBtnSaveCurrentSnapshot(){
+		return this.btnSaveCurrentSnapshot;
+	}
+
+	public JButton getBtnSaveAllSnapshots(){
+		return this.btnSaveAllSnapshots;
+	}
+
+	public JButton getBtnSnapshotInfo(){
+		return this.btnSnapshotInfo;
+	}
+
+	public JButton getBtnSaveGroup(){
+		return this.btnSaveGroup;
 	}
 
 }

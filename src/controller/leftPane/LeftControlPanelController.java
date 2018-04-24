@@ -49,7 +49,13 @@ public class LeftControlPanelController implements IController, ActionListener {
 	
 	@Override
 	public void notifyController() {
-		
+		ImagePanelModel ipm = (ImagePanelModel)MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
+		boolean enabled = ipm.getActualSnapshot()>=0;
+		this.view.getBtnSaveCurrentSnapshot().setEnabled(enabled);		
+		this.view.getBtnSaveAllSnapshots().setEnabled(enabled);		
+		this.view.getBtnSnapshotInfo().setEnabled(enabled);		
+		enabled = ipm.getTmsDicom().size()>0;
+		this.view.getBtnSaveGroup().setEnabled(enabled);		
 	}
 
 	@Override

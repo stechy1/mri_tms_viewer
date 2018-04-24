@@ -10,6 +10,8 @@ import java.io.Serializable;
 import model.dialogWindow.group.GroupModel;
 
 public class MyPoint extends Ellipse2D implements Serializable {
+
+	static final long serialVersionUID = 8581091178539691643L;
 	
 	private double x, y, z, height = 0, widht = 0 ;
 	private double amplitude, latency;
@@ -54,6 +56,19 @@ public class MyPoint extends Ellipse2D implements Serializable {
 		this(0,0);
 	}
 
+	public void setActive(boolean active){
+		if(active){
+			this.x-=widht/2;
+			this.y-=height/2;
+			this.height*=2;
+			this.widht*=2;
+		}else{
+			this.height/=2;
+			this.widht/=2;
+			this.x+=widht/2;
+			this.y+=height/2;
+		}
+	}
 
 	@Override
 	public Rectangle2D getBounds2D() {

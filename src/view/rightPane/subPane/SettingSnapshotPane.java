@@ -16,12 +16,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import model.dialogWindow.group.GroupModel;
 
 public class SettingSnapshotPane extends JPanel {
 	private JLabel lblActivePoint;
 	private JPanel controlPanel;
 	private JLabel lblGroup;
-	private JComboBox cbGroup;
+	private JComboBox<GroupModel> cbGroup;
 	private JLabel lblAmplitude;
 	private JTextField tfAmplitude;
 	private JLabel lblLatency;
@@ -77,7 +78,7 @@ public class SettingSnapshotPane extends JPanel {
 		gbc_lblGroup.gridy = 0;
 		this.controlPanel.add(this.lblGroup, gbc_lblGroup);
 		
-		this.cbGroup = new JComboBox();
+		this.cbGroup = new JComboBox<GroupModel>();
 		this.cbGroup.addItemListener(controller);
 		GridBagConstraints gbc_cbGroup = new GridBagConstraints();
 		gbc_cbGroup.insets = new Insets(0, 0, 5, 0);
@@ -124,7 +125,7 @@ public class SettingSnapshotPane extends JPanel {
 		this.tfLatency.setColumns(10);
 	}
 
-	public JComboBox getCbGroup() {
+	public JComboBox<GroupModel> getCbGroup() {
 		return cbGroup;
 	}
 	

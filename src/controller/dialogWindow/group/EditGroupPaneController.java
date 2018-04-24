@@ -74,6 +74,9 @@ public class EditGroupPaneController implements IController, ActionListener {
 			if(this.model != null && this.view != null){
 				this.model.setName(this.view.getTfTitle().getText());
 			}
+			MainWindow.getController(Controllers.IMAGE_PANE_CTRL).notifyController();
+			MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL).notifyController();
+			MainWindow.getController(Controllers.GROUPS_OPTION_PANE_CTRL).notifyController();
 			this.view.dispose();
 			break;
 		}
