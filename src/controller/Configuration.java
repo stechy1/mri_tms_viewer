@@ -11,7 +11,7 @@ public class Configuration {
 	public static final String TITLE_OF_APP = "TMS/MRI viewer";
 	public static final Dimension DIMENSION_OF_APP = new Dimension(800,450);
 	public static final Color BACKGROUD_CONTROLLER = new Color(250, 250, 250);
-	public static final String LOADER_GIF_PATH = "resources\\loading.gif";
+	public static final String LOADER_GIF_PATH = "resources"+File.separator+"loading.gif";
 	
 	public static final int SELECTION_TRESSHOLD = 10;
 	

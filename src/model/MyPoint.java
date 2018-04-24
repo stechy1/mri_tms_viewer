@@ -1,16 +1,13 @@
 package model;
 
-import java.awt.geom.Ellipse2D;
-
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.io.Serializable;
+import static controller.Configuration.SELECTION_TRESSHOLD;
+import static controller.UtilityClass.stringToDouble;
 
 import controller.Configuration;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import model.dialogWindow.group.GroupModel;
-
-import static controller.Configuration.SELECTION_TRESSHOLD;
-import static controller.UtilityClass.*;
 
 public class MyPoint extends Ellipse2D implements Serializable {
 	

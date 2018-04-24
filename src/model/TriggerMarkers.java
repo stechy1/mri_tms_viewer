@@ -1,17 +1,23 @@
 package model;
 
+import static controller.Configuration.FILE_REF_PATH;
+import static controller.Configuration.MEP_MAX;
+import static controller.Configuration.MIN_AMPLITUDE_VALUE;
+import static controller.Configuration.PATIENT_DATA;
+import static controller.Configuration.RESPONSE;
+import static controller.Configuration.SESSION_XML;
+import static controller.Configuration.TMS_TRIGGER;
+import static controller.Configuration.TRIGGER_DATA;
+import static controller.Configuration.VALUE;
+
 import java.io.File;
 import java.util.ArrayList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import controller.Configuration;
-import controller.UtilityClass;
-
-import org.w3c.dom.*;
-
-import static controller.Configuration.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class TriggerMarkers {
 
@@ -23,8 +29,8 @@ public class TriggerMarkers {
 		
 		this.responses = new ArrayList<Response>();
 		
-		if(!path.endsWith("\\")) {
-			path += "\\";
+		if(!path.endsWith(File.separator)) {
+			path += File.separator;
 		}
 		String sessionXml = path + getSessionPath(path);
 		String triggerDataXml = sessionXml.substring(0, sessionXml.indexOf(SESSION_XML)) + getTriggerPath(sessionXml);
