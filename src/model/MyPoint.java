@@ -126,7 +126,7 @@ public class MyPoint extends Ellipse2D implements Serializable {
 	
 	public void calculateAmplitude(int maxValue, int minValue, int maxResponse, int minResponse) {
 		this.amplitude = minResponse + 
-				((maxResponse - minResponse) / (maxValue - minValue)) * (this.pixelValue - minValue);
+				((double)(maxResponse - minResponse) / (maxValue - minValue)) * (this.pixelValue - minValue);
 	}
 	
 	public double getAmplitude() {

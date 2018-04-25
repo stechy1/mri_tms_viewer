@@ -2,26 +2,26 @@ package model;
 
 public class Response {
 
-	private double mepMax;
+	private double amplitude;
 	
-	public Response(double mepMax) {
-		this.mepMax = mepMax;
+	public Response(double amplitude) {
+		this.amplitude = amplitude;
 	}
 	
 	public Response() {
 		this(0.0);
 	}
 	
-	public double getMepMax() {
-		return mepMax;
+	public double getAmplitude() {
+		return amplitude;
 	}
-	
-	public void setMepMax(double mepMax) {
-		this.mepMax = mepMax;
+
+	public void setAmplitude(double amplitude) {
+		this.amplitude = amplitude;
 	}
-	
+
 	@Override
 	public String toString() {
-		return mepMax + "";
+		return Double.toString(amplitude);
 	}
 }

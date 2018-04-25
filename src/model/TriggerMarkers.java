@@ -14,6 +14,9 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,7 +29,6 @@ public class TriggerMarkers {
 	
 	// cesta do slozky TMS
 	public TriggerMarkers(String path) {
-		
 		this.responses = new ArrayList<Response>();
 		
 		if(!path.endsWith(File.separator)) {
@@ -40,28 +42,20 @@ public class TriggerMarkers {
 	
 	private void loadResponses(String triggerMarkerXml) {
 		Document doc = initDocument(triggerMarkerXml);
-		
-		NodeList list = doc.getElementsByTagName(VALUE);
-		
-		for(int i = 0 ; i < list.getLength() ; i++) {
-			Node node = list.item(i);
-			if (node.getNodeType() == node.ELEMENT_NODE) {
-	            Element el = (Element) node;
-		        if(el.getAttribute("key").equals(MEP_MAX)) {
-		        	String strResponse = el.getAttribute(RESPONSE);
-		        	if(!strResponse.equals("NaN")){
-		        		double dResponse = 0.0;
-			        	try {
-			        		dResponse = Double.parseDouble(strResponse);
-			        		if(dResponse > MIN_AMPLITUDE_VALUE) {
-			        			this.responses.add(new Response(dResponse));
-			        		}
-						} catch (NumberFormatException e) {
-							// TODO: handle exception
-						}
-		        	}
-		        }
-	        }
+		XPath xpath = XPathFactory.newInstance().newXPath();	
+		try{
+			NodeList list = (NodeList)xpath.evaluate(
+				"/TriggerMarkerList/TriggerMarker/ResponseValues/Value[starts-with(@key,\"amplitude\")]/@response",
+				doc.getDocumentElement(),
+				XPathConstants.NODESET
+			);
+			for(int a=0; a<list.getLength(); a++) {
+				Node el = (Node)list.item(a);
+				double amp = Double.valueOf(el.getTextContent());
+				this.responses.add(new Response(amp));
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
@@ -134,12 +128,11 @@ public class TriggerMarkers {
 		if(responses != null) {
 			if(responses.size() != 0) {
 				for (Response response : responses) {
-					if(response.getMepMax() > max)
-						max = response.getMepMax();
+					if(response.getAmplitude() > max)
+						max = response.getAmplitude();
 				}
 			}
 		}
-		
 		return max;
 	}
 	
@@ -150,8 +143,8 @@ public class TriggerMarkers {
 		if(responses != null) {
 			if(responses.size() != 0) {
 				for (Response response : responses) {
-					if(response.getMepMax() < min)
-						min = response.getMepMax();
+					if(response.getAmplitude() < min)
+						min = response.getAmplitude();
 				}
 			}
 		}
