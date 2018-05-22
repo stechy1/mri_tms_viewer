@@ -9,26 +9,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Stack;
 import model.ImagePanelModel;
-import model.MyDicom;
 import model.MyPoint;
-import model.TriggerMarkers;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import view.centerPane.ImagePanel;
-import view.dialogWindow.MyLoader;
 
 public class ImagePaneController implements IController, MouseWheelListener, MouseListener{
 
