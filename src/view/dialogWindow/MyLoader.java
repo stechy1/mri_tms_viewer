@@ -71,17 +71,17 @@ public class MyLoader extends JFrame {
 		
 		
 		
-		//this.progressBar = new JProgressBar(0, 255);
-		//this.progressBar.setStringPainted(true);
-		//this.progressBar.setValue(0);
+		this.progressBar = new JProgressBar(0, 100);
+		this.progressBar.setStringPainted(true);
+		this.progressBar.setValue(0);
 		
-		//GridBagConstraints gbc_progressBar = new GridBagConstraints();
-		//gbc_progressBar.insets = new Insets(5, 5, 5, 5);
-		//gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
-		//gbc_progressBar.gridx = 0;
-		//gbc_progressBar.gridy = 1;
+		GridBagConstraints gbc_progressBar = new GridBagConstraints();
+		gbc_progressBar.insets = new Insets(5, 5, 5, 5);
+		gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
+		gbc_progressBar.gridx = 0;
+		gbc_progressBar.gridy = 1;
 		
-		//this.contentPane.add(this.progressBar, gbc_progressBar);
+		this.contentPane.add(this.progressBar, gbc_progressBar);
 	}
 	
 	public JProgressBar getProgressBar() {

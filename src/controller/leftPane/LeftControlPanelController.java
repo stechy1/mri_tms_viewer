@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import javax.swing.JFileChooser;
 
 import controller.UtilityClass;
+import model.dialogWindow.LoaderTask;
 import controller.centerPane.ImagePaneController;
 import enums.Controllers;
 import exceptions.NotYetImplementedException;
@@ -19,6 +20,7 @@ import view.centerPane.ImagePanel;
 import view.dialogWindow.OptionsWindow;
 import view.dialogWindow.ShowDicomTags;
 import view.leftPane.LeftControlPanel;
+import view.dialogWindow.MyLoader;
 
 public class LeftControlPanelController implements IController, ActionListener {
 
@@ -132,27 +134,31 @@ public class LeftControlPanelController implements IController, ActionListener {
 	}
 	
 	private void loadMri() {
-		//todo odkomentovat
 		File file = chooseDirectory("Vyberte MRI adresar");
-//		File file = new File("C:\\Users\\skala\\git\\TMS_17\\data\\tms\\mri");
-		
 		if(file != null){
-			ImagePaneController imageCtrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
-			if(imageCtrl != null){
-				imageCtrl.loadMriFiles(file);
+			ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
+			if(ctrl != null){
+				LoaderTask lt = new LoaderTask(file,ctrl.getModel(),true);
+				MyLoader ml = new MyLoader();
+				lt.linkToProgressBar(ml.getProgressBar());
+				lt.linkToJFrame(ml);
+				lt.execute();
+				//imageCtrl.loadMriFiles(file);
 			}
 		}	
 	}
 	
 	private void loadTms() {
-		//todo odkomentovat
 		File file = chooseDirectory("Vyberte TMS adresar");
-//		File file = new File("C:\\Users\\skala\\git\\TMS_17\\data\\tms\\tms");
-		
 		if(file != null){
 			ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 			if(ctrl != null){
-				ctrl.loadTmsFiles(file);
+				LoaderTask lt = new LoaderTask(file,ctrl.getModel(),false);
+				MyLoader ml = new MyLoader();
+				lt.linkToProgressBar(ml.getProgressBar());
+				lt.linkToJFrame(ml);
+				lt.execute();
+				//ctrl.loadTmsFiles(file);
 			}
 		}
 	}
