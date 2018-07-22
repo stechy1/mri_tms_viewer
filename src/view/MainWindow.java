@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import java.io.File;
+
 import controller.DataController;
 import controller.MainWindowController;
 import enums.Controllers;
@@ -21,6 +23,9 @@ import interfaces.IController;
 import view.centerPane.ImagePanel;
 import view.leftPane.LeftControlPanel;
 import view.rightPane.RightControlPanel;
+import view.dialogWindow.MyLoader;
+import model.dialogWindow.LoaderTask;
+import controller.centerPane.ImagePaneController;
 
 public class MainWindow extends JFrame {
 
@@ -42,20 +47,20 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					new MainWindow();
+					new MainWindow(args);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
-
 	/**
 	 * Create the frame.
 	 */
-	public MainWindow() {
+	public MainWindow(String[] args) {
 		initComponents();
 		this.setVisible(true);
+		tryParameters(args);
 	}
 	
 	
@@ -135,4 +140,34 @@ public class MainWindow extends JFrame {
 		controllers.notifyController(ctrl);
 	}
 
+	public void tryParameters(String[] args){
+		if(args.length>=1){
+			try{
+				ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
+				if(ctrl != null){
+					LoaderTask lt = new LoaderTask(new File(args[0]),ctrl.getModel(),true);
+					MyLoader ml = new MyLoader();
+					lt.linkToProgressBar(ml.getProgressBar());
+					lt.linkToJFrame(ml);
+					lt.execute();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		if(args.length>=2){
+			try{
+				ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
+				if(ctrl != null){
+					LoaderTask lt = new LoaderTask(new File(args[1]),ctrl.getModel(),false);
+					MyLoader ml = new MyLoader();
+					lt.linkToProgressBar(ml.getProgressBar());
+					lt.linkToJFrame(ml);
+					lt.execute();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 }

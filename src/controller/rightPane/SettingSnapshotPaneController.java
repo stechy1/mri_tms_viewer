@@ -5,22 +5,27 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import java.util.Map;
 
 import enums.Controllers;
 import interfaces.IController;
 import model.ImagePanelModel;
 import model.MyPoint;
+import model.Response;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import view.rightPane.subPane.SettingSnapshotPane;
 
-public class SettingSnapshotPaneController implements IController, ItemListener, FocusListener, KeyListener {
+public class SettingSnapshotPaneController implements IController, ItemListener, FocusListener{
 
 	private SettingSnapshotPane view;
-	private MyPoint model;
+	private MyPoint<Response> model;
 	
 	public SettingSnapshotPaneController(SettingSnapshotPane view) {
 		this.view = view;
@@ -32,18 +37,32 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 		if(this.model != null){
 			this.view.getCbGroup().setModel(new DefaultComboBoxModel<>(ipm.getGroups().toArray(new GroupModel[ipm.getGroups().size()])));
 			this.view.getCbGroup().setSelectedItem(this.model.getGroup());
-			this.view.getTfAmplitude().setText(String.format("%.2f",this.model.getAmplitude()));
-			this.view.getTfLatency().setText(this.model.getLatency() + "");
+			this.view.getValues().removeAll();
+			for(Map.Entry<String,Double> entry: this.model.getPixelValue().getData().entrySet()){
+				this.view.getValues().add(new JLabel(entry.getKey()));
+				JTextField jtf = new JTextField(entry.getValue().toString());
+				this.view.getValues().add(jtf);
+				jtf.addKeyListener(new KeyAdapter(){
+					public void keyReleased(KeyEvent e){
+						if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+							try{
+								model.getPixelValue().getData().put(entry.getKey(),Double.valueOf(jtf.getText()));
+							}catch(Exception ex){
+								//TODO dodelat dialog
+								ex.printStackTrace();
+							}
+						}
+					}
+				});
+			}
 		}else{
 			this.view.getCbGroup().setModel(new DefaultComboBoxModel<>());
-			this.view.getTfAmplitude().setText("");
-			this.view.getTfLatency().setText("");
+			this.view.getValues().removeAll();
 		}
 	}
 
 	@Override
 	public void notifyAllControllers() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -54,7 +73,6 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 
 	@Override
 	public Object getView() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -64,8 +82,9 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setModel(Object model) {
-		this.model = (MyPoint) model;
+		this.model = (MyPoint<Response>) model;
 		notifyController();
 	}
 
@@ -93,41 +112,6 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 
 	@Override
 	public void focusLost(FocusEvent fe) {
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent ke) {
-		if(ke.getSource().equals(this.view.getTfAmplitude())) {
-			if(ke.getKeyCode() == KeyEvent.VK_ENTER) {
-				try {
-					double newAmplitude = Double.parseDouble(this.view.getTfAmplitude().getText().trim());
-					this.model.setAmplitude(newAmplitude);
-				} catch (NumberFormatException e) {
-					// TODO: handle exception
-				}
-			}
-		}
-		if(ke.getSource().equals(this.view.getTfLatency())) {
-			if(ke.getKeyCode() == KeyEvent.VK_ENTER) {
-				try {
-					double newLatency = Double.parseDouble(this.view.getTfLatency().getText().trim());
-					this.model.setLatency(newLatency);
-				} catch (NumberFormatException e) {
-					// TODO: handle exception
-				}
-			}
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 }

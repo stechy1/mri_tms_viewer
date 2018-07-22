@@ -17,6 +17,7 @@ import java.util.Stack;
 import model.ImagePanelModel;
 import model.MyDicom;
 import model.MyPoint;
+import model.Response;
 import model.TriggerMarkers;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
@@ -59,7 +60,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 	 * @param area 
 	 * @return
 	 */
-	private MyPoint createPoint(ArrayList<MyPoint> area) {
+	/*private MyPoint createPoint(ArrayList<MyPoint> area) {
 		ArrayList<MyPoint> pointsInPoint = new ArrayList<MyPoint>();
 		Stack<MyPoint> stack = new Stack<MyPoint>();
 		stack.push(area.remove(0));
@@ -98,10 +99,10 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		if(pointsInPoint.size() != 0) {
 			pixelValue = (int) totalPixelValue / pointsInPoint.size();
 		}
-		return new MyPoint(x1, y1, diameter, pixelValue);
-	}
+		return new MyPoint<Integer>(x1, y1, diameter, pixelValue);
+	}*/
 	//Metoda, ktera z DICOM snimku vrati seznam bodu, ktere se na snimku vyskytuji
-	private ArrayList<MyPoint> convertTMSDicomToAreaPoints(MyDicom dcm) {
+	/*private ArrayList<MyPoint> convertTMSDicomToAreaPoints(MyDicom dcm) {
 		ArrayList<MyPoint> area;
 		BufferedImage img = dcm.getBufferedImage();
 		//Krok jedna: ziskat vsechny svetle body
@@ -109,8 +110,8 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		//krok dva: sousedni body spojit do jednoho
 		area = getArrayOfPoints(area);
 		return area;
-	}
-	private ArrayList<MyPoint> getArrayOfPixels(BufferedImage img) {
+	}*/
+	/*private ArrayList<MyPoint> getArrayOfPixels(BufferedImage img) {
 		ArrayList<MyPoint> area = new ArrayList<MyPoint>();
 		for(int x = 0; x < img.getWidth() ; x ++){
 			for(int y = 0 ; y < img.getHeight() ; y++){
@@ -120,39 +121,49 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				int  blue = color & 0x000000ff;
 				int total = (int) (red+green+blue)/3;
 				if(total > Configuration.WHITE_PIXEL_TRESSHOLD){
-					area.add(new MyPoint(x, y, 1, total));
+					area.add(new MyPoint<Integer>(x, y, 1, total));
 				}
 			}
 		}
 		return area;
-	}
+	}*/
 	/** list pixelu, ktere maji hodnotu vetsi nez tresshold z configu. 
 	 * @param area
 	 * @return
 	 */
-	private ArrayList<MyPoint> getArrayOfPoints(ArrayList<MyPoint> area) {
+	/*private ArrayList<MyPoint> getArrayOfPoints(ArrayList<MyPoint> area) {
 		ArrayList<MyPoint> retArea = new ArrayList<MyPoint>();
 		while(area.size() != 0){
 			retArea.add(createPoint(area));
 		}
 		return retArea;
-	}
+	}*/
 	private void calculateTMSPoints() {
 		this.model.setGroups(new ArrayList<GroupModel>());
 		GroupModel group = new GroupModel(Configuration.IGNORE_GROUP);
 		this.model.getGroups().add(group);
 		group = new GroupModel(Configuration.UNASSIGN_GROUP);
 		this.model.getGroups().add(group);
-		for (int i = 0 ; i < this.model.getTmsDicom().size(); i++){
+		/*for (int i = 0 ; i < this.model.getTmsDicom().size(); i++){
 			for (MyPoint myPoint : convertTMSDicomToAreaPoints(this.model.getTmsDicom().get(i))) {
 				myPoint.setZ(i);
 				myPoint.setGroup(group);
 				group.getPoints().add(myPoint);
 			}
 		}
-		AssignAmplitudesToPoints(group.getPoints());
+		AssignAmplitudesToPoints(group.getPoints());*/
+		TriggerMarkers markers = new TriggerMarkers();
+		int[] coords = new int[3];
+		for(Response r: markers.getResponses()){
+			r.calculateCoords(coords);
+			System.out.println(r+" -> "+java.util.Arrays.toString(coords));
+			MyPoint<Response> point = new MyPoint<>(coords[0],coords[1],1,r);
+			point.setZ(coords[2]);
+			point.setGroup(group);
+			group.getPoints().add(point);
+		}
 	}
-	private void AssignAmplitudesToPoints(ArrayList<MyPoint> points) {
+	/*private void AssignAmplitudesToPoints(ArrayList<MyPoint> points) {
 		int minValue = 255, maxValue = 0;
 		for (MyPoint myPoint : points) {
 			if(myPoint.getPixelValue() < minValue)
@@ -166,7 +177,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		for (MyPoint myPoint : points) {
 			myPoint.calculateAmplitude(maxValue, minValue, minResponse, maxResponse);
 		}
-	}
+	}*/
 	public void linkToProgressBar(JProgressBar jpb){
 		addPropertyChangeListener((e)->{
 			if("progress".equals(e.getPropertyName())){

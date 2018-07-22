@@ -42,9 +42,12 @@ public class Configuration {
 	public static final String STRING = "string";
 	public static final String TMS_TRIGGER = "TMSTrigger";
 	public static final String TRIGGER_DATA = "TriggerData";
+	public static final String TRIGGER_MARKER = "TriggerMarker";
 	
 	public static final String VALUE = "Value";
 	public static final String MEP_MAX = "mepMax";
 	public static final String RESPONSE = "response";
+	public static final String KEY = "key";
+	public static final String MATRIX = "Matrix4D";
 	
 }

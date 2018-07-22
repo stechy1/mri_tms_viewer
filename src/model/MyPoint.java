@@ -9,13 +9,12 @@ import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import model.dialogWindow.group.GroupModel;
 
-public class MyPoint extends Ellipse2D implements Serializable {
+public class MyPoint<T> extends Ellipse2D implements Serializable {
 
 	static final long serialVersionUID = 8581091178539691643L;
 	
 	private double x, y, z, height = 0, widht = 0 ;
-	private double amplitude, latency;
-	private int pixelValue;
+	private T pixelValue;
 	
 	private int minSize = 5;
 	
@@ -23,9 +22,7 @@ public class MyPoint extends Ellipse2D implements Serializable {
 	
 	private boolean ignoreSize = true;
 	
-	
-	
-	public MyPoint(double x, double y, double height, double width, int pixelValue) {
+	public MyPoint(double x, double y, double height, double width, T pixelValue) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -40,12 +37,12 @@ public class MyPoint extends Ellipse2D implements Serializable {
 		if(this.widht < minSize) this.widht = minSize;
 	}
 	
-	public MyPoint(double x, double y, double radius, int pixelValue) {
+	public MyPoint(double x, double y, double radius, T pixelValue) {
 		this(x,y, radius, radius, pixelValue);
 	}
 	
 	public MyPoint(double x, double y, double radius) {
-		this(x,y,radius, radius, 0);
+		this(x,y,radius, radius, null);
 	}
 	
 	public MyPoint(double x, double y){
@@ -112,35 +109,14 @@ public class MyPoint extends Ellipse2D implements Serializable {
 		return z;
 	}
 	
-	public int getPixelValue() {
+	public T getPixelValue() {
 		return pixelValue;
 	}
 	
-	public void setPixelValue(int pixelValue) {
+	public void setPixelValue(T pixelValue) {
 		this.pixelValue = pixelValue;
 	}
 	
-	public void setAmplitude(double amplitude) {
-		this.amplitude = amplitude;
-	}
-	
-	public void calculateAmplitude(int maxValue, int minValue, int maxResponse, int minResponse) {
-		this.amplitude = minResponse + 
-				((double)(maxResponse - minResponse) / (maxValue - minValue)) * (this.pixelValue - minValue);
-	}
-	
-	public double getAmplitude() {
-		return amplitude;
-	}
-	
-	public void setLatency(double latency) {
-		this.latency = latency;
-	}
-	
-	public double getLatency() {
-		return latency;
-	}
-
 	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub

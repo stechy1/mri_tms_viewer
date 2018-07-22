@@ -2,6 +2,7 @@ package view.rightPane.subPane;
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -23,10 +24,7 @@ public class SettingSnapshotPane extends JPanel {
 	private JPanel controlPanel;
 	private JLabel lblGroup;
 	private JComboBox<GroupModel> cbGroup;
-	private JLabel lblAmplitude;
-	private JTextField tfAmplitude;
-	private JLabel lblLatency;
-	private JTextField tfLatency;
+	private JPanel valuesPanel;
 
 	/**
 	 * Create the panel.
@@ -87,53 +85,21 @@ public class SettingSnapshotPane extends JPanel {
 		gbc_cbGroup.gridy = 0;
 		this.controlPanel.add(this.cbGroup, gbc_cbGroup);
 		
-		this.lblAmplitude = new JLabel("Amplituda");
-		GridBagConstraints gbc_lblAmplitude = new GridBagConstraints();
-		gbc_lblAmplitude.anchor = GridBagConstraints.EAST;
-		gbc_lblAmplitude.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAmplitude.gridx = 0;
-		gbc_lblAmplitude.gridy = 1;
-		this.controlPanel.add(this.lblAmplitude, gbc_lblAmplitude);
-		
-		this.tfAmplitude = new JTextField();
-		this.tfAmplitude.addKeyListener(controller);
-		
-		GridBagConstraints gbc_tfAmplitude = new GridBagConstraints();
-		gbc_tfAmplitude.insets = new Insets(0, 0, 5, 0);
-		gbc_tfAmplitude.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfAmplitude.gridx = 1;
-		gbc_tfAmplitude.gridy = 1;
-		this.controlPanel.add(this.tfAmplitude, gbc_tfAmplitude);
-		this.tfAmplitude.setColumns(10);
-		
-		this.lblLatency = new JLabel("Latence");
-		GridBagConstraints gbc_lblLatency = new GridBagConstraints();
-		gbc_lblLatency.anchor = GridBagConstraints.EAST;
-		gbc_lblLatency.insets = new Insets(0, 0, 0, 5);
-		gbc_lblLatency.gridx = 0;
-		gbc_lblLatency.gridy = 2;
-		this.controlPanel.add(this.lblLatency, gbc_lblLatency);
-		
-		this.tfLatency = new JTextField();
-		this.tfLatency.addKeyListener(controller);
-		
-		GridBagConstraints gbc_tfLatency = new GridBagConstraints();
-		gbc_tfLatency.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfLatency.gridx = 1;
-		gbc_tfLatency.gridy = 2;
-		this.controlPanel.add(this.tfLatency, gbc_tfLatency);
-		this.tfLatency.setColumns(10);
+		this.valuesPanel = new JPanel();
+		valuesPanel.setLayout(new GridLayout(0,2,2,2));
+		GridBagConstraints gbc_valuesPanel = new GridBagConstraints();
+		gbc_valuesPanel.anchor = GridBagConstraints.WEST;
+		gbc_valuesPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_valuesPanel.gridx = 0;
+		gbc_valuesPanel.gridy = 1;
+		gbc_valuesPanel.gridwidth = 2;
+		this.controlPanel.add(this.valuesPanel, gbc_valuesPanel);
 	}
 
+	public JPanel getValues() {
+		return valuesPanel;
+	}
 	public JComboBox<GroupModel> getCbGroup() {
 		return cbGroup;
-	}
-	
-	public JTextField getTfAmplitude() {
-		return tfAmplitude;
-	}
-	
-	public JTextField getTfLatency() {
-		return tfLatency;
 	}
 }

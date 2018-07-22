@@ -1,15 +1,6 @@
 package model;
-
-import static controller.Configuration.FILE_REF_PATH;
-import static controller.Configuration.MEP_MAX;
-import static controller.Configuration.MIN_AMPLITUDE_VALUE;
-import static controller.Configuration.PATIENT_DATA;
-import static controller.Configuration.RESPONSE;
-import static controller.Configuration.SESSION_XML;
-import static controller.Configuration.TMS_TRIGGER;
-import static controller.Configuration.TRIGGER_DATA;
-import static controller.Configuration.VALUE;
-
+import static controller.Configuration.*;
+import java.util.function.Function;
 import java.io.File;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
@@ -21,16 +12,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 public class TriggerMarkers {
-
-	
-	private ArrayList<Response> responses;
-	
-	// cesta do slozky TMS
+	private final ArrayList<Response> responses = new ArrayList<>();
+	public TriggerMarkers() {
+		this(ImagePanelModel.tmsPath);
+	}
+	public ArrayList<Response> getResponses(){
+		return responses;
+	}
 	public TriggerMarkers(String path) {
-		this.responses = new ArrayList<Response>();
-		
 		if(!path.endsWith(File.separator)) {
 			path += File.separator;
 		}
@@ -39,42 +29,55 @@ public class TriggerMarkers {
 		String triggerMarkerXml = triggerDataXml.substring(0, triggerDataXml.indexOf(TRIGGER_DATA)) + getTriggerMarkerXmlPath(triggerDataXml);
 		loadResponses(triggerMarkerXml);
 	}
-	
-	private void loadResponses(String triggerMarkerXml) {
-		Document doc = initDocument(triggerMarkerXml);
-		XPath xpath = XPathFactory.newInstance().newXPath();	
-		try{
-			NodeList list = (NodeList)xpath.evaluate(
-				"/TriggerMarkerList/TriggerMarker/ResponseValues/Value[starts-with(@key,\"amplitude\")]/@response",
-				doc.getDocumentElement(),
-				XPathConstants.NODESET
-			);
-			for(int a=0; a<list.getLength(); a++) {
-				Node el = (Node)list.item(a);
-				double amp = Double.valueOf(el.getTextContent());
-				this.responses.add(new Response(amp));
+	private String forEach(String doc,String tagName,Function<Node,String> func){
+		Document dc = initDocument(doc);
+		NodeList list = dc.getElementsByTagName(tagName);
+		return forEach(func,list);
+	}
+	private String forEach(Node node,String tagName,Function<Node,String> func){
+		NodeList list = ((Element)node).getElementsByTagName(tagName);
+		return forEach(func,list);
+	}
+	private String forEach(Function<Node,String> func,NodeList list){
+		for(int a=0; a<list.getLength(); a++){
+			Node node = list.item(a);
+			String ret = func.apply(node);
+			if (ret!=null){
+				return ret;
 			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
+		return null;
 	}
-
-	public TriggerMarkers() {
-		this(ImagePanelModel.tmsPath);
+	private void loadResponses(String triggerMarkerXml) {
+		forEach(triggerMarkerXml,TRIGGER_MARKER,(n1)->{
+			Response res = new Response();
+			forEach(n1,MATRIX,(n2)->{
+				for(int a=0,c=0; a<4; a++){
+					for(int b=0; b<4; b++, c++){
+						res.getMatrix()[c] = Double.valueOf(n2.getAttributes().getNamedItem("data"+a+b).getTextContent());
+					}
+				}
+				return null;
+			});
+			forEach(n1,VALUE,(n2)->{
+				res.getData().put(n2.getAttributes().getNamedItem(KEY).getTextContent(),Double.valueOf(n2.getAttributes().getNamedItem(RESPONSE).getTextContent()));
+				return null;
+			});
+			responses.add(res);
+			return null;
+		});
 	}
-	
 	private String getTriggerMarkerXmlPath(String path) {
 		Document doc = initDocument(path);
 		NodeList list = doc.getElementsByTagName(FILE_REF_PATH);
-		
 		for(int i = 0 ; i < list.getLength() ; i++) {
 			Node node = list.item(i);
 			if (node.getNodeType() == node.ELEMENT_NODE) {
-	            Element el = (Element) node;
-	            if(el.getTextContent().contains("_Coil0_")) {
-	            	return el.getTextContent();
-	            }
-	        }
+			    Element el = (Element) node;
+			    if(el.getTextContent().contains("_Coil0_")) {
+				return el.getTextContent();
+			    }
+			}
 		}
 		return null;
 	}
@@ -86,11 +89,11 @@ public class TriggerMarkers {
 		for(int i = 0 ; i < list.getLength() ; i++) {
 			Node node = list.item(i);
 			if (node.getNodeType() == node.ELEMENT_NODE) {
-	            Element el = (Element) node;
-	            if(el.getTextContent().contains(TMS_TRIGGER)) {
-	            	return el.getTextContent();
-	            }
-	        }
+			    Element el = (Element) node;
+			    if(el.getTextContent().contains(TMS_TRIGGER)) {
+				return el.getTextContent();
+			    }
+			}
 		}
 		return null;
 	}
@@ -101,8 +104,8 @@ public class TriggerMarkers {
 		Node node = doc.getElementsByTagName(FILE_REF_PATH).item(0);
 		
 		if (node.getNodeType() == node.ELEMENT_NODE) {
-            Element el = (Element) node;
-            return el.getTextContent();
+		    Element el = (Element) node;
+		    return el.getTextContent();
 		}
 		return null;
 	}
@@ -110,44 +113,15 @@ public class TriggerMarkers {
 	private Document initDocument(String path) {
 		try {
 			File inputFile = new File(path);
-	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	        Document doc = dBuilder.parse(inputFile);
-	        doc.getDocumentElement().normalize();
-	        return doc;
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
+			return doc;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public double getMaxValue() {
-		
-		double max = Double.MIN_VALUE;
-		
-		if(responses != null) {
-			if(responses.size() != 0) {
-				for (Response response : responses) {
-					if(response.getAmplitude() > max)
-						max = response.getAmplitude();
-				}
-			}
-		}
-		return max;
-	}
-	
-	public double getMinValue() {
-		
-		double min = Double.MAX_VALUE;
-		
-		if(responses != null) {
-			if(responses.size() != 0) {
-				for (Response response : responses) {
-					if(response.getAmplitude() < min)
-						min = response.getAmplitude();
-				}
-			}
-		}
-		return min;
-	}
 }
