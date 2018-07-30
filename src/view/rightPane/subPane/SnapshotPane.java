@@ -80,7 +80,7 @@ public class SnapshotPane extends JPanel {
 		this.panel.add(this.slider, gbc_slider);
 		this.slider.addChangeListener(controller);
 		this.slider.addMouseWheelListener(controller);
-		this.slider.setMaximum(255);
+		this.slider.setMaximum(1000);
 		
 		this.lblValue = new JLabel(this.getSlider().getValue()+ "");
 		GridBagConstraints gbc_label = new GridBagConstraints();

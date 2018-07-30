@@ -16,6 +16,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ImagePanel extends JPanel{
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
+		AffineTransform at = g2.getTransform();
 
 		ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 
@@ -60,14 +62,15 @@ public class ImagePanel extends JPanel{
 				if(model.getActualSnapshot() != -1){
 
 					try {
-						DICOM dcm = model.getMriDicom().get(model.getActualSnapshot());
-						BufferedImage img = dcm.getBufferedImage();
-
-
-						String pixSpaceRet = getTagValue(dcm, DicomTags.PIXEL_SPACING); 
-						
-						Configuration.pixelSpace = stringToDouble(pixSpaceRet.substring(0, pixSpaceRet.indexOf("\\")));
-						Configuration.sliceThickness = stringToDouble(getTagValue(dcm, DicomTags.SLICE_THICKNESS));
+						BufferedImage img = model.getActualImage();
+						if(model.isDicom()){
+							DICOM dcm = model.getMriDicom().get(model.getActualSnapshot());
+							String pixSpaceRet = getTagValue(dcm, DicomTags.PIXEL_SPACING); 
+							Configuration.pixelSpace = stringToDouble(pixSpaceRet.substring(0, pixSpaceRet.indexOf("\\")));
+							Configuration.sliceThickness = stringToDouble(getTagValue(dcm, DicomTags.SLICE_THICKNESS));
+						}else{
+							img = new BufferedImage(img.getColorModel(),img.copyData(null),img.getColorModel().isAlphaPremultiplied(),null);
+						}
 
 						//Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
 						//druhy parametr kontrast... 
@@ -93,7 +96,10 @@ public class ImagePanel extends JPanel{
 						//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 
+						g2.translate(0,this.getHeight());
+						g2.scale(1,-1);
 						g2.drawImage(img, this.x_offset, this.y_offset, this.img_width, this.img_height , null);
+						g2.setTransform(at);
 
 						int groupIndex = 0;
 						int rowHeight = 16;
@@ -108,17 +114,34 @@ public class ImagePanel extends JPanel{
 								
 								g2.setColor(group.getLayerColor());
 
+								g2.translate(0,this.getHeight());
+								g2.scale(1,-1);
 								drawPoints(g2, pointsInLayer);
+								g2.setTransform(at);
 
 								//vytvoreni obalky, musi obsahovat minimalne 3 body
 								if(pointsInLayer.size() >=3){
 									if(! (group.getName().equals(Configuration.UNASSIGN_GROUP) || group.getName().equals(Configuration.IGNORE_GROUP))){
 
+										g2.translate(0,this.getHeight());
+										g2.scale(1,-1);
 										ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(pointsInLayer);
 										drawPoints(g2, hullPoint);
 										drawConvexCover(g2, hullPoint);
 										group.setArea(model.getActualSnapshot(), hullPoint);
-										drawAreaLabel(g2, hullPoint, group.getArea(model.getActualSnapshot()));
+										double maxX = hullPoint.get(0).getCenterX();
+										double maxY = hullPoint.get(0).getCenterY();
+										for (MyPoint myPoint : hullPoint) {
+											if(maxX < myPoint.getCenterX())
+												maxX = myPoint.getCenterX();
+											if(maxY < myPoint.getCenterY())
+												maxY = myPoint.getCenterY();
+										}
+										g2.setTransform(at);
+										g2.setFont(new Font("TimesRoman", Font.PLAIN, 15));
+										g2.drawString(String.format("%.2f mm\u00b2", group.getArea(model.getActualSnapshot())), 
+												(int) ((maxX + 10) * ratio + this.x_offset), 
+												(int) (this.getHeight() - (maxY + 10) * ratio - this.y_offset));
 									}
 								}
 								
@@ -131,40 +154,26 @@ public class ImagePanel extends JPanel{
 								if(group.getPoints().size() >=3){
 									if(! (group.getName().equals(Configuration.UNASSIGN_GROUP) || group.getName().equals(Configuration.IGNORE_GROUP))){
 
+										g2.translate(0,this.getHeight());
+										g2.scale(1,-1);
 										ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(pointsInGroup);
 										drawConvexCover(g2, hullPoint);
 									
+										g2.setTransform(at);
 										g2.setFont(new Font("TimesRoman", Font.PLAIN, 15));
 										g2.drawString(String.format("%s: %.2f mm\u00B2", group.getName(), group.computeArea(hullPoint)), 
 												(int) (x_offset + rowSpace * ratio), 
-												(int) (y_offset + ((rowSpace + rowHeight)  * (groupIndex+1)) * ratio));
+												this.getHeight() - (int)(y_offset + ((rowSpace + rowHeight)  * (groupIndex+1)) * ratio));
 										groupIndex++;
 									}
 								}
 							}
 						}
-					} catch (IndexOutOfBoundsException e) {
-						// TODO: handle exception
-					}
+					} catch (IndexOutOfBoundsException e) { e.printStackTrace();}
+					g2.setTransform(at);
 				}
 			}
 		}
-	}
-
-	private void drawAreaLabel(Graphics2D g2, ArrayList<MyPoint> points, double area) {
-		double maxX = points.get(0).getCenterX();
-		double maxY = points.get(0).getCenterY();
-		for (MyPoint myPoint : points) {
-			if(maxX < myPoint.getCenterX())
-				maxX = myPoint.getCenterX();
-			if(maxY < myPoint.getCenterY())
-				maxY = myPoint.getCenterY();
-		}
-
-		g2.setFont(new Font("TimesRoman", Font.PLAIN, 15));
-		g2.drawString(String.format("%.2f mm\u00b2", area), 
-				(int) ((maxX + 10) * ratio + this.x_offset), 
-				(int) ((maxY + 10) * ratio + this.y_offset));
 	}
 
 	private void drawConvexCover(Graphics2D g2, ArrayList<MyPoint> Points) {
@@ -186,7 +195,7 @@ public class ImagePanel extends JPanel{
 		}
 	}
 
-	public void saveImages() {
+	public void saveImages() throws NullPointerException {
 		BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		File folderPath = UtilityClass.chooseSaveLocation();
 		ImagePaneController ipc = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
@@ -203,7 +212,7 @@ public class ImagePanel extends JPanel{
 
 			System.out.println("panel saved as image");
 		} catch(NullPointerException npe){
-			throw new NullPointerException();
+			throw npe;
 		} catch (Exception e) {
 			System.out.println("panel not saved" + e.getMessage());
 		}

@@ -128,6 +128,11 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	public void mouseClicked(MouseEvent e) {
 		//		System.out.println("click: " + this.view.getPaneInfo() + ";; X: " + (e.getX() - this.view.getX_offset()) + 
 		//				", Y: " + (e.getY() - this.view.getY_offset()));
+		if(e.getButton() == MouseEvent.BUTTON3){
+			this.getModel().setType((this.getModel().getType()+1)%this.getModel().getTypes());
+			MainWindow.getController(Controllers.SNAPSHOT_PANE_CTRL).notifyController();
+			this.view.repaint();
+		}
 		if(this.getModel().getActualSnapshot() != -1){
 
 			if(this.getModel().getGroups() != null){
@@ -136,9 +141,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 					for (GroupModel group : this.getModel().getGroups()) {
 						for(MyPoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
 							if(point.contains((e.getX() - this.view.getX_offset())/this.view.getRatio(), 
-									(e.getY() - this.view.getY_offset())/this.view.getRatio())){
-								//TODO dodelat interakci
-								System.out.println("interakce");
+									(this.view.getHeight() - e.getY() + this.view.getY_offset())/this.view.getRatio())){
 								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
 								if(active!=null) {
 									active.setActive(false);

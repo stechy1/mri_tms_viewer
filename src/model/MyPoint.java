@@ -32,7 +32,8 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 			this.height = height;
 			this.widht = width;
 		}
-		
+		this.x-=height/2;
+		this.y-=width/2;	
 		if(this.height < minSize) this.height = minSize;
 		if(this.widht < minSize) this.widht = minSize;
 	}
@@ -85,7 +86,11 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 
 	@Override
 	public double getX() {
-		return x;
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_X): return y;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_X): return y;
+			default: return x;
+		}
 	}
 	
 	public void setX(double x) {
@@ -94,7 +99,11 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 
 	@Override
 	public double getY() {
-		return y;
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_Z): return y;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_Z): return y;
+			default: return z;
+		}
 	}
 	
 	public void setY(double y) {
@@ -106,7 +115,21 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 	}
 	
 	public double getZ() {
-		return z;
+		/*double a;
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_X): a=x;break;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_X): a=x;break;
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_Y): a=y;break;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_Y): a=y;break;
+			default: a=z;
+		}*/
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_X): return x;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_X): return x;
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_Y): return y;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_Y): return y;
+			default: return z;
+		}
 	}
 	
 	public T getPixelValue() {

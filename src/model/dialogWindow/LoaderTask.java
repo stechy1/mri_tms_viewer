@@ -6,6 +6,7 @@ import controller.Configuration;
 import controller.UtilityClass;
 import enums.Controllers;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import model.TriggerMarkers;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import javax.swing.JFrame;
+import java.util.List;
 public class LoaderTask extends SwingWorker<Void,Integer>{
 	private File folder;
 	private ImagePanelModel model;
@@ -153,12 +155,13 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		}
 		AssignAmplitudesToPoints(group.getPoints());*/
 		TriggerMarkers markers = new TriggerMarkers();
-		int[] coords = new int[3];
+		double[] coords = new double[4];
 		for(Response r: markers.getResponses()){
-			r.calculateCoords(coords);
-			System.out.println(r+" -> "+java.util.Arrays.toString(coords));
-			MyPoint<Response> point = new MyPoint<>(coords[0],coords[1],1,r);
-			point.setZ(coords[2]);
+			MyDicom dicom = this.model.getMriDicom().get(this.model.getActualSnapshot());
+			//MyDicom dicom = this.model.getTmsDicom().get(this.model.getActualSnapshot()); //TODO
+			r.calculateCoords(dicom,coords);
+			MyPoint<Response> point = new MyPoint<>((int)coords[0],(int)coords[1],1,r);
+			point.setZ((int)coords[2]);
 			point.setGroup(group);
 			group.getPoints().add(point);
 		}
@@ -242,8 +245,56 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			}
 			Collections.sort(this.model.getMriDicom());
 			this.model.setActualSnapshot(0);
+			try{
+				constructSides();
+			}catch(Exception e){e.printStackTrace();}
 			ipc.notifyController();
 		}
+	}
+	public void constructSides(){
+		constructSides(this.model.getTmsDicom());
+		this.model.setAcrossXTms(this.model.getAcrossXMri());
+		this.model.setAcrossYTms(this.model.getAcrossYMri());
+		constructSides(this.model.getMriDicom());
+	}
+	public void constructSides(List<MyDicom> from){
+		BufferedImage active = from.get(0).getBufferedImage();
+		int X = active.getWidth(null);
+		int Y = active.getHeight(null);
+		int Z = this.model.getMriDicom().size();
+		BufferedImage[] across_x = new BufferedImage[X];
+		BufferedImage[] across_y = new BufferedImage[Y];
+		byte[][] active_buffers = new byte[Z][];
+		for(int z=0; z<Z; z++){
+			active_buffers[z] = getRaster(from.get(z).getBufferedImage());
+		}
+		for(int x=0; x<X; x++){
+			across_x[x] = new BufferedImage(Y,Z,active.getType());
+			byte[] new_buffer = getRaster(across_x[x]);
+			for(int z=0; z<Z; z++){
+				int move_zY = z*Y;
+				for(int y=0; y<Y; y++){
+					int move_yX = y*X;
+					new_buffer[y+move_zY] = active_buffers[z][x+move_yX];
+				}
+			}
+		}
+		for(int y=0; y<Y; y++){
+			across_y[y] = new BufferedImage(X,Z,active.getType());
+			byte[] new_buffer = getRaster(across_y[y]);	
+			int move_yX = y*X;
+			for(int z=0; z<Z; z++){
+				int move_zX = z*X;
+				for(int x=0; x<X; x++){
+					new_buffer[x+move_zX] = active_buffers[z][x+move_yX];
+				}
+			}
+		}
+		this.model.setAcrossXMri(across_x);
+		this.model.setAcrossYMri(across_y);	
+	}
+	public static byte[] getRaster(BufferedImage buf){
+		return ((DataBufferByte)buf.getRaster().getDataBuffer()).getData();
 	}
 	public void loadTmsFiles(){
 		if(folder != null){

@@ -3,10 +3,13 @@ package model;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Arrays;
+import java.lang.reflect.Array;
+
+import ij.util.DicomTools;
 public class Response{
-	private final double[] matrix=new double[16];
+	private final Matrix4x4 matrix = new Matrix4x4();
 	private final Map<String,Double> data=new HashMap<>();
-	public double[] getMatrix(){
+	public Matrix4x4 getMatrix(){
 		return matrix;
 	}
 	public Map<String,Double> getData(){
@@ -14,71 +17,47 @@ public class Response{
 	}
 	@Override
 	public String toString(){
-		return super.toString()+": ["+Arrays.toString(matrix)+"] = "+data.toString();
+		return super.toString()+": "+matrix+" = "+data.toString();
 	}
-	public void calculateCoords(int[] img_coords){
-		inverseMatrix();
-		//TODO
-		img_coords[0] = (int)matrix[3];
-		img_coords[1] = (int)matrix[7];
-		img_coords[2] = (int)matrix[11];
+	public static Matrix4x4 getMriMatrix(MyDicom mridicom){
+		String pixel_spacing[] = DicomTools.getTag(mridicom,"0028,0030").split("\\\\");
+		String image_orientation[] = DicomTools.getTag(mridicom,"0020,0037").split("\\\\");
+		String image_position[] = DicomTools.getTag(mridicom,"0020,0032").split("\\\\");
+		String slice_thickness[] = DicomTools.getTag(mridicom,"0018,0050").split("\\\\");
+		double[] img_pos = Arrays.stream(image_position)   .mapToDouble(Double::parseDouble).toArray();
+		double[] img_ori = Arrays.stream(image_orientation).mapToDouble(Double::parseDouble).toArray();
+		double[] pxl_spc = Arrays.stream(pixel_spacing)    .mapToDouble(Double::parseDouble).toArray();
+		double[] slc_thk = Arrays.stream(slice_thickness)  .mapToDouble(Double::parseDouble).toArray();
+		Matrix4x4 mri = new Matrix4x4();
+		mri.getData()[0]=pxl_spc[1]*img_ori[0];
+		mri.getData()[1]=pxl_spc[0]*img_ori[3];
+		mri.getData()[2]=(img_ori[5]*img_ori[1]-img_ori[4]*img_ori[2])*slc_thk[0];
+		mri.getData()[3]=img_pos[0];
+
+		mri.getData()[4]=pxl_spc[1]*img_ori[1];
+		mri.getData()[5]=pxl_spc[0]*img_ori[4];
+		mri.getData()[6]=(img_ori[3]*img_ori[2]-img_ori[5]*img_ori[0])*slc_thk[0];
+		mri.getData()[7]=img_pos[1];
+
+		mri.getData()[8]=pxl_spc[1]*img_ori[2];
+		mri.getData()[9]=pxl_spc[0]*img_ori[5];
+		mri.getData()[10]=(img_ori[4]*img_ori[0]-img_ori[3]*img_ori[1])*slc_thk[0];
+		mri.getData()[11]=img_pos[2];
+
+		mri.getData()[15]=1;
+		return mri;
 	}
-	private void inverseMatrix(){
-		double[] x=new double[35];
-		x[0]=matrix[10]*matrix[15]-matrix[11]*matrix[14];
-		x[1]=matrix[9]*matrix[15]-matrix[11]*matrix[13];
-		x[2]=matrix[9]*matrix[14]-matrix[10]*matrix[13];
-		x[3]=matrix[8]*matrix[15]-matrix[11]*matrix[12];
-		x[4]=matrix[8]*matrix[14]-matrix[10]*matrix[12];
-		x[5]=matrix[8]*matrix[13]-matrix[9]*matrix[12];
-		x[6]=matrix[6]*matrix[15]-matrix[7]*matrix[14];
-		x[7]=matrix[5]*matrix[15]-matrix[7]*matrix[13];
-		x[8]=matrix[5]*matrix[14]-matrix[6]*matrix[13];
-		x[9]=matrix[6]*matrix[11]-matrix[7]*matrix[10];
-		x[10]=matrix[5]*matrix[11]-matrix[7]*matrix[9];
-		x[11]=matrix[5]*matrix[10]-matrix[6]*matrix[9];
-		x[12]=matrix[4]*matrix[15]-matrix[7]*matrix[12];
-		x[13]=matrix[4]*matrix[14]-matrix[6]*matrix[12];
-		x[14]=matrix[4]*matrix[11]-matrix[7]*matrix[8];
-		x[15]=matrix[4]*matrix[10]-matrix[6]*matrix[8];
-		x[16]=matrix[4]*matrix[13]-matrix[5]*matrix[12];
-		x[16]=matrix[4]*matrix[9]-matrix[5]*matrix[8];
-		x[18]=matrix[0]*(matrix[5]*x[0]-matrix[6]*x[1]+matrix[7]*x[2])-
-			matrix[1]*(matrix[4]*x[0]-matrix[6]*x[3]+matrix[7]*x[4])+
-			matrix[2]*(matrix[4]*x[1]-matrix[5]*x[3]+matrix[7]*x[5])-
-			matrix[3]*(matrix[4]*x[2]-matrix[5]*x[4]+matrix[6]*x[5]);
-		x[18]=1/x[18];
-		x[19]=x[18]*(matrix[5]*x[0]-matrix[6]*x[1]+matrix[7]*x[2]);
-		x[20]=x[18]*-(matrix[1]*x[0]-matrix[2]*x[1]+matrix[3]*x[2]);
-		x[21]=x[18]*(matrix[1]*x[6]-matrix[2]*x[7]+matrix[3]*x[8]);
-		x[22]=x[18]*-(matrix[1]*x[9]-matrix[2]*x[10]+matrix[3]*x[11]);
-		x[23]=x[18]*-(matrix[4]*x[0]-matrix[6]*x[3]+matrix[7]*x[4]);
-		x[24]=x[18]*(matrix[0]*x[0]-matrix[2]*x[3]+matrix[3]*x[4]);
-		x[25]=x[18]*-(matrix[0]*x[6]-matrix[2]*x[12]+matrix[3]*x[13]);
-		x[26]=x[18]*(matrix[0]*x[9]-matrix[2]*x[14]+matrix[3]*x[15]);
-		x[27]=x[18]*(matrix[4]*x[1]-matrix[5]*x[3]+matrix[7]*x[5]);
-		x[28]=x[18]*-(matrix[0]*x[1]-matrix[1]*x[3]+matrix[3]*x[5]);
-		x[29]=x[18]*(matrix[0]*x[7]-matrix[1]*x[12]+matrix[3]*x[16]);
-		x[30]=x[18]*-(matrix[0]*x[10]-matrix[1]*x[14]+matrix[3]*x[16]);
-		x[31]=x[18]*-(matrix[4]*x[2]-matrix[5]*x[4]+matrix[6]*x[5]);
-		x[32]=x[18]*(matrix[0]*x[2]-matrix[1]*x[4]+matrix[2]*x[5]);
-		x[33]=x[18]*-(matrix[0]*x[8]-matrix[1]*x[13]+matrix[2]*x[16]);
-		x[34]=x[18]*(matrix[0]*x[11]-matrix[1]*x[15]+matrix[2]*x[16]);
-		matrix[0]=x[19];
-		matrix[1]=x[20];
-		matrix[2]=x[21];
-		matrix[3]=x[22];
-		matrix[4]=x[23];
-		matrix[5]=x[24];
-		matrix[6]=x[25];
-		matrix[7]=x[26];
-		matrix[8]=x[27];
-		matrix[9]=x[28];
-		matrix[10]=x[29];
-		matrix[11]=x[30];
-		matrix[12]=x[31];
-		matrix[13]=x[32];
-		matrix[14]=x[33];
-		matrix[15]=x[34];
+	public void calculateCoords(MyDicom mridicom,double[] img_coords){
+		Matrix4x4 mri = getMriMatrix(mridicom);
+		Matrix4x4 inv = mri.inverse();
+		double[] vec = {matrix.getData()[3],matrix.getData()[7],matrix.getData()[11],matrix.getData()[15]};
+		inv.multiply_by_vector(vec,img_coords);
+		/*Matrix4x4 conv = inv.multiply(matrix);
+		img_coords[0] = conv.getData()[3]/conv.getData()[15];
+		img_coords[1] = conv.getData()[7]/conv.getData()[15];
+		img_coords[2] = conv.getData()[11]/conv.getData()[15];*/
+		//System.out.println(mri+"->\n"+inv+"*\n"+matrix+"=\n"+conv);
+		//System.out.println(img_coords[0]+","+img_coords[1]+","+img_coords[2]);
+		//System.out.println(matrix.getData()[3]+","+matrix.getData()[7]+","+matrix.getData()[11]);
 	}
 }

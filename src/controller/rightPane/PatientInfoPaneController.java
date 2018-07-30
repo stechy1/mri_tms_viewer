@@ -53,7 +53,9 @@ public class PatientInfoPaneController implements IController {
 	public Object getModel() {
 		ImagePanelModel ipm = (ImagePanelModel) MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
 		if(ipm != null){
-			return ipm.getMriDicom().get(ipm.getActualSnapshot());
+			if(ipm.isDicom()){
+				return ipm.getMriDicom().get(ipm.getActualSnapshot());
+			}
 		}
 		return null;
 	}

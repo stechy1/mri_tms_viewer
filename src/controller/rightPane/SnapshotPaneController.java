@@ -31,6 +31,7 @@ public class SnapshotPaneController implements IController, ChangeListener, Mous
 	public void notifyController() {
 		ImagePanelModel ipm = (ImagePanelModel) MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
 		this.view.getSlider().setValue(ipm.getActualSnapshot());
+		this.view.getSlider().setMaximum(ipm.getNumberOfImages());
 		this.view.getLblValue().setText(ipm.getActualSnapshot() + "");
 	}
 

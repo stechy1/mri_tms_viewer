@@ -54,7 +54,7 @@ public class TriggerMarkers {
 			forEach(n1,MATRIX,(n2)->{
 				for(int a=0,c=0; a<4; a++){
 					for(int b=0; b<4; b++, c++){
-						res.getMatrix()[c] = Double.valueOf(n2.getAttributes().getNamedItem("data"+a+b).getTextContent());
+						res.getMatrix().getData()[c] = Double.valueOf(n2.getAttributes().getNamedItem("data"+a+b).getTextContent());
 					}
 				}
 				return null;

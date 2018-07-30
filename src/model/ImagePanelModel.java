@@ -8,22 +8,34 @@ import java.util.Random;
 import controller.Configuration;
 import enums.Controllers;
 import model.dialogWindow.group.GroupModel;
+import java.awt.image.BufferedImage;
 import view.MainWindow;
 
 public class ImagePanelModel {
 
+	public static final int AXIS_Z = 0;
+	public static final int AXIS_X = 1;
+	public static final int AXIS_Y = 2;
+
+	public static final int DICOM = 0;
+	public static final int TMS = 3;
 	private List<MyDicom> mriDicom;
 	private List<MyDicom> tmsDicom;
 	
 	//private ArrayList<ArrayList<MyPoint>> points; 
 	private ArrayList<GroupModel> groups;
+	private BufferedImage[] across_x_mri;
+	private BufferedImage[] across_y_mri;
+	private BufferedImage[] across_x_tms;
+	private BufferedImage[] across_y_tms;
 	
 	
 	public static String mriPath;
 	public static String tmsPath;
 	
-
-	private int actualSnapshot=-1;
+	private static int type = 0;
+	private static int[] remember = new int[6];
+	private static int actualSnapshot=-1;
 	
 	//Hodnoty jsou v procentech a nasledne prepocteny
 	private int brightness = 50;
@@ -46,7 +58,75 @@ public class ImagePanelModel {
 	public List<MyDicom> getMriDicom() {
 		return mriDicom;
 	}
-	
+
+	public boolean isDicom(){
+		return (type == DICOM + AXIS_Z) || (type == TMS + AXIS_Z);
+	}
+	public BufferedImage getActualImage() {
+		switch(type){
+			case DICOM + AXIS_Z: return mriDicom.get(actualSnapshot).getBufferedImage();
+			case DICOM + AXIS_X: return across_x_mri[actualSnapshot];
+			case DICOM + AXIS_Y: return across_y_mri[actualSnapshot];
+			case TMS   + AXIS_Z: return tmsDicom.get(actualSnapshot).getBufferedImage();
+			case TMS   + AXIS_X: return across_x_tms[actualSnapshot];
+			case TMS   + AXIS_Y: return across_y_tms[actualSnapshot];
+			default: return null;
+		}
+	}
+	public int getNumberOfImages(){
+		switch(type){
+			case DICOM + AXIS_Z: return mriDicom.size();
+			case DICOM + AXIS_X: return across_x_mri.length;
+			case DICOM + AXIS_Y: return across_y_mri.length;
+			case TMS   + AXIS_Z: return tmsDicom.size();
+			case TMS   + AXIS_X: return across_x_tms.length;
+			case TMS   + AXIS_Y: return across_y_tms.length;
+			default: return 0;
+		}
+	}
+	public static void setType(int c_type){
+		remember[type]=actualSnapshot;
+		type = c_type;
+		actualSnapshot=remember[type];
+	}
+	public static int getType(){
+		return type;
+	}
+	public static int getTypes(){
+		return remember.length;
+	}
+	public void setAcrossXMri(BufferedImage[] across_x_mri){
+		this.across_x_mri = across_x_mri;
+	}	
+
+	public void setAcrossYMri(BufferedImage[] across_y_mri){
+		this.across_y_mri = across_y_mri;
+	}	
+
+	public BufferedImage[] getAcrossXMri(){
+		return across_x_mri;
+	}
+
+	public BufferedImage[] getAcrossYMri(){
+		return across_y_mri;
+	}
+
+	public void setAcrossXTms(BufferedImage[] across_x_tms){
+		this.across_x_tms = across_x_tms;
+	}	
+
+	public void setAcrossYTms(BufferedImage[] across_y_tms){
+		this.across_y_tms = across_y_tms;
+	}	
+
+	public BufferedImage[] getAcrossXTms(){
+		return across_x_tms;
+	}
+
+	public BufferedImage[] getAcrossYTms(){
+		return across_y_tms;
+	}
+
 	public void initMriDicomList(){
 		this.mriDicom = new ArrayList<MyDicom>();
 		mriPath = null;
@@ -81,20 +161,17 @@ public class ImagePanelModel {
 		return contrast;
 	}
 	
-
 	public void setActualSnapshot(int actualSnapshot) {
 		if(this.mriDicom != null){
 			if(this.mriDicom.size() != 0){
+				int num = getNumberOfImages();
 				if(actualSnapshot <= 0){
 					this.actualSnapshot = 0;
-				}
-				else if(actualSnapshot >= this.mriDicom.size()){
-					this.actualSnapshot = this.mriDicom.size()-1;
-				}
-				else{
+				}else if(actualSnapshot >= num){
+					this.actualSnapshot = num-1;
+				}else{
 					this.actualSnapshot = actualSnapshot;
 				}
-				
 				MainWindow.getController(Controllers.IMAGE_PANE_CTRL).notifyController();
 				MainWindow.getController(Controllers.SNAPSHOT_PANE_CTRL).notifyController();
 				MainWindow.getController(Controllers.PATIENT_INFO_PANE_CTRL).notifyController();
