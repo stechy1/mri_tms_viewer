@@ -16,6 +16,7 @@ import controller.dialogWindow.group.OptionsWindowController;
 import exceptions.NotYetImplementedException;
 import view.MainWindow;
 import view.dialogWindow.options.groups.GroupsOptionPane;
+import view.dialogWindow.options.groups.OptionPane;
 
 public class OptionsWindow extends JFrame{
 
@@ -24,6 +25,7 @@ public class OptionsWindow extends JFrame{
 	private JPanel controlPane;
 	private JButton btnClose;
 	private GroupsOptionPane groupsOptionPane;
+	private OptionPane optionPane;
 
 	
 	/**
@@ -62,7 +64,9 @@ public class OptionsWindow extends JFrame{
 		this.contentPane.add(this.tabbedPane, gbc_tabbedPane);
 		
 		this.groupsOptionPane = new GroupsOptionPane();
+		this.optionPane = new OptionPane();
 		this.tabbedPane.addTab("Skupiny", null, this.groupsOptionPane, null);
+		this.tabbedPane.addTab("Dalsi nastaveni", null, this.optionPane, null);
 		
 		this.controlPane = new JPanel();
 		GridBagConstraints gbc_controlPane = new GridBagConstraints();

@@ -91,10 +91,10 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 		return x;
 	}	
 	public double getRealY(){
-		return x;
+		return y;
 	}	
 	public double getRealZ(){
-		return x;
+		return z;
 	}	
 	public void setX(double x) {
 		this.x = x;

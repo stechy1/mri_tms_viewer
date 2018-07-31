@@ -31,8 +31,10 @@ public class Configuration {
 	
 	public static String img_file_path;
 	
-	public static double pixelSpace;
-	public static double sliceThickness;
+	public static double pixelSpace = 1;
+	public static double sliceThickness = 1;
+	public static boolean drawRulers = false;
+	public static boolean showCoords = false;
 	
 	public static final String BIN_DATA = "BinData";
 	public static final String PATIENT_DATA = "PatientData.xml";

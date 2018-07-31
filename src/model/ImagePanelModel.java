@@ -9,6 +9,7 @@ import controller.Configuration;
 import enums.Controllers;
 import model.dialogWindow.group.GroupModel;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import view.MainWindow;
 
 public class ImagePanelModel {
@@ -59,6 +60,17 @@ public class ImagePanelModel {
 		return mriDicom;
 	}
 
+	public static double getXSpacing(){
+		return Configuration.pixelSpace;
+	}
+
+	public static double getYSpacing(){
+		switch(type){
+			case DICOM + AXIS_Z: return Configuration.pixelSpace;
+			case TMS   + AXIS_Z: return Configuration.pixelSpace;
+			default: return Configuration.sliceThickness;
+		}
+	}
 	public void remember(MyPoint p){
 		remember[DICOM + AXIS_X]=(int)p.getRealX();
 		remember[DICOM + AXIS_Y]=(int)p.getRealY();
@@ -258,7 +270,6 @@ public class ImagePanelModel {
 				assignPointToGroups(listOfPoint);
 			}
 		}
-		System.out.println();
 	}
 	
 	public GroupModel getGroup(String retGroup){
@@ -284,7 +295,6 @@ public class ImagePanelModel {
 					group.getPoints().clear();
 				}
 			}
-			System.out.println();
 			
 			for (MyPoint myPoint : list) {
 				double minDist = Double.MAX_VALUE;

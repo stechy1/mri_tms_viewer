@@ -1,14 +1,15 @@
 package model;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Arrays;
 import java.lang.reflect.Array;
+import controller.Configuration;
 
 import ij.util.DicomTools;
 public class Response{
 	private final Matrix4x4 matrix = new Matrix4x4();
-	private final Map<String,Double> data=new HashMap<>();
+	private final Map<String,Double> data=new TreeMap<>();
 	public Matrix4x4 getMatrix(){
 		return matrix;
 	}
@@ -59,5 +60,9 @@ public class Response{
 		//System.out.println(mri+"->\n"+inv+"*\n"+matrix+"=\n"+conv);
 		//System.out.println(img_coords[0]+","+img_coords[1]+","+img_coords[2]);
 		//System.out.println(matrix.getData()[3]+","+matrix.getData()[7]+","+matrix.getData()[11]);
+		//TODO not include in release:
+		data.put("X",img_coords[0]);
+		data.put("Y",img_coords[1]);
+		data.put("Z",img_coords[2]);
 	}
 }

@@ -15,8 +15,9 @@ public enum Controllers {
 	
 	SHOW_DICOM_TAGS_CTRL("show_dicom_tags_ctrl", 8),
 	GROUPS_OPTION_PANE_CTRL("groups_option_pane_ctrl", 9),
+	OPTION_PANE_CTRL("option_pane_ctrl", 10),
 	
-	OPTIONS_WINDOW_CTRL("options_window_ctrl", 10);
+	OPTIONS_WINDOW_CTRL("options_window_ctrl", 11);
 	
 	
 	private String title;

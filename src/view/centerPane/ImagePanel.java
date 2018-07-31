@@ -10,6 +10,7 @@ import enums.Controllers;
 import enums.DicomTags;
 import ij.plugin.DICOM;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -106,9 +107,6 @@ public class ImagePanel extends JPanel{
 						int rowSpace = 5;
 
 						for (GroupModel	group : model.getGroups()) {
-							/*for(MyPoint p: group.getPoints()){
-								System.out.println(p);
-							}*/
 							if(group.getPoints().size() != 0){
 								
 								//vykresleni bodu z vrstvy
@@ -120,6 +118,7 @@ public class ImagePanel extends JPanel{
 								g2.scale(1,-1);
 								drawPoints(g2, pointsInLayer);
 								g2.setTransform(at);
+								drawCoords(g2, pointsInLayer);
 
 								//vytvoreni obalky, musi obsahovat minimalne 3 body
 								if(pointsInLayer.size() >=3){
@@ -176,8 +175,50 @@ public class ImagePanel extends JPanel{
 				}
 			}
 		}
+		if(Configuration.drawRulers){
+			drawRulers(g2);
+		}
 	}
 
+	private void drawRulers(Graphics2D g2){
+		int[] mm_per_line = {5,10,50,100};
+		int[] line_lengths = {2,4,8,16};
+		int[] font_sizes = {0,0,8,14};
+		g2.setColor(Color.BLUE);
+		final int baseline = 12;
+		for(int a=0; a<mm_per_line.length; a++){
+			double sp = ImagePanelModel.getXSpacing();
+			double distance = mm_per_line[a]/sp*this.ratio;
+			int count = (int)(this.img_width/distance);
+			outer1:
+			for(int b=0; b<=count; b++){
+				int x = (int)(distance*b)+this.x_offset;
+				g2.setFont(new Font("TimesRoman", Font.PLAIN, font_sizes[a]));
+				g2.drawLine(x,baseline+this.y_offset,x,baseline+line_lengths[a]+this.y_offset);
+				for(int c=mm_per_line.length-1; c>a; c--){
+					if(((mm_per_line[a]*b)%mm_per_line[c])==0){
+						continue outer1;
+					}
+				}
+				g2.drawString((b*mm_per_line[a])+"",x,this.y_offset+baseline);
+			}
+			sp = ImagePanelModel.getYSpacing();
+			distance = mm_per_line[a]/sp*this.ratio;
+			count = (int)(this.img_height/distance);
+			outer2:
+			for(int b=0; b<=count; b++){
+				int y = this.img_height-(int)(distance*b)+this.y_offset;
+				g2.setFont(new Font("TimesRoman", Font.PLAIN, font_sizes[a]));
+				g2.drawLine(this.x_offset+baseline,y,line_lengths[a]+this.x_offset+baseline,y);
+				for(int c=mm_per_line.length-1; c>a; c--){
+					if(((mm_per_line[a]*b)%mm_per_line[c])==0){
+						continue outer2;
+					}
+				}
+				g2.drawString((b*mm_per_line[a])+"",this.x_offset,y);
+			}
+		}
+	}
 	private void drawConvexCover(Graphics2D g2, ArrayList<MyPoint> points) {
 		for (int i = 0; i < points.size(); i++) {
 			MyPoint p = points.get(i);
@@ -196,6 +237,17 @@ public class ImagePanel extends JPanel{
 					(int) ((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset), 
 					(int) (myPoint.getWidth()*ratio), 
 					(int) (myPoint.getHeight()*ratio));
+		}
+	}
+	private void drawCoords(Graphics2D g2, ArrayList<MyPoint> points) {
+		if(!Configuration.showCoords){
+			return;
+		}
+		g2.setColor(Color.BLACK);
+		for (MyPoint myPoint : points) {
+			g2.drawString("["+String.format("%.2f",myPoint.getX()*ImagePanelModel.getXSpacing())+";"+String.format("%.2f",myPoint.getY()*ImagePanelModel.getYSpacing())+"]",
+				(int) ((myPoint.getX()+myPoint.getWidth()/2)*ratio + this.x_offset), 
+				this.getHeight()-(int)((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset)); 
 		}
 	}
 

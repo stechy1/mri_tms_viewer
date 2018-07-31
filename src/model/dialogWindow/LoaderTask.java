@@ -246,16 +246,10 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			Collections.sort(this.model.getMriDicom());
 			this.model.setActualSnapshot(0);
 			try{
-				constructSides();
+				constructSides(this.model.getMriDicom());
 			}catch(Exception e){e.printStackTrace();}
 			ipc.notifyController();
 		}
-	}
-	public void constructSides(){
-		constructSides(this.model.getTmsDicom());
-		this.model.setAcrossXTms(this.model.getAcrossXMri());
-		this.model.setAcrossYTms(this.model.getAcrossYMri());
-		constructSides(this.model.getMriDicom());
 	}
 	public void constructSides(List<MyDicom> from){
 		BufferedImage active = from.get(0).getBufferedImage();
@@ -290,8 +284,13 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				}
 			}
 		}
-		this.model.setAcrossXMri(across_x);
-		this.model.setAcrossYMri(across_y);	
+		if(from == this.model.getMriDicom()){
+			this.model.setAcrossXMri(across_x);
+			this.model.setAcrossYMri(across_y);	
+		}else{
+			this.model.setAcrossXTms(across_x);
+			this.model.setAcrossYTms(across_y);	
+		}
 	}
 	public static byte[] getRaster(BufferedImage buf){
 		return ((DataBufferByte)buf.getRaster().getDataBuffer()).getData();
@@ -323,6 +322,9 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			else{
 				calculateTMSPoints();
 			}
+			try{
+				constructSides(this.model.getTmsDicom());
+			}catch(Exception e){e.printStackTrace();}
 			ipc.notifyController();
 		}
 	}

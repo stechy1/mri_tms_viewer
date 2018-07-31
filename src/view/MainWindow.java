@@ -151,6 +151,10 @@ public class MainWindow extends JFrame {
 					lt.linkToProgressBar(ml.getProgressBar());
 					lt.linkToJFrame(ml);
 					lt.execute();
+					//TODO hack
+					while(!lt.isDone()){
+						try{Thread.sleep(10);}catch(Exception e){}
+					}
 				}
 			}catch(Exception e){
 				e.printStackTrace();
