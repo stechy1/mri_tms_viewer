@@ -103,6 +103,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	@Override
 	public void notifyController() {
 		MainWindow.getController(Controllers.LEFT_CONTROL_PANE_CTRL).notifyController();
+		MainWindow.getController(Controllers.SNAPSHOT_PANE_CTRL).notifyController();
 		this.view.repaint();
 	}
 
@@ -116,23 +117,28 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		return Controllers.IMAGE_PANE_CTRL;
 	}
 
-
+	public void changeSide(int side){
+		this.getModel().setType(side);
+		notifyController();
+	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int steps = e.getWheelRotation();
-		this.model.setActualSnapshot(this.model.getActualSnapshot() + steps);
+		steps = steps>=0?1:-1;
+		if(e.isControlDown()){
+			int types = this.getModel().getTypes();
+			changeSide((this.getModel().getType()+steps+types)%types);
+			notifyController();
+		}else{
+			this.model.setActualSnapshot(this.model.getActualSnapshot() + steps);
+		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		//		System.out.println("click: " + this.view.getPaneInfo() + ";; X: " + (e.getX() - this.view.getX_offset()) + 
 		//				", Y: " + (e.getY() - this.view.getY_offset()));
-		if(e.getButton() == MouseEvent.BUTTON3){
-			this.getModel().setType((this.getModel().getType()+1)%this.getModel().getTypes());
-			MainWindow.getController(Controllers.SNAPSHOT_PANE_CTRL).notifyController();
-			this.view.repaint();
-		}
 		if(this.getModel().getActualSnapshot() != -1){
 
 			if(this.getModel().getGroups() != null){
@@ -140,8 +146,8 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 					for (GroupModel group : this.getModel().getGroups()) {
 						for(MyPoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
-							if(point.contains((e.getX() - this.view.getX_offset())/this.view.getRatio(), 
-									(this.view.getHeight() - e.getY() + this.view.getY_offset())/this.view.getRatio())){
+							if(point.contains((e.getX() - this.view.getX_offset())/this.view.getRatio()+point.getWidth()/2, 
+									(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio()+point.getHeight()/2)){
 								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
 								if(active!=null) {
 									active.setActive(false);
@@ -150,6 +156,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 									point.setActive(true);
 									this.active=point;
 									ctrl.setModel(point);
+									this.getModel().remember(point);
 								}else{
 									this.active=null;
 									ctrl.setModel(null);

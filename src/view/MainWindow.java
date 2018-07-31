@@ -105,14 +105,12 @@ public class MainWindow extends JFrame {
 		
 		this.imagePanel = new ImagePanel();
 		this.imagePanel.setBorder(new EmptyBorder(5, 0, 5, 0));
-		JTabbedPane jtb = new JTabbedPane();
-		jtb.addTab("Rez",this.imagePanel);
 		GridBagConstraints gbc_imagePanel = new GridBagConstraints();
 		gbc_imagePanel.insets = new Insets(0, 0, 0, 5);
 		gbc_imagePanel.fill = GridBagConstraints.BOTH;
 		gbc_imagePanel.gridx = 1;
 		gbc_imagePanel.gridy = 0;
-		this.contentPane.add(jtb, gbc_imagePanel);
+		this.contentPane.add(imagePanel, gbc_imagePanel);
 		
 		this.rightControlPanel = new RightControlPanel();
 		this.rightControlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

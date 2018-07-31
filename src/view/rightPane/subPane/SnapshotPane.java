@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -12,12 +13,17 @@ import javax.swing.border.EmptyBorder;
 
 import controller.Configuration;
 import controller.rightPane.SnapshotPaneController;
+import controller.centerPane.ImagePaneController;
+import enums.Controllers;
 import view.MainWindow;
 
 import javax.swing.SwingConstants;
 
 public class SnapshotPane extends JPanel {
 	
+	private final String[] labels = {"I->S","R->L","A->P","I->S","R->L","A->P"};
+	private final int buttons_per_line = 3;
+	private final JButton[] labels_buttons = new JButton[labels.length];
 	private JLabel lblSnapshot;
 
 	private JPanel panel;
@@ -60,13 +66,12 @@ public class SnapshotPane extends JPanel {
 		gbl_panel.columnWeights = new double[]{0.8, 0.2, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		
-		this.panel = new JPanel();
+		this.panel = new JPanel(gbl_panel);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 1;
 		
-		this.panel.setLayout(gbl_panel);
 		add(this.panel, gbc_panel);
 		
 		this.slider = new JSlider();
@@ -77,11 +82,30 @@ public class SnapshotPane extends JPanel {
 		gbc_slider.insets = new Insets(0, 0, 0, 5);
 		gbc_slider.gridx = 0;
 		gbc_slider.gridy = 0;
+		gbc_slider.gridwidth = buttons_per_line;
 		this.panel.add(this.slider, gbc_slider);
 		this.slider.addChangeListener(controller);
 		this.slider.addMouseWheelListener(controller);
 		this.slider.setMaximum(1000);
-		
+
+		GridBagConstraints gbc_sides = new GridBagConstraints();
+		gbc_sides.fill = GridBagConstraints.HORIZONTAL;
+		gbc_sides.insets = new Insets(0, 0, 0, 5);
+		gbc_sides.gridy = 1;
+		for(int x=0; x<labels.length; x++){
+			final int a=x;	
+			gbc_sides.gridy = 1+a/buttons_per_line;
+			gbc_sides.gridx = a%buttons_per_line;
+			(labels_buttons[a] = new JButton(labels[a])).addActionListener((e)->{
+				for(JButton b: labels_buttons){
+					b.setEnabled(true);
+				}
+				labels_buttons[a].setEnabled(false);
+				ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
+				ctrl.changeSide(a);
+			});
+			this.panel.add(labels_buttons[a],gbc_sides);
+		}
 		this.lblValue = new JLabel(this.getSlider().getValue()+ "");
 		GridBagConstraints gbc_label = new GridBagConstraints();
 		gbc_label.fill = GridBagConstraints.VERTICAL;

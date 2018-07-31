@@ -64,16 +64,18 @@ public class SnapshotPaneController implements IController, ChangeListener, Mous
 		
 		JSlider source = (JSlider) e.getSource();
 		
-        if (source.getValueIsAdjusting()) {
-        	ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
-        	ctrl.getModel().setActualSnapshot(this.view.getSlider().getValue());
-        }    
+		if (source.getValueIsAdjusting()) {
+			ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
+			ctrl.getModel().setActualSnapshot(this.view.getSlider().getValue());
+		}    
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		JSlider source = (JSlider) e.getSource();
+		ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 		int steps = e.getWheelRotation();
-		ImagePanelModel ipm = (ImagePanelModel) MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel(); 
+		ImagePanelModel ipm = ctrl.getModel();
 		ipm.setActualSnapshot(ipm.getActualSnapshot() + steps);
 	}
 

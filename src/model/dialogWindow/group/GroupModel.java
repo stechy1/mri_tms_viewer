@@ -173,7 +173,7 @@ public class GroupModel implements Serializable {
 	public ArrayList<MyPoint> getPointFromLayer(int layer){
 		ArrayList<MyPoint> list = new ArrayList<MyPoint>();
 		for (MyPoint myPoint : points) {
-			if(myPoint.getZ() == layer){
+			if((int)myPoint.getZ() == layer){
 				list.add(myPoint);
 			}
 		}

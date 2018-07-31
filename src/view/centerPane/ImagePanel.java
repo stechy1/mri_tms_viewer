@@ -106,8 +106,10 @@ public class ImagePanel extends JPanel{
 						int rowSpace = 5;
 
 						for (GroupModel	group : model.getGroups()) {
+							/*for(MyPoint p: group.getPoints()){
+								System.out.println(p);
+							}*/
 							if(group.getPoints().size() != 0){
-								
 								
 								//vykresleni bodu z vrstvy
 								ArrayList<MyPoint> pointsInLayer = group.getPointFromLayer(model.getActualSnapshot());
@@ -176,20 +178,22 @@ public class ImagePanel extends JPanel{
 		}
 	}
 
-	private void drawConvexCover(Graphics2D g2, ArrayList<MyPoint> Points) {
-		for (int i = 0; i < Points.size(); i++) {
+	private void drawConvexCover(Graphics2D g2, ArrayList<MyPoint> points) {
+		for (int i = 0; i < points.size(); i++) {
+			MyPoint p = points.get(i);
+			MyPoint n = points.get((i+1)%points.size());
 			g2.setStroke(new BasicStroke(3));
-			g2.drawLine((int) (Points.get(i).getCenterX() * ratio + this.x_offset), 
-					(int) (Points.get(i).getCenterY() * ratio + this.y_offset), 
-					(int) (Points.get((i+1)%Points.size()).getCenterX() * ratio + x_offset), 
-					(int) (Points.get((i+1)%Points.size()).getCenterY() * ratio + y_offset));
+			g2.drawLine((int) (p.getCenterX() * ratio + this.x_offset), 
+					(int) (p.getCenterY() * ratio + this.y_offset), 
+					(int) (n.getCenterX() * ratio + this.x_offset), 
+					(int) (n.getCenterY() * ratio + this.y_offset));
 		}
 	}
 
 	private void drawPoints(Graphics2D g2, ArrayList<MyPoint> points) {
 		for (MyPoint myPoint : points) {
-			g2.fillOval((int) (myPoint.getX()*ratio) + this.x_offset, 
-					(int) (myPoint.getY()*ratio + this.y_offset), 
+			g2.fillOval((int) ((myPoint.getX()-myPoint.getWidth()/2)*ratio + this.x_offset), 
+					(int) ((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset), 
 					(int) (myPoint.getWidth()*ratio), 
 					(int) (myPoint.getHeight()*ratio));
 		}

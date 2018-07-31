@@ -59,6 +59,15 @@ public class ImagePanelModel {
 		return mriDicom;
 	}
 
+	public void remember(MyPoint p){
+		remember[DICOM + AXIS_X]=(int)p.getRealX();
+		remember[DICOM + AXIS_Y]=(int)p.getRealY();
+		remember[DICOM + AXIS_Z]=(int)p.getRealZ();
+		remember[TMS   + AXIS_X]=(int)p.getRealX();
+		remember[TMS   + AXIS_Y]=(int)p.getRealY();
+		remember[TMS   + AXIS_Z]=(int)p.getRealZ();
+	}
+
 	public boolean isDicom(){
 		return (type == DICOM + AXIS_Z) || (type == TMS + AXIS_Z);
 	}

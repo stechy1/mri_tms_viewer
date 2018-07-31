@@ -32,8 +32,6 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 			this.height = height;
 			this.widht = width;
 		}
-		this.x-=height/2;
-		this.y-=width/2;	
 		if(this.height < minSize) this.height = minSize;
 		if(this.widht < minSize) this.widht = minSize;
 	}
@@ -56,22 +54,18 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 
 	public void setActive(boolean active){
 		if(active){
-			this.x-=widht/2;
-			this.y-=height/2;
 			this.height*=2;
 			this.widht*=2;
 		}else{
 			this.height/=2;
 			this.widht/=2;
-			this.x+=widht/2;
-			this.y+=height/2;
 		}
 	}
 
 	@Override
 	public Rectangle2D getBounds2D() {
-		return new Rectangle2D.Double(this.getX() - SELECTION_TRESSHOLD , this.getY() - SELECTION_TRESSHOLD, 
-				this.getWidth() + SELECTION_TRESSHOLD, this.getHeight() + SELECTION_TRESSHOLD);		
+		return new Rectangle2D.Double(this.getX() - this.widht/2 - SELECTION_TRESSHOLD , this.getY() - this.height/2 - SELECTION_TRESSHOLD, 
+				this.widht + 2*SELECTION_TRESSHOLD, this.height + 2*SELECTION_TRESSHOLD);		
 	}
 
 	@Override
@@ -92,7 +86,16 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 			default: return x;
 		}
 	}
-	
+
+	public double getRealX(){
+		return x;
+	}	
+	public double getRealY(){
+		return x;
+	}	
+	public double getRealZ(){
+		return x;
+	}	
 	public void setX(double x) {
 		this.x = x;
 	}
@@ -176,7 +179,7 @@ public class MyPoint<T> extends Ellipse2D implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "x: " + this.getCenterX() + ", y: " + this.getCenterY();
+		return "x: " + this.getCenterX() + ", y: " + this.getCenterY() + ", z: " + this.getZ();
 	}
 
 	public String exportPoint() {
