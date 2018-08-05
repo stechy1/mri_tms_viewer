@@ -7,8 +7,7 @@ public class DicomTag {
 	private String description;
 	private String vr;
 	private String value;
-	
-	
+
 	public DicomTag(String group, String element, String description, String vr, String value) {
 		super();
 		this.group = group;

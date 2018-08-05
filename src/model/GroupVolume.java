@@ -1,14 +1,12 @@
 package model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import controller.Configuration;
 import controller.QuickHull;
 import enums.Controllers;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 
@@ -40,7 +38,7 @@ public class GroupVolume implements Serializable {
 	}
 	
 	/** Spocteni jednotlivych ploch
-	 * @param points 
+	 * @param group
 	 */
 	public void calculateAreas(GroupModel group){
 		

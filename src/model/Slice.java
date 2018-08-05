@@ -2,9 +2,6 @@ package model;
 
 import java.io.Serializable;
 
-import enums.DicomTags;
-import ij.util.DicomTools;
-
 public class Slice implements Comparable<Slice>, Serializable {
 
 	private int index;
@@ -33,7 +30,6 @@ public class Slice implements Comparable<Slice>, Serializable {
 
 	@Override
 	public int compareTo(Slice o) {
-		
 		return Integer.compare(this.index, o.getSliceIndex());
 	}
 }

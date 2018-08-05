@@ -14,7 +14,6 @@ import view.MainWindow;
 
 public class UtilityClass {
 
-	
 	/** Methods for show notification in dialog windows and on CLI
 	 * @param text text to show
 	 * @param title title of dialog
@@ -67,14 +66,12 @@ public class UtilityClass {
 	}
 	
 	public static String getFolderName(){
-
 		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         Date date = new Date();
         return sdf.format(date);
 	}
 	
 	public static File chooseSaveLocation(){
-		
 		JFileChooser chooser = new JFileChooser();
 	    chooser.setCurrentDirectory(new File("."));
 	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

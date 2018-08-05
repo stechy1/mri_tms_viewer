@@ -10,13 +10,11 @@ import ij.util.DicomTools;
 
 public class DicomTagsTableModel extends AbstractTableModel {
 
-	
 	protected String [] columnName = {"Skupina", "Element", "Popis", "VR", "Hodnota"};
 	protected ArrayList<DicomTag> data;
 	
 	private DICOM model;
-	
-	
+
 	public DicomTagsTableModel(DICOM model) {
 		this.model = model;
 		this.setData(DicomTags.getDicomTags());

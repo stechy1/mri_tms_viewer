@@ -1,15 +1,12 @@
 package model;
 
-import java.awt.FontFormatException;
+import controller.Configuration;
+import enums.Controllers;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import controller.Configuration;
-import enums.Controllers;
 import model.dialogWindow.group.GroupModel;
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import view.MainWindow;
 
 public class ImagePanelModel {

@@ -1,25 +1,29 @@
 package model;
 
+import ij.util.DicomTools;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Arrays;
-import java.lang.reflect.Array;
-import controller.Configuration;
 
-import ij.util.DicomTools;
-public class Response{
+public class Response {
+
 	private final Matrix4x4 matrix = new Matrix4x4();
+
 	private final Map<String,Double> data=new TreeMap<>();
+
 	public Matrix4x4 getMatrix(){
 		return matrix;
 	}
+
 	public Map<String,Double> getData(){
 		return data;
 	}
+
 	@Override
 	public String toString(){
 		return super.toString()+": "+matrix+" = "+data.toString();
 	}
+
 	public static Matrix4x4 getMriMatrix(MyDicom mridicom){
 		String pixel_spacing[] = DicomTools.getTag(mridicom,"0028,0030").split("\\\\");
 		String image_orientation[] = DicomTools.getTag(mridicom,"0020,0037").split("\\\\");
@@ -48,6 +52,7 @@ public class Response{
 		mri.getData()[15]=1;
 		return mri;
 	}
+
 	public void calculateCoords(MyDicom mridicom,double[] img_coords){
 		Matrix4x4 mri = getMriMatrix(mridicom);
 		Matrix4x4 inv = mri.inverse();

@@ -12,7 +12,6 @@ import view.MainWindow;
 
 public class MainWindowController implements IController, WindowListener {
 
-	
 	private MainWindow view;
 	
 	public MainWindowController(MainWindow view) {
