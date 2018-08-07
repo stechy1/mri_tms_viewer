@@ -106,7 +106,7 @@ public class SnapshotPane extends JPanel {
 			});
 			this.panel.add(labels_buttons[a],gbc_sides);
 		}
-		this.lblValue = new JLabel(this.getSlider().getValue()+ "");
+		this.lblValue = new JLabel("0");
 		GridBagConstraints gbc_label = new GridBagConstraints();
 		gbc_label.fill = GridBagConstraints.VERTICAL;
 		gbc_label.anchor = GridBagConstraints.CENTER;

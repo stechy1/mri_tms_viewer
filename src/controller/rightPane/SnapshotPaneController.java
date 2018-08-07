@@ -32,7 +32,11 @@ public class SnapshotPaneController implements IController, ChangeListener, Mous
 		ImagePanelModel ipm = (ImagePanelModel) MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
 		this.view.getSlider().setValue(ipm.getActualSnapshot());
 		this.view.getSlider().setMaximum(ipm.getNumberOfImages());
-		this.view.getLblValue().setText(ipm.getActualSnapshot() + "");
+		if(ipm.getActualSnapshot()>=0){
+			this.view.getLblValue().setText(ipm.getActualSnapshot() + "");
+		}else{
+			this.view.getLblValue().setText("0");
+		}
 	}
 
 	@Override

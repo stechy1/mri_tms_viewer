@@ -64,43 +64,45 @@ public class ImagePanel extends JPanel{
 
 					try {
 						BufferedImage img = model.getActualImage();
-						if(model.isDicom()){
-							DICOM dcm = model.getMriDicom().get(model.getActualSnapshot());
-							String pixSpaceRet = getTagValue(dcm, DicomTags.PIXEL_SPACING); 
-							Configuration.pixelSpace = stringToDouble(pixSpaceRet.substring(0, pixSpaceRet.indexOf("\\")));
-							Configuration.sliceThickness = stringToDouble(getTagValue(dcm, DicomTags.SLICE_THICKNESS));
-						}else{
-							img = new BufferedImage(img.getColorModel(),img.copyData(null),img.getColorModel().isAlphaPremultiplied(),null);
+						if(img != null){
+							if(model.isDicom()){
+								DICOM dcm = model.getMriDicom().get(model.getActualSnapshot());
+								String pixSpaceRet = getTagValue(dcm, DicomTags.PIXEL_SPACING); 
+								Configuration.pixelSpace = stringToDouble(pixSpaceRet.substring(0, pixSpaceRet.indexOf("\\")));
+								Configuration.sliceThickness = stringToDouble(getTagValue(dcm, DicomTags.SLICE_THICKNESS));
+							}else{
+								img = new BufferedImage(img.getColorModel(),img.copyData(null),img.getColorModel().isAlphaPremultiplied(),null);
+							}
+
+							//Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
+							//druhy parametr kontrast... 
+							RescaleOp resOp = new RescaleOp(model.convertBrightness(), model.convertContrast(), null);
+
+							resOp.filter(img, img);
+
+
+							double widthRatio = (double) this.getWidth() / img.getWidth(null);
+							double heightRatio = (double) this.getHeight() / img.getHeight(null);
+
+							this.ratio = Math.min(widthRatio, heightRatio);
+
+							this.img_width = (int) (img.getWidth(null) * ratio);
+							this.img_height = (int)(img.getHeight(null) * ratio);
+
+							this.x_offset = (int)(this.getWidth()-img_width)/2;
+							this.y_offset = (int)(this.getHeight()-img_height)/2;
+
+
+							g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+							//g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+							//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+
+							g2.translate(0,this.getHeight());
+							g2.scale(1,-1);
+							g2.drawImage(img, this.x_offset, this.y_offset, this.img_width, this.img_height , null);
+							g2.setTransform(at);
 						}
-
-						//Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
-						//druhy parametr kontrast... 
-						RescaleOp resOp = new RescaleOp(model.convertBrightness(), model.convertContrast(), null);
-
-						resOp.filter(img, img);
-
-
-						double widthRatio = (double) this.getWidth() / img.getWidth(null);
-						double heightRatio = (double) this.getHeight() / img.getHeight(null);
-
-						this.ratio = Math.min(widthRatio, heightRatio);
-
-						this.img_width = (int) (img.getWidth(null) * ratio);
-						this.img_height = (int)(img.getHeight(null) * ratio);
-
-						this.x_offset = (int)(this.getWidth()-img_width)/2;
-						this.y_offset = (int)(this.getHeight()-img_height)/2;
-
-
-						g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-						//g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-						//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-						g2.translate(0,this.getHeight());
-						g2.scale(1,-1);
-						g2.drawImage(img, this.x_offset, this.y_offset, this.img_width, this.img_height , null);
-						g2.setTransform(at);
 
 						int groupIndex = 0;
 						int rowHeight = 16;

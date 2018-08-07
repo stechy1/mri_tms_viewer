@@ -47,6 +47,9 @@ public class ImagePanelModel {
 		this.mriDicom = new ArrayList<MyDicom>();
 		this.tmsDicom = new ArrayList<MyDicom>();
 		this.groups = new ArrayList<GroupModel>();
+		for(int a=0; a<remember.length; a++){
+			remember[a] = -1;
+		}
 	}
 
 	/*-------------------*
@@ -81,25 +84,35 @@ public class ImagePanelModel {
 		return (type == DICOM + AXIS_Z) || (type == TMS + AXIS_Z);
 	}
 	public BufferedImage getActualImage() {
-		switch(type){
-			case DICOM + AXIS_Z: return mriDicom.get(actualSnapshot).getBufferedImage();
-			case DICOM + AXIS_X: return across_x_mri[actualSnapshot];
-			case DICOM + AXIS_Y: return across_y_mri[actualSnapshot];
-			case TMS   + AXIS_Z: return tmsDicom.get(actualSnapshot).getBufferedImage();
-			case TMS   + AXIS_X: return across_x_tms[actualSnapshot];
-			case TMS   + AXIS_Y: return across_y_tms[actualSnapshot];
-			default: return null;
+		try{
+			switch(type){
+				case DICOM + AXIS_Z: return mriDicom.get(actualSnapshot).getBufferedImage();
+				case DICOM + AXIS_X: return across_x_mri[actualSnapshot];
+				case DICOM + AXIS_Y: return across_y_mri[actualSnapshot];
+				case TMS   + AXIS_Z: return tmsDicom.get(actualSnapshot).getBufferedImage();
+				case TMS   + AXIS_X: return across_x_tms[actualSnapshot];
+				case TMS   + AXIS_Y: return across_y_tms[actualSnapshot];
+				default: return null;
+			}
+		}catch(NullPointerException e){
+			return null;
+		}catch(IndexOutOfBoundsException e){
+			return null;
 		}
 	}
 	public int getNumberOfImages(){
-		switch(type){
-			case DICOM + AXIS_Z: return mriDicom.size();
-			case DICOM + AXIS_X: return across_x_mri.length;
-			case DICOM + AXIS_Y: return across_y_mri.length;
-			case TMS   + AXIS_Z: return tmsDicom.size();
-			case TMS   + AXIS_X: return across_x_tms.length;
-			case TMS   + AXIS_Y: return across_y_tms.length;
-			default: return 0;
+		try{
+			switch(type){
+				case DICOM + AXIS_Z: return mriDicom.size();
+				case DICOM + AXIS_X: return across_x_mri.length;
+				case DICOM + AXIS_Y: return across_y_mri.length;
+				case TMS   + AXIS_Z: return tmsDicom.size();
+				case TMS   + AXIS_X: return across_x_tms.length;
+				case TMS   + AXIS_Y: return across_y_tms.length;
+				default: return 0;
+			}
+		}catch(NullPointerException e){
+			return 0;
 		}
 	}
 	public static void setType(int c_type){
@@ -183,10 +196,11 @@ public class ImagePanelModel {
 		if(this.mriDicom != null){
 			if(this.mriDicom.size() != 0){
 				int num = getNumberOfImages();
-				if(actualSnapshot <= 0){
-					this.actualSnapshot = 0;
-				}else if(actualSnapshot >= num){
-					this.actualSnapshot = num-1;
+				if(actualSnapshot >= num){
+					actualSnapshot = num-1;
+				}
+				if(actualSnapshot < 0){
+					this.actualSnapshot = -1;
 				}else{
 					this.actualSnapshot = actualSnapshot;
 				}
