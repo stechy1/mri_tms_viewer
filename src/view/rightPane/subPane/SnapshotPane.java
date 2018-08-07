@@ -82,7 +82,7 @@ public class SnapshotPane extends JPanel {
 		gbc_slider.insets = new Insets(0, 0, 0, 5);
 		gbc_slider.gridx = 0;
 		gbc_slider.gridy = 0;
-		gbc_slider.gridwidth = buttons_per_line;
+		gbc_slider.gridwidth = buttons_per_line-1;
 		this.panel.add(this.slider, gbc_slider);
 		this.slider.addChangeListener(controller);
 		this.slider.addMouseWheelListener(controller);
@@ -109,7 +109,8 @@ public class SnapshotPane extends JPanel {
 		this.lblValue = new JLabel(this.getSlider().getValue()+ "");
 		GridBagConstraints gbc_label = new GridBagConstraints();
 		gbc_label.fill = GridBagConstraints.VERTICAL;
-		gbc_label.gridx = 1;
+		gbc_label.anchor = GridBagConstraints.CENTER;
+		gbc_label.gridx = 2;
 		gbc_label.gridy = 0;
 		this.panel.add(this.lblValue, gbc_label);
 	}
