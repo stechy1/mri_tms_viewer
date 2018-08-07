@@ -30,6 +30,7 @@ public class Configuration {
 	public static final Color IGNORE_COLOR = new Color(255, 128, 0);
 	
 	public static String img_file_path;
+	public static String folder_path = ".";
 	
 	public static double pixelSpace = 1;
 	public static double sliceThickness = 1;

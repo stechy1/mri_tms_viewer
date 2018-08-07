@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import controller.Configuration;
 
 import javax.swing.JFileChooser;
 
@@ -173,11 +174,12 @@ public class LeftControlPanelController implements IController, ActionListener {
 	
 	private File chooseDirectory(String title){
 		//TODO mozna poupravit nacitani souboru, aby to bralo jen dicomy
-		JFileChooser chooser = new JFileChooser(".");
+		JFileChooser chooser = new JFileChooser(Configuration.folder_path);
 		chooser.setDialogTitle(title);
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 			File f = chooser.getSelectedFile();
+			Configuration.folder_path = f.getAbsolutePath();
 			return f;
 		}
 		return null;
