@@ -94,7 +94,9 @@ public class LeftControlPanelController implements IController, ActionListener {
 					UtilityClass.showInfoNotification("Obrazek ulozen");
 				} catch (FileNotFoundException e) {
 					UtilityClass.showInfoNotification("Obrázek nelze uložit, protože nejsou načtena žádná data z TMS");
-						e.printStackTrace();
+					//e.printStackTrace();
+				} catch (Exception e) {
+					UtilityClass.showInfoNotification("Obrazek nebyl ulozen");
 				}
 			}
 			break;
@@ -106,8 +108,8 @@ public class LeftControlPanelController implements IController, ActionListener {
 						ipc.getView().saveImages();
 						UtilityClass.showInfoNotification("Obrazek ulozen");
 					}catch(Exception e){
-						UtilityClass.showInfoNotification("Obrázek nelze uložit");
-						e.printStackTrace();
+						UtilityClass.showInfoNotification("Obrázky nebyly uloženy");
+						//e.printStackTrace();
 					}
 				
 			}

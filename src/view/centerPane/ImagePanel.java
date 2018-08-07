@@ -258,7 +258,6 @@ public class ImagePanel extends JPanel{
 
 
 		try {
-			//TODO dodelat ukladani
 			for(int i = 0 ; i < ipc.getModel().getMriDicom().size() ; i++){
 				ipc.getModel().setActualSnapshot(i);
 				String path = folderPath.getPath() + File.separator + "img_" + ipc.getModel().getActualSnapshot() + ".png";
@@ -287,7 +286,7 @@ public class ImagePanel extends JPanel{
 			ImageIO.write(img, "png", new File(path));
 			System.out.println("panel saved as image");
 		} catch(NullPointerException npe){
-			throw new NullPointerException();
+			throw npe;
 		} catch (Exception e) {
 			System.out.println("panel not saved" + e.getMessage());
 		}
