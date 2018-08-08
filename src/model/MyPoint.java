@@ -31,7 +31,7 @@ public class MyPoint extends Ellipse2D implements Serializable{
 			this.widht = minSize;
 		}
 	}
-	private MyPoint(MyPoint mp){
+	protected MyPoint(MyPoint mp){
 		this.x = mp.x;
 		this.y = mp.y;
 		this.z = mp.z;

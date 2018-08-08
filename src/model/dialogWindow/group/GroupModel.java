@@ -8,6 +8,7 @@ import java.util.Random;
 
 import controller.Configuration;
 import enums.DicomTags;
+import model.ImagePanelModel;
 import model.GroupVolume;
 import model.MyResponsePoint;
 import model.MyPoint;
@@ -51,7 +52,9 @@ public class GroupModel implements Serializable {
 		this.groupColor = color;
 		try{
 			this.centroid_converted = (MyResponsePoint) centroid.clone();
+			System.out.println("=> "+centroid+centroid_converted);
 		}catch(Exception e){
+			e.printStackTrace();
 			this.centroid_converted = new MyResponsePoint();
 		}
 		this.volume = new GroupVolume();
@@ -166,11 +169,9 @@ public class GroupModel implements Serializable {
 			MyResponsePoint toPoint = points.get((i+1)%points.size());
 			MyResponsePoint overPoint = points.get((i+2)%points.size());
 			
-			//TODO roznasobit pomerem pixel na mm
-			
-			double i1_x = toPoint.getCenterX() * pixelSpace;
-			double i2_y = overPoint.getCenterY() * pixelSpace;
-			double i0_y = fromPoint.getCenterY() * pixelSpace;
+			double i1_x = toPoint.getCenterX() * ImagePanelModel.getXSpacing();
+			double i2_y = overPoint.getCenterY() * ImagePanelModel.getYSpacing();
+			double i0_y = fromPoint.getCenterY() * ImagePanelModel.getYSpacing();
 			
 			area +=  (i1_x * (i2_y - i0_y)) / 2;
 		}

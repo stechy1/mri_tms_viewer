@@ -21,10 +21,18 @@ public class MyResponsePoint extends MyPoint implements Serializable {
 	public MyResponsePoint(){
 		this(0,0);
 	}
+	protected MyResponsePoint(MyResponsePoint mrp){
+		super(mrp);
+		this.response = mrp.response;
+	}
 	public Response getResponse() {
 		return response;
 	}
 	public void setResponse(Response response) {
 		this.response = response;
+	}
+	@Override
+	public Object clone(){
+		return new MyResponsePoint(this);
 	}
 }
