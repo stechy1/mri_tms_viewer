@@ -1,9 +1,9 @@
 package model;
+import java.io.Serializable;
 
+public class Matrix4x4 implements Serializable{
 
-public class Matrix4x4{
-
-    private final double[] matrix=new double[16];
+	private final double[] matrix=new double[16];
 
 	public double[] getData(){
 		return matrix;

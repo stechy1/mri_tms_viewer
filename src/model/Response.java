@@ -4,8 +4,9 @@ import ij.util.DicomTools;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.io.Serializable;
 
-public class Response {
+public class Response implements Serializable{
 
 	private final Matrix4x4 matrix = new Matrix4x4();
 

@@ -1,5 +1,6 @@
 package model;
-public class MyResponsePoint extends MyPoint {
+import java.io.Serializable;
+public class MyResponsePoint extends MyPoint implements Serializable {
 	private Response response;
 	public MyResponsePoint(double x, double y, double height, double width, Response response) {
 		super(x,y,height,width);

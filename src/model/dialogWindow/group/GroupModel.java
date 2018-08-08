@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 import controller.Configuration;
 import enums.DicomTags;
 import model.GroupVolume;
@@ -30,9 +29,8 @@ public class GroupModel implements Serializable {
 	private GroupVolume volume;
 	
 	private ArrayList<MyPoint> points;
-	private transient ArrayList<MyResponsePoint> points_converted = new ArrayList<>();
-	private transient MyResponsePoint centroid_converted;
-	
+	private ArrayList<MyResponsePoint> points_converted = new ArrayList<>();
+	private MyResponsePoint centroid_converted;
 	
 	public void convert(){
 		if(points_converted==null){
