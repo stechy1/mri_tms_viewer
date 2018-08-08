@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import model.ImagePanelModel;
-import model.MyPoint;
+import model.MyResponsePoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 
@@ -112,7 +112,7 @@ public class ImagePanel extends JPanel{
 							if(group.getPoints().size() != 0){
 								
 								//vykresleni bodu z vrstvy
-								ArrayList<MyPoint> pointsInLayer = group.getPointFromLayer(model.getActualSnapshot());
+								ArrayList<MyResponsePoint> pointsInLayer = group.getPointFromLayer(model.getActualSnapshot());
 								
 								g2.setColor(group.getLayerColor());
 
@@ -128,13 +128,13 @@ public class ImagePanel extends JPanel{
 
 										g2.translate(0,this.getHeight());
 										g2.scale(1,-1);
-										ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(pointsInLayer);
+										ArrayList<MyResponsePoint> hullPoint = new QuickHull().quickHull(pointsInLayer);
 										drawPoints(g2, hullPoint);
 										drawConvexCover(g2, hullPoint);
 										group.setArea(model.getActualSnapshot(), hullPoint);
 										double maxX = hullPoint.get(0).getCenterX();
 										double maxY = hullPoint.get(0).getCenterY();
-										for (MyPoint myPoint : hullPoint) {
+										for (MyResponsePoint myPoint : hullPoint) {
 											if(maxX < myPoint.getCenterX())
 												maxX = myPoint.getCenterX();
 											if(maxY < myPoint.getCenterY())
@@ -150,7 +150,7 @@ public class ImagePanel extends JPanel{
 								
 								
 //								Vykresleni vsech bodu ze skupiny do jedne roviny
-								ArrayList<MyPoint> pointsInGroup = group.getCopyOfPoints();
+								ArrayList<MyResponsePoint> pointsInGroup = group.getCopyOfPoints();
 								g2.setColor(group.getGroupColor());
 																
 //								//vytvoreni obalky, musi obsahovat minimalne 3 body
@@ -159,7 +159,7 @@ public class ImagePanel extends JPanel{
 
 										g2.translate(0,this.getHeight());
 										g2.scale(1,-1);
-										ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(pointsInGroup);
+										ArrayList<MyResponsePoint> hullPoint = new QuickHull().quickHull(pointsInGroup);
 										drawConvexCover(g2, hullPoint);
 									
 										g2.setTransform(at);
@@ -221,10 +221,10 @@ public class ImagePanel extends JPanel{
 			}
 		}
 	}
-	private void drawConvexCover(Graphics2D g2, ArrayList<MyPoint> points) {
+	private void drawConvexCover(Graphics2D g2, ArrayList<MyResponsePoint> points) {
 		for (int i = 0; i < points.size(); i++) {
-			MyPoint p = points.get(i);
-			MyPoint n = points.get((i+1)%points.size());
+			MyResponsePoint p = points.get(i);
+			MyResponsePoint n = points.get((i+1)%points.size());
 			g2.setStroke(new BasicStroke(3));
 			g2.drawLine((int) (p.getCenterX() * ratio + this.x_offset), 
 					(int) (p.getCenterY() * ratio + this.y_offset), 
@@ -233,20 +233,20 @@ public class ImagePanel extends JPanel{
 		}
 	}
 
-	private void drawPoints(Graphics2D g2, ArrayList<MyPoint> points) {
-		for (MyPoint myPoint : points) {
+	private void drawPoints(Graphics2D g2, ArrayList<MyResponsePoint> points) {
+		for (MyResponsePoint myPoint : points) {
 			g2.fillOval((int) ((myPoint.getX()-myPoint.getWidth()/2)*ratio + this.x_offset), 
 					(int) ((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset), 
 					(int) (myPoint.getWidth()*ratio), 
 					(int) (myPoint.getHeight()*ratio));
 		}
 	}
-	private void drawCoords(Graphics2D g2, ArrayList<MyPoint> points) {
+	private void drawCoords(Graphics2D g2, ArrayList<MyResponsePoint> points) {
 		if(!Configuration.showCoords){
 			return;
 		}
 		g2.setColor(Color.BLACK);
-		for (MyPoint myPoint : points) {
+		for (MyResponsePoint myPoint : points) {
 			g2.drawString("["+String.format("%.2f",myPoint.getX()*ImagePanelModel.getXSpacing())+";"+String.format("%.2f",myPoint.getY()*ImagePanelModel.getYSpacing())+"]",
 				(int) ((myPoint.getX()+myPoint.getWidth()/2)*ratio + this.x_offset), 
 				this.getHeight()-(int)((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset)); 

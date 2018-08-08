@@ -11,7 +11,7 @@ import controller.UtilityClass;
 import controller.centerPane.ImagePaneController;
 import enums.Controllers;
 import model.ImagePanelModel;
-import model.MyPoint;
+import model.MyResponsePoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 
@@ -89,7 +89,7 @@ public class GroupItemPane extends JPanel implements ActionListener{
 	private void deleteGroup(GroupModel model) {
 		ImagePaneController ipc = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
 		GroupModel unassign = ipc.getModel().getGroup(Configuration.UNASSIGN_GROUP);
-		for (MyPoint point : model.getPoints()) {
+		for (MyResponsePoint point : model.getPoints()) {
 			point.setGroup(unassign);
 			unassign.getPoints().add(point);
 		}

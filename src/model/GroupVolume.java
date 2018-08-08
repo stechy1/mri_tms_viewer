@@ -47,7 +47,7 @@ public class GroupVolume implements Serializable {
 		ImagePanelModel ipm = (ImagePanelModel) MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
 		
 		for (int i = 0; i < ipm.getMriDicom().size(); i++) {
-			ArrayList<MyPoint> hullPoint = new QuickHull().quickHull(group.getPointFromLayer(i));
+			ArrayList<MyResponsePoint> hullPoint = new QuickHull().quickHull(group.getPointFromLayer(i));
 			group.setArea(i, hullPoint);
 		}
 		Collections.sort(this.areas);

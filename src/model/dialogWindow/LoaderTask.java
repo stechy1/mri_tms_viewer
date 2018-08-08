@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Stack;
 import model.ImagePanelModel;
 import model.MyDicom;
-import model.MyPoint;
+import model.MyResponsePoint;
 import model.Response;
 import model.TriggerMarkers;
 import model.dialogWindow.group.GroupModel;
@@ -62,13 +62,13 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 	 * @param area 
 	 * @return
 	 */
-	/*private MyPoint createPoint(ArrayList<MyPoint> area) {
-		ArrayList<MyPoint> pointsInPoint = new ArrayList<MyPoint>();
-		Stack<MyPoint> stack = new Stack<MyPoint>();
+	/*private MyResponsePoint createPoint(ArrayList<MyResponsePoint> area) {
+		ArrayList<MyResponsePoint> pointsInPoint = new ArrayList<MyResponsePoint>();
+		Stack<MyResponsePoint> stack = new Stack<MyResponsePoint>();
 		stack.push(area.remove(0));
 		//set of points in point.
 		while(!stack.isEmpty()) {
-			MyPoint refPoint = stack.pop();
+			MyResponsePoint refPoint = stack.pop();
 			if(!pointsInPoint.contains(refPoint)) {
 				pointsInPoint.add(refPoint);
 			}
@@ -86,7 +86,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		//zde dochazi k vytvoreni jednoho bodu ze sady pixelu
 		int totalPixelValue = 0;
 		for(int i = 0 ; i < pointsInPoint.size() ; i++) {
-			MyPoint out = pointsInPoint.get(i);
+			MyResponsePoint out = pointsInPoint.get(i);
 			totalPixelValue += out.getPixelValue();
 			double outX = out.getCenterX();
 			double outY = out.getCenterY();
@@ -101,11 +101,11 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		if(pointsInPoint.size() != 0) {
 			pixelValue = (int) totalPixelValue / pointsInPoint.size();
 		}
-		return new MyPoint<Integer>(x1, y1, diameter, pixelValue);
+		return new MyResponsePoint<Integer>(x1, y1, diameter, pixelValue);
 	}*/
 	//Metoda, ktera z DICOM snimku vrati seznam bodu, ktere se na snimku vyskytuji
-	/*private ArrayList<MyPoint> convertTMSDicomToAreaPoints(MyDicom dcm) {
-		ArrayList<MyPoint> area;
+	/*private ArrayList<MyResponsePoint> convertTMSDicomToAreaPoints(MyDicom dcm) {
+		ArrayList<MyResponsePoint> area;
 		BufferedImage img = dcm.getBufferedImage();
 		//Krok jedna: ziskat vsechny svetle body
 		area = getArrayOfPixels(img);
@@ -113,8 +113,8 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		area = getArrayOfPoints(area);
 		return area;
 	}*/
-	/*private ArrayList<MyPoint> getArrayOfPixels(BufferedImage img) {
-		ArrayList<MyPoint> area = new ArrayList<MyPoint>();
+	/*private ArrayList<MyResponsePoint> getArrayOfPixels(BufferedImage img) {
+		ArrayList<MyResponsePoint> area = new ArrayList<MyResponsePoint>();
 		for(int x = 0; x < img.getWidth() ; x ++){
 			for(int y = 0 ; y < img.getHeight() ; y++){
 				int color = img.getRGB(x, y);
@@ -123,7 +123,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				int  blue = color & 0x000000ff;
 				int total = (int) (red+green+blue)/3;
 				if(total > Configuration.WHITE_PIXEL_TRESSHOLD){
-					area.add(new MyPoint<Integer>(x, y, 1, total));
+					area.add(new MyResponsePoint<Integer>(x, y, 1, total));
 				}
 			}
 		}
@@ -133,8 +133,8 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 	 * @param area
 	 * @return
 	 */
-	/*private ArrayList<MyPoint> getArrayOfPoints(ArrayList<MyPoint> area) {
-		ArrayList<MyPoint> retArea = new ArrayList<MyPoint>();
+	/*private ArrayList<MyResponsePoint> getArrayOfPoints(ArrayList<MyResponsePoint> area) {
+		ArrayList<MyResponsePoint> retArea = new ArrayList<MyResponsePoint>();
 		while(area.size() != 0){
 			retArea.add(createPoint(area));
 		}
@@ -147,7 +147,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		group = new GroupModel(Configuration.UNASSIGN_GROUP);
 		this.model.getGroups().add(group);
 		/*for (int i = 0 ; i < this.model.getTmsDicom().size(); i++){
-			for (MyPoint myPoint : convertTMSDicomToAreaPoints(this.model.getTmsDicom().get(i))) {
+			for (MyResponsePoint myPoint : convertTMSDicomToAreaPoints(this.model.getTmsDicom().get(i))) {
 				myPoint.setZ(i);
 				myPoint.setGroup(group);
 				group.getPoints().add(myPoint);
@@ -160,15 +160,15 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			MyDicom dicom = this.model.getMriDicom().get(this.model.getActualSnapshot());
 			//MyDicom dicom = this.model.getTmsDicom().get(this.model.getActualSnapshot()); //TODO
 			r.calculateCoords(dicom,coords);
-			MyPoint<Response> point = new MyPoint<>((int)coords[0],(int)coords[1],1,r);
+			MyResponsePoint point = new MyResponsePoint((int)coords[0],(int)coords[1],1,r);
 			point.setZ((int)coords[2]);
 			point.setGroup(group);
 			group.getPoints().add(point);
 		}
 	}
-	/*private void AssignAmplitudesToPoints(ArrayList<MyPoint> points) {
+	/*private void AssignAmplitudesToPoints(ArrayList<MyResponsePoint> points) {
 		int minValue = 255, maxValue = 0;
-		for (MyPoint myPoint : points) {
+		for (MyResponsePoint myPoint : points) {
 			if(myPoint.getPixelValue() < minValue)
 				minValue = myPoint.getPixelValue();
 			if(myPoint.getPixelValue() > maxValue)
@@ -177,7 +177,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		TriggerMarkers markers = new TriggerMarkers();
 		int minResponse = (int) markers.getMinValue();
 		int maxResponse = (int) markers.getMaxValue();
-		for (MyPoint myPoint : points) {
+		for (MyResponsePoint myPoint : points) {
 			myPoint.calculateAmplitude(maxValue, minValue, minResponse, maxResponse);
 		}
 	}*/

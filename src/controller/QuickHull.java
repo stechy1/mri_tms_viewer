@@ -6,17 +6,18 @@ import static controller.UtilityClass.stringToDouble;
 import java.util.ArrayList;
 
 import enums.DicomTags;
-import model.MyPoint;
+import model.MyResponsePoint;
+import model.Response;
 
 public class QuickHull{
 
 	
-	public ArrayList<MyPoint> quickHull(ArrayList<MyPoint> points){
+	public ArrayList<MyResponsePoint> quickHull(ArrayList<MyResponsePoint> points){
 
-        ArrayList<MyPoint> convexHull = new ArrayList<MyPoint>();
+        ArrayList<MyResponsePoint> convexHull = new ArrayList<MyResponsePoint>();
 
         if (points.size() < 3)
-        	return new ArrayList<MyPoint>(points);
+        	return new ArrayList<MyResponsePoint>(points);
 
         int minPoint = -1, maxPoint = -1;
         double minX = Double.MAX_VALUE;
@@ -35,8 +36,8 @@ public class QuickHull{
             }
         }
 
-        MyPoint A = points.get(minPoint);
-        MyPoint B = points.get(maxPoint);
+        MyResponsePoint A = points.get(minPoint);
+        MyResponsePoint B = points.get(maxPoint);
 
         convexHull.add(A);
         convexHull.add(B);
@@ -44,12 +45,12 @@ public class QuickHull{
         points.remove(A);
         points.remove(B);
 
-        ArrayList<MyPoint> leftSet = new ArrayList<MyPoint>();
-        ArrayList<MyPoint> rightSet = new ArrayList<MyPoint>();
+        ArrayList<MyResponsePoint> leftSet = new ArrayList<MyResponsePoint>();
+        ArrayList<MyResponsePoint> rightSet = new ArrayList<MyResponsePoint>();
 
         for (int i = 0; i < points.size(); i++){
         	
-        	MyPoint p = points.get(i);
+        	MyResponsePoint p = points.get(i);
         	if (pointLocation(A, B, p) == -1)
         		leftSet.add(p);
         	else if (pointLocation(A, B, p) == 1)
@@ -63,7 +64,7 @@ public class QuickHull{
 
     }
 
-    public double distance(MyPoint A, MyPoint B, MyPoint C){
+    public double distance(MyResponsePoint A, MyResponsePoint B, MyResponsePoint C){
 
         double ABx = B.getCenterX() - A.getCenterX();
         double ABy = B.getCenterY() - A.getCenterY();
@@ -72,7 +73,7 @@ public class QuickHull{
         return Math.abs(num);
     }
 
-    public void hullSet(MyPoint A, MyPoint B, ArrayList<MyPoint> set, ArrayList<MyPoint> hull) {
+    public void hullSet(MyResponsePoint A, MyResponsePoint B, ArrayList<MyResponsePoint> set, ArrayList<MyResponsePoint> hull) {
 
         int insertPosition = hull.indexOf(B);
 
@@ -81,7 +82,7 @@ public class QuickHull{
 
         if (set.size() == 1){
 
-            MyPoint p = set.get(0);
+            MyResponsePoint p = set.get(0);
             set.remove(p);
             hull.add(insertPosition, p);
             return;
@@ -93,7 +94,7 @@ public class QuickHull{
 
         {
 
-            MyPoint p = set.get(i);
+            MyResponsePoint p = set.get(i);
 
             double distance = distance(A, B, p);
 
@@ -106,7 +107,7 @@ public class QuickHull{
 
         }
 
-        MyPoint P = set.get(furthestPoint);
+        MyResponsePoint P = set.get(furthestPoint);
 
         set.remove(furthestPoint);
 
@@ -115,13 +116,13 @@ public class QuickHull{
  
         // Determine who's to the left of AP
 
-        ArrayList<MyPoint> leftSetAP = new ArrayList<MyPoint>();
+        ArrayList<MyResponsePoint> leftSetAP = new ArrayList<MyResponsePoint>();
 
         for (int i = 0; i < set.size(); i++)
 
         {
 
-            MyPoint M = set.get(i);
+            MyResponsePoint M = set.get(i);
 
             if (pointLocation(A, P, M) == 1)
 
@@ -134,11 +135,11 @@ public class QuickHull{
 
         // Determine who's to the left of PB
 
-        ArrayList<MyPoint> leftSetPB = new ArrayList<MyPoint>();
+        ArrayList<MyResponsePoint> leftSetPB = new ArrayList<MyResponsePoint>();
 
         for (int i = 0; i < set.size(); i++){
 
-            MyPoint M = set.get(i);
+            MyResponsePoint M = set.get(i);
 
             if (pointLocation(P, B, M) == 1){
             	leftSetPB.add(M);
@@ -149,7 +150,7 @@ public class QuickHull{
         hullSet(P, B, leftSetPB, hull);
     }
 
-    public double pointLocation(MyPoint A, MyPoint B, MyPoint P) {
+    public double pointLocation(MyResponsePoint A, MyResponsePoint B, MyResponsePoint P) {
 
         double cp1 = (B.getCenterX() - A.getCenterX()) * (P.getCenterY() - A.getCenterY()) - (B.getCenterY() - A.getCenterY()) * (P.getCenterX() - A.getCenterX());
 

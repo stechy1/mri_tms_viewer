@@ -20,7 +20,6 @@ public class ImagePanelModel {
 	private List<MyDicom> mriDicom;
 	private List<MyDicom> tmsDicom;
 	
-	//private ArrayList<ArrayList<MyPoint>> points; 
 	private ArrayList<GroupModel> groups;
 	private BufferedImage[] across_x_mri;
 	private BufferedImage[] across_y_mri;
@@ -71,7 +70,7 @@ public class ImagePanelModel {
 			default: return Configuration.sliceThickness;
 		}
 	}
-	public void remember(MyPoint p){
+	public void remember(MyResponsePoint p){
 		remember[DICOM + AXIS_X]=(int)p.getRealX();
 		remember[DICOM + AXIS_Y]=(int)p.getRealY();
 		remember[DICOM + AXIS_Z]=(int)p.getRealZ();
@@ -245,11 +244,11 @@ public class ImagePanelModel {
 		
 		//vsechny body budou v jednom poli... projekce do roviny.. az na ignore
 		
-		ArrayList<MyPoint> listOfPoint = new ArrayList<MyPoint>();
+		ArrayList<MyResponsePoint> listOfPoint = new ArrayList<MyResponsePoint>();
 		
 		for (GroupModel group : groups) {
 			if(!group.getName().equals(Configuration.IGNORE_GROUP)){
-				for (MyPoint myPoint : group.getPoints()) {
+				for (MyResponsePoint myPoint : group.getPoints()) {
 					listOfPoint.add(myPoint);
 				}
 				if(group.getName().equals(Configuration.UNASSIGN_GROUP)){
@@ -274,7 +273,7 @@ public class ImagePanelModel {
 					Random ran = new Random();
 					int index = ran.nextInt(999) * (i+11) % listOfPoint.size();
 					
-					MyPoint newCentroid = listOfPoint.get(index);
+					MyResponsePoint newCentroid = listOfPoint.get(index);
 					GroupModel newGroup = new GroupModel("Skupina " + (i+1) , newCentroid); 
 					this.groups.add(newGroup);
 				}
@@ -293,7 +292,7 @@ public class ImagePanelModel {
 	}
 
 	//kmeans
-	private void assignPointToGroups(ArrayList<MyPoint> list) {
+	private void assignPointToGroups(ArrayList<MyResponsePoint> list) {
 		//TODO pokracovat zde na prirazovani bodu ke skupinam... pozor na 2 zakladni skupiny
 		int countOfChanges = Integer.MAX_VALUE;
 		
@@ -307,7 +306,7 @@ public class ImagePanelModel {
 				}
 			}
 			
-			for (MyPoint myPoint : list) {
+			for (MyResponsePoint myPoint : list) {
 				double minDist = Double.MAX_VALUE;
 				GroupModel oldGroup = myPoint.getGroup();
 				GroupModel newGroup = myPoint.getGroup();

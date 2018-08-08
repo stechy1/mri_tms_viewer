@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import model.ImagePanelModel;
-import model.MyPoint;
+import model.MyResponsePoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import view.centerPane.ImagePanel;
@@ -26,7 +26,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	private ImagePanel view;
 	private ImagePanelModel model; 	
 
-	private MyPoint active;
+	private MyResponsePoint active;
 
 	public ImagePaneController(ImagePanel view, ImagePanelModel model) {
 		this.view = view;
@@ -145,7 +145,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 				if(this.getModel().getGroups().size() != 0){
 
 					for (GroupModel group : this.getModel().getGroups()) {
-						for(MyPoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
+						for(MyResponsePoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
 							if(point.contains((e.getX() - this.view.getX_offset())/this.view.getRatio()+point.getWidth()/2, 
 									(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio()+point.getHeight()/2)){
 								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);

@@ -16,7 +16,7 @@ import java.util.Map;
 import enums.Controllers;
 import interfaces.IController;
 import model.ImagePanelModel;
-import model.MyPoint;
+import model.MyResponsePoint;
 import model.Response;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
@@ -25,7 +25,7 @@ import view.rightPane.subPane.SettingSnapshotPane;
 public class SettingSnapshotPaneController implements IController, ItemListener, FocusListener{
 
 	private SettingSnapshotPane view;
-	private MyPoint<Response> model;
+	private MyResponsePoint model;
 	
 	public SettingSnapshotPaneController(SettingSnapshotPane view) {
 		this.view = view;
@@ -38,7 +38,7 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 			this.view.getCbGroup().setModel(new DefaultComboBoxModel<>(ipm.getGroups().toArray(new GroupModel[ipm.getGroups().size()])));
 			this.view.getCbGroup().setSelectedItem(this.model.getGroup());
 			this.view.getValues().removeAll();
-			for(Map.Entry<String,Double> entry: this.model.getPixelValue().getData().entrySet()){
+			for(Map.Entry<String,Double> entry: this.model.getResponse().getData().entrySet()){
 				this.view.getValues().add(new JLabel(entry.getKey()));
 				JTextField jtf = new JTextField(entry.getValue().toString());
 				this.view.getValues().add(jtf);
@@ -46,7 +46,7 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 					public void keyReleased(KeyEvent e){
 						if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 							try{
-								model.getPixelValue().getData().put(entry.getKey(),Double.valueOf(jtf.getText()));
+								model.getResponse().getData().put(entry.getKey(),Double.valueOf(jtf.getText()));
 							}catch(Exception ex){
 								//TODO dodelat dialog
 								ex.printStackTrace();
@@ -84,7 +84,7 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setModel(Object model) {
-		this.model = (MyPoint<Response>) model;
+		this.model = (MyResponsePoint) model;
 		notifyController();
 	}
 

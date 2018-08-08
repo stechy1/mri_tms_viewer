@@ -9,7 +9,12 @@ public class Matrix4x4{
 		return matrix;
 	}
 
-	public Matrix4x4(){}
+	public Matrix4x4(){
+		matrix[0]=1;
+		matrix[5]=1;
+		matrix[10]=1;
+		matrix[15]=1;
+	}
 
 	public Matrix4x4(Matrix4x4 cpy){
 		System.arraycopy(cpy.matrix,0,matrix,0,cpy.matrix.length);

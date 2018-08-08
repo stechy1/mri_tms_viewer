@@ -3,19 +3,23 @@ package model.dialogWindow.group;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
 import controller.Configuration;
 import enums.DicomTags;
 import model.GroupVolume;
+import model.MyResponsePoint;
 import model.MyPoint;
+import model.Response;
 import model.Slice;
 
 import static controller.UtilityClass.*;
 import static controller.Configuration.*;
 
 public class GroupModel implements Serializable {
+	static final long serialVersionUID = 8173646712421004394L;
 
 	private int id;
 	private String name;
@@ -26,25 +30,37 @@ public class GroupModel implements Serializable {
 	private GroupVolume volume;
 	
 	private ArrayList<MyPoint> points;
+	private transient ArrayList<MyResponsePoint> points_converted;
+	private transient MyResponsePoint centroid_converted;
 	
 	
-	public GroupModel(String name, MyPoint centroid, Color color) {
-		this.points = new ArrayList<MyPoint>();
+	public void convert(){
+		this.points_converted = new ArrayList<>();
+		for(int a=0; a<points.size(); a++){
+			this.points_converted.add(points.get(a).toResponsePoint());
+		}
+		this.centroid_converted = centroid.toResponsePoint();
+	}
+	public GroupModel(String name, MyResponsePoint centroid, Color color) {
 		this.name = name;
 		this.layerColor = color;
 		this.groupColor = color;
-		this.centroid = (MyPoint) centroid.clone();
+		try{
+			this.centroid_converted = (MyResponsePoint) centroid.clone();
+		}catch(Exception e){
+			this.centroid_converted = new MyResponsePoint();
+		}
 		this.volume = new GroupVolume();
 	}
-	
-	public GroupModel(String name, MyPoint centroid){
+
+	public GroupModel(String name, MyResponsePoint centroid){
 		this(name, centroid, null);
 		Random ran = new Random();
 		this.layerColor = new Color(ran.nextInt(255), ran.nextInt(255), ran.nextInt(255));
 	}
 	
 	public GroupModel(String name) {
-		this(name, new MyPoint());
+		this(name, new MyResponsePoint());
 	}
 	
 	public GroupModel(){
@@ -110,35 +126,41 @@ public class GroupModel implements Serializable {
 		this.id = id;
 	}
 	
-	public MyPoint getCentroid() {
-		return centroid;
+	public MyResponsePoint getCentroid() {
+		if(centroid_converted==null){
+			convert();
+		}
+		return centroid_converted;
 	}
 	
-	public void setCentroid(MyPoint centroid) {
-		this.centroid = centroid;
+	public void setCentroid(MyResponsePoint centroid) {
+		this.centroid_converted = centroid;
 	}
 	
-	public ArrayList<MyPoint> getPoints() {
-		return points;
+	public ArrayList<MyResponsePoint> getPoints() {
+		if(points_converted==null){
+			convert();
+		}
+		return points_converted;
 	}
 	
-	public void setPoints(ArrayList<MyPoint> points) {
-		this.points = points;
+	public void setPoints(ArrayList<MyResponsePoint> points) {
+		this.points_converted = points;
 	}
 	
-	public void setArea(int slice, ArrayList<MyPoint> points){
+	public void setArea(int slice, ArrayList<MyResponsePoint> points){
 		
 		this.volume.updateArea(slice, computeArea(points));
 	}
 	
-	public double computeArea(ArrayList<MyPoint> points) {
+	public double computeArea(ArrayList<MyResponsePoint> points) {
 		double area = 0.0;
 		
 		for(int i = 0 ; i < points.size(); i++){
 			
-			MyPoint fromPoint = points.get(i%points.size());
-			MyPoint toPoint = points.get((i+1)%points.size());
-			MyPoint overPoint = points.get((i+2)%points.size());
+			MyResponsePoint fromPoint = points.get(i%points.size());
+			MyResponsePoint toPoint = points.get((i+1)%points.size());
+			MyResponsePoint overPoint = points.get((i+2)%points.size());
 			
 			//TODO roznasobit pomerem pixel na mm
 			
@@ -162,17 +184,17 @@ public class GroupModel implements Serializable {
 		return 0;
 	}
 	
-	public ArrayList<MyPoint> getCopyOfPoints(){
-		ArrayList<MyPoint> list = new ArrayList<MyPoint>();
-		for (MyPoint myPoint : points) {
+	public ArrayList<MyResponsePoint> getCopyOfPoints(){
+		ArrayList<MyResponsePoint> list = new ArrayList<>();
+		for (MyResponsePoint myPoint : points_converted) {
 			list.add(myPoint);
 		}
 		return list;
 	}
 	
-	public ArrayList<MyPoint> getPointFromLayer(int layer){
-		ArrayList<MyPoint> list = new ArrayList<MyPoint>();
-		for (MyPoint myPoint : points) {
+	public ArrayList<MyResponsePoint> getPointFromLayer(int layer){
+		ArrayList<MyResponsePoint> list = new ArrayList<>();
+		for (MyResponsePoint myPoint : points_converted) {
 			if((int)myPoint.getZ() == layer){
 				list.add(myPoint);
 			}
@@ -184,15 +206,15 @@ public class GroupModel implements Serializable {
 		if(this.points != null){
 			if(this.points.size() != 0){
 				int x = 0, y = 0;
-				for (MyPoint myPoint : points) {
+				for (MyResponsePoint myPoint : points_converted) {
 					x += myPoint.getCenterX();
 					y += myPoint.getCenterY();
 				}
-				this.centroid = new MyPoint(x / points.size(), y / points.size());
+				this.centroid_converted = new MyResponsePoint(x / points.size(), y / points.size());
 			}
 			else{
 				if(this.centroid == null){
-					this.centroid = new MyPoint();
+					this.centroid_converted = new MyResponsePoint();
 				}
 			}
 		}
