@@ -19,6 +19,7 @@ import model.MyResponsePoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import view.centerPane.ImagePanel;
+import static controller.Configuration.SELECTION_TRESSHOLD;
 
 public class ImagePaneController implements IController, MouseWheelListener, MouseListener{
 
@@ -135,6 +136,13 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		}
 	}
 
+	public boolean contains(MyResponsePoint point,double x,double y){
+		double cx = point.getCenterX();
+		double cy = point.getCenterY();
+		double w2 = point.getWidth()/2;
+		double h2 = point.getHeight()/2;
+		return x<cx+w2 && x>cx-w2 && y<cy+h2 && y>cy-h2;
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		//		System.out.println("click: " + this.view.getPaneInfo() + ";; X: " + (e.getX() - this.view.getX_offset()) + 
@@ -146,8 +154,8 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 					for (GroupModel group : this.getModel().getGroups()) {
 						for(MyResponsePoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
-							if(point.contains((e.getX() - this.view.getX_offset())/this.view.getRatio()+point.getWidth()/2, 
-									(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio()+point.getHeight()/2)){
+							if(contains(point,(e.getX() - this.view.getX_offset())/this.view.getRatio(), 
+									(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio())){
 								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
 								if(active!=null) {
 									active.setActive(false);

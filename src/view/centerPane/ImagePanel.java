@@ -225,7 +225,7 @@ public class ImagePanel extends JPanel{
 		for (int i = 0; i < points.size(); i++) {
 			MyResponsePoint p = points.get(i);
 			MyResponsePoint n = points.get((i+1)%points.size());
-			g2.setStroke(new BasicStroke(3));
+			//g2.setStroke(new BasicStroke(3));
 			g2.drawLine((int) (p.getCenterX() * ratio + this.x_offset), 
 					(int) (p.getCenterY() * ratio + this.y_offset), 
 					(int) (n.getCenterX() * ratio + this.x_offset), 
@@ -235,10 +235,10 @@ public class ImagePanel extends JPanel{
 
 	private void drawPoints(Graphics2D g2, ArrayList<MyResponsePoint> points) {
 		for (MyResponsePoint myPoint : points) {
-			g2.fillOval((int) ((myPoint.getX()-myPoint.getWidth()/2)*ratio + this.x_offset), 
-					(int) ((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset), 
-					(int) (myPoint.getWidth()*ratio), 
-					(int) (myPoint.getHeight()*ratio));
+			g2.fillOval((int) ((myPoint.getCenterX()-myPoint.getWidth()/2) * ratio + this.x_offset), 
+					(int) ((myPoint.getCenterY()-myPoint.getHeight()/2) * ratio + this.y_offset), 
+					(int) (myPoint.getWidth() * ratio), 
+					(int) (myPoint.getHeight() * ratio));
 		}
 	}
 	private void drawCoords(Graphics2D g2, ArrayList<MyResponsePoint> points) {

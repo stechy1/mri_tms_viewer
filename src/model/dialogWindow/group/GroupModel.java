@@ -30,16 +30,22 @@ public class GroupModel implements Serializable {
 	private GroupVolume volume;
 	
 	private ArrayList<MyPoint> points;
-	private transient ArrayList<MyResponsePoint> points_converted;
+	private transient ArrayList<MyResponsePoint> points_converted = new ArrayList<>();
 	private transient MyResponsePoint centroid_converted;
 	
 	
 	public void convert(){
-		this.points_converted = new ArrayList<>();
-		for(int a=0; a<points.size(); a++){
-			this.points_converted.add(points.get(a).toResponsePoint());
+		if(points_converted==null){
+			this.points_converted = new ArrayList<>();
 		}
-		this.centroid_converted = centroid.toResponsePoint();
+		if(points!=null){
+			for(int a=0; a<points.size(); a++){
+				this.points_converted.add(points.get(a).toResponsePoint());
+			}
+		}
+		if(centroid!=null){
+			this.centroid_converted = centroid.toResponsePoint();
+		}
 	}
 	public GroupModel(String name, MyResponsePoint centroid, Color color) {
 		this.name = name;
@@ -133,9 +139,9 @@ public class GroupModel implements Serializable {
 		return centroid_converted;
 	}
 	
-	public void setCentroid(MyResponsePoint centroid) {
+	/*public void setCentroid(MyResponsePoint centroid) {
 		this.centroid_converted = centroid;
-	}
+	}*/
 	
 	public ArrayList<MyResponsePoint> getPoints() {
 		if(points_converted==null){
