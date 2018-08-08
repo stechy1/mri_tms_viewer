@@ -39,6 +39,7 @@ public class MyPoint implements Serializable{
 		//matrix[7]=y;
 		//matrix[11]=z;
 		MyResponsePoint mp = new MyResponsePoint(x,y,height,widht,response);
+		mp.setZ(z);
 		mp.setMinSize(minSize);
 		mp.setGroup(group);
 		mp.setIgnoreSize(ignoreSize);
