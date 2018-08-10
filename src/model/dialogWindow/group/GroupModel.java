@@ -52,7 +52,6 @@ public class GroupModel implements Serializable {
 		this.groupColor = color;
 		try{
 			this.centroid_converted = (MyResponsePoint) centroid.clone();
-			System.out.println("=> "+centroid+centroid_converted);
 		}catch(Exception e){
 			e.printStackTrace();
 			this.centroid_converted = new MyResponsePoint();

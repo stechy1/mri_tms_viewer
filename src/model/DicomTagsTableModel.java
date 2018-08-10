@@ -48,7 +48,11 @@ public class DicomTagsTableModel extends AbstractTableModel {
 		case 3:
 			return tag.getVr();
 		case 4:
-			return DicomTools.getTag(model, tag.getGroup() + "," + tag.getElement());
+			if(model==null){
+				return "???";
+			}else{
+				return DicomTools.getTag(model, tag.getGroup() + "," + tag.getElement());
+			}
 		default:
 			return null;
 		}

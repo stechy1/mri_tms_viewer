@@ -96,7 +96,13 @@ public class ShowDicomTags extends JFrame {
 		
 		ImagePanelModel ipm = (ImagePanelModel) MainWindow.getController(Controllers.IMAGE_PANE_CTRL).getModel();
 				
-		this.dicomTableMRI = new DicomTagsTable(ipm.getMriDicom().get(ipm.getActualSnapshot()));
+		if(ImagePanelModel.getType()==ImagePanelModel.DICOM+ImagePanelModel.AXIS_Z){
+			this.dicomTableMRI = new DicomTagsTable(ipm.getMriDicom().get(ipm.getActualSnapshot()));
+		}else if(ImagePanelModel.getType()==ImagePanelModel.TMS+ImagePanelModel.AXIS_Z){
+			this.dicomTableMRI = new DicomTagsTable(ipm.getTmsDicom().get(ipm.getActualSnapshot()));
+		}else{
+			this.dicomTableMRI = new DicomTagsTable();
+		}
 		this.scrollPaneMri = new JScrollPane(dicomTableMRI);
 		this.scrollPaneMri.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.scrollPaneMri.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
