@@ -62,7 +62,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 	 * @param area 
 	 * @return
 	 */
-	/*private MyResponsePoint createPoint(ArrayList<MyResponsePoint> area) {
+	private MyResponsePoint createPoint(ArrayList<MyResponsePoint> area,int layer) {
 		ArrayList<MyResponsePoint> pointsInPoint = new ArrayList<MyResponsePoint>();
 		Stack<MyResponsePoint> stack = new Stack<MyResponsePoint>();
 		stack.push(area.remove(0));
@@ -84,10 +84,8 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		}
 		int x1=384, x2=0, y1=384, y2=0;
 		//zde dochazi k vytvoreni jednoho bodu ze sady pixelu
-		int totalPixelValue = 0;
 		for(int i = 0 ; i < pointsInPoint.size() ; i++) {
 			MyResponsePoint out = pointsInPoint.get(i);
-			totalPixelValue += out.getPixelValue();
 			double outX = out.getCenterX();
 			double outY = out.getCenterY();
 			//ohraniceni vsech bodu... 
@@ -97,23 +95,28 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			if(outY > y2) y2 = (int) outY;
 		}
 		double diameter = getDiameter(x2-x1, y2-y1);
-		int pixelValue = 0;
-		if(pointsInPoint.size() != 0) {
-			pixelValue = (int) totalPixelValue / pointsInPoint.size();
+		MyResponsePoint mrp = new MyResponsePoint(x1, y1, diameter);
+		mrp.setZ(layer);
+		return mrp;
+	}
+	private ArrayList<MyResponsePoint> convertTMSDicomsToAreaPoints(List<MyDicom> dcm){
+		ArrayList<MyResponsePoint> area = new ArrayList<>();
+		for(int a=0; a<dcm.size(); a++){
+			area.addAll(convertTMSDicomToAreaPoints(dcm.get(a),a));
 		}
-		return new MyResponsePoint<Integer>(x1, y1, diameter, pixelValue);
-	}*/
+		return area;
+	}
 	//Metoda, ktera z DICOM snimku vrati seznam bodu, ktere se na snimku vyskytuji
-	/*private ArrayList<MyResponsePoint> convertTMSDicomToAreaPoints(MyDicom dcm) {
+	private ArrayList<MyResponsePoint> convertTMSDicomToAreaPoints(MyDicom dcm,int layer) {
 		ArrayList<MyResponsePoint> area;
 		BufferedImage img = dcm.getBufferedImage();
 		//Krok jedna: ziskat vsechny svetle body
 		area = getArrayOfPixels(img);
 		//krok dva: sousedni body spojit do jednoho
-		area = getArrayOfPoints(area);
+		area = getArrayOfPoints(area,layer);
 		return area;
-	}*/
-	/*private ArrayList<MyResponsePoint> getArrayOfPixels(BufferedImage img) {
+	}
+	private ArrayList<MyResponsePoint> getArrayOfPixels(BufferedImage img) {
 		ArrayList<MyResponsePoint> area = new ArrayList<MyResponsePoint>();
 		for(int x = 0; x < img.getWidth() ; x ++){
 			for(int y = 0 ; y < img.getHeight() ; y++){
@@ -123,23 +126,23 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				int  blue = color & 0x000000ff;
 				int total = (int) (red+green+blue)/3;
 				if(total > Configuration.WHITE_PIXEL_TRESSHOLD){
-					area.add(new MyResponsePoint<Integer>(x, y, 1, total));
+					area.add(new MyResponsePoint(x, y, 1));
 				}
 			}
 		}
 		return area;
-	}*/
+	}
 	/** list pixelu, ktere maji hodnotu vetsi nez tresshold z configu. 
 	 * @param area
 	 * @return
 	 */
-	/*private ArrayList<MyResponsePoint> getArrayOfPoints(ArrayList<MyResponsePoint> area) {
+	private ArrayList<MyResponsePoint> getArrayOfPoints(ArrayList<MyResponsePoint> area,int layer) {
 		ArrayList<MyResponsePoint> retArea = new ArrayList<MyResponsePoint>();
 		while(area.size() != 0){
-			retArea.add(createPoint(area));
+			retArea.add(createPoint(area,layer));
 		}
 		return retArea;
-	}*/
+	}
 	private void calculateTMSPoints() {
 		this.model.setGroups(new ArrayList<GroupModel>());
 		GroupModel group = new GroupModel(Configuration.IGNORE_GROUP);
@@ -164,6 +167,26 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			point.setZ((int)coords[2]);
 			point.setGroup(group);
 			group.getPoints().add(point);
+		}
+		closestPointRegistration(group.getPoints(),convertTMSDicomsToAreaPoints(this.model.getTmsDicom()));
+	}
+	public void closestPointRegistration(ArrayList<MyResponsePoint> source,ArrayList<MyResponsePoint> target){
+		for(int a=0; a<source.size(); a++){
+			MyResponsePoint source_current = source.get(a);
+			double dist = Double.MAX_VALUE;
+			int index = 0;
+			for(int b=0; b<target.size(); b++){
+				MyResponsePoint target_current = target.get(b);	
+				double di = source_current.distance(target_current);
+				if(di<dist){
+					dist = di;
+					index = b;
+				}
+			}
+			MyResponsePoint calc_target = target.get(index);
+			source_current.setX(calc_target.getRealX());
+			source_current.setY(calc_target.getRealY());
+			source_current.setZ(calc_target.getRealZ());
 		}
 	}
 	/*private void AssignAmplitudesToPoints(ArrayList<MyResponsePoint> points) {
