@@ -12,6 +12,7 @@ import ij.plugin.DICOM;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -49,9 +50,14 @@ public class ImagePanel extends JPanel{
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics g){
 		super.paint(g);
-		Graphics2D g2 = (Graphics2D) g;
+		Image img = createImage(this.getWidth(),this.getHeight());
+		Graphics g_img = img.getGraphics();
+		paint_buffer((Graphics2D)g_img);
+		g.drawImage(img,0,0,null);
+	}
+	public void paint_buffer(Graphics2D g2) {
 		AffineTransform at = g2.getTransform();
 
 		ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
