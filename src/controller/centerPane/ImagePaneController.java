@@ -133,7 +133,8 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			changeSide((this.getModel().getType()+steps+types)%types);
 			notifyController();
 		}else{
-			this.model.setActualSnapshot(this.model.getActualSnapshot() + steps);
+			int move = this.model.getActualSnapshot() + steps;
+			this.model.setActualSnapshot(move<0?0:move);
 		}
 	}
 

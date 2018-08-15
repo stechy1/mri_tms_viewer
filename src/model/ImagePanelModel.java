@@ -70,6 +70,13 @@ public class ImagePanelModel {
 			default: return Configuration.sliceThickness;
 		}
 	}
+	public static double getZSpacing(){
+		switch(type){
+			case DICOM + AXIS_Z: return Configuration.sliceThickness;
+			case TMS   + AXIS_Z: return Configuration.sliceThickness;
+			default: return Configuration.pixelSpace;
+		}
+	}
 	public void remember(MyResponsePoint p){
 		remember[DICOM + AXIS_X]=(int)p.getRealX();
 		remember[DICOM + AXIS_Y]=(int)p.getRealY();
@@ -112,6 +119,39 @@ public class ImagePanelModel {
 			}
 		}catch(NullPointerException e){
 			return 0;
+		}
+	}
+	public static char getYAxis(){
+		switch(type){
+			case DICOM + AXIS_Z: return 'Y';
+			case DICOM + AXIS_X: return 'Z';
+			case DICOM + AXIS_Y: return 'Z';
+			case TMS   + AXIS_Z: return 'Y';
+			case TMS   + AXIS_X: return 'Z';
+			case TMS   + AXIS_Y: return 'Z';
+			default: return '?';
+		}
+	}
+	public static char getXAxis(){
+		switch(type){
+			case DICOM + AXIS_Z: return 'X';
+			case DICOM + AXIS_X: return 'Y';
+			case DICOM + AXIS_Y: return 'X';
+			case TMS   + AXIS_Z: return 'X';
+			case TMS   + AXIS_X: return 'Y';
+			case TMS   + AXIS_Y: return 'X';
+			default: return '?';
+		}
+	}
+	public static char getZAxis(){
+		switch(type){
+			case DICOM + AXIS_Z: return 'Z';
+			case DICOM + AXIS_X: return 'X';
+			case DICOM + AXIS_Y: return 'Y';
+			case TMS   + AXIS_Z: return 'Z';
+			case TMS   + AXIS_X: return 'X';
+			case TMS   + AXIS_Y: return 'Y';
+			default: return '?';
 		}
 	}
 	public static void setType(int c_type){

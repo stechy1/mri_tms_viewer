@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import java.io.Serializable;
+import controller.Configuration;
 
 public class Response implements Serializable{
 
@@ -67,8 +68,8 @@ public class Response implements Serializable{
 		//System.out.println(img_coords[0]+","+img_coords[1]+","+img_coords[2]);
 		//System.out.println(matrix.getData()[3]+","+matrix.getData()[7]+","+matrix.getData()[11]);
 		//TODO not include in release:
-		data.put("X",img_coords[0]);
-		data.put("Y",img_coords[1]);
-		data.put("Z",img_coords[2]);
+		data.put("X (mm)",img_coords[0]*Configuration.pixelSpace);
+		data.put("Y (mm)",img_coords[1]*Configuration.pixelSpace);
+		data.put("Z (mm)",img_coords[2]*Configuration.sliceThickness);
 	}
 }

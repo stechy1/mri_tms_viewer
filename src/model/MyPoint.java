@@ -159,10 +159,10 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		this.group = group;
 	}
 	public double distance(MyPoint point){
-		double x = this.getCenterX() - point.getCenterX();
-		double y = this.getCenterY() - point.getCenterY();
-		double ret = Math.hypot(x, y);
-		return Math.abs(ret);
+		double x = this.x - point.x;
+		double y = this.y - point.y;
+		double z = this.z - point.z;
+		return x*x+y*y+z*z;
 	}
 	@Override
 	public String toString() {

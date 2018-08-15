@@ -80,8 +80,9 @@ public class ImagePanel extends JPanel{
 		hard_repaint = true;
 	}
 	public void drawPosition(Graphics2D g2,int x,int y){
-		g2.drawString("["+String.format("%.2f",(x-this.x_offset)*ImagePanelModel.getXSpacing()/ratio)+";"+
-				String.format("%.2f",(img_height-y+this.y_offset)*ImagePanelModel.getYSpacing()/ratio)+"]",x,y); 
+		g2.drawString("[ "+ImagePanelModel.getXAxis()+": "+String.format("%.2f",(x-this.x_offset)*ImagePanelModel.getXSpacing()/ratio)
+				+"mm; "+ImagePanelModel.getYAxis()+": "+String.format("%.2f",
+					(img_height-y+this.y_offset)*ImagePanelModel.getYSpacing()/ratio)+"mm]",x,y); 
 	}
 	public void paintBuffer(Graphics2D g2) {
 		AffineTransform at = g2.getTransform();
@@ -252,6 +253,8 @@ public class ImagePanel extends JPanel{
 				g2.drawString((b*mm_per_line[a])+"",this.x_offset,y);
 			}
 		}
+		g2.drawString(ImagePanelModel.getXAxis()+"",this.x_offset+this.img_width-baseline-5,this.y_offset+3*baseline);
+		g2.drawString(ImagePanelModel.getYAxis()+"",this.x_offset+3*baseline,this.y_offset+this.img_height-5);
 	}
 	private void drawConvexCover(Graphics2D g2, ArrayList<MyResponsePoint> points) {
 		for (int i = 0; i < points.size(); i++) {
@@ -279,7 +282,9 @@ public class ImagePanel extends JPanel{
 		}
 		g2.setColor(Color.BLACK);
 		for (MyResponsePoint myPoint : points) {
-			g2.drawString("["+String.format("%.2f",myPoint.getX()*ImagePanelModel.getXSpacing())+";"+String.format("%.2f",myPoint.getY()*ImagePanelModel.getYSpacing())+"]",
+			g2.drawString("[ "+ImagePanelModel.getXAxis()+": "+String.format("%.2f",myPoint.getX()*ImagePanelModel.getXSpacing())+
+					"mm; "+ImagePanelModel.getYAxis()+": "+String.format("%.2f",myPoint.getY()*ImagePanelModel.getYSpacing())
+					+"mm]",
 				(int) ((myPoint.getX()+myPoint.getWidth()/2)*ratio + this.x_offset), 
 				this.getHeight()-(int)((myPoint.getY()-myPoint.getHeight()/2)*ratio + this.y_offset)); 
 		}

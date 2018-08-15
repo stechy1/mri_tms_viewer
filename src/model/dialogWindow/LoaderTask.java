@@ -184,6 +184,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				}
 			}
 			MyResponsePoint calc_target = target.get(index);
+			source_current.getResponse().getData().put("regDist:",Math.sqrt(dist));
 			source_current.setX(calc_target.getRealX());
 			source_current.setY(calc_target.getRealY());
 			source_current.setZ(calc_target.getRealZ());

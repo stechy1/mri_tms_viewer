@@ -11,7 +11,7 @@ public class MyResponsePoint extends MyPoint implements Serializable {
 	}
 	
 	public MyResponsePoint(double x, double y, double radius) {
-		this(x,y,radius, radius, null);
+		this(x,y,radius, radius, new Response());
 	}
 	
 	public MyResponsePoint(double x, double y){

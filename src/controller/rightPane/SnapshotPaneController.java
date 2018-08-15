@@ -33,9 +33,10 @@ public class SnapshotPaneController implements IController, ChangeListener, Mous
 		this.view.getSlider().setValue(ipm.getActualSnapshot());
 		this.view.getSlider().setMaximum(ipm.getNumberOfImages());
 		if(ipm.getActualSnapshot()>=0){
-			this.view.getLblValue().setText(ipm.getActualSnapshot() + "");
+			this.view.getLblValue().setText(ipm.getZAxis()+": "+ipm.getActualSnapshot() + " (" + 
+				String.format("%.2f",ipm.getActualSnapshot()*ipm.getZSpacing())+ "mm)");
 		}else{
-			this.view.getLblValue().setText("0");
+			this.view.getLblValue().setText(ipm.getZAxis()+": 0 (0mm)");
 		}
 	}
 
