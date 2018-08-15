@@ -16,11 +16,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import model.ImagePanelModel;
+import model.Response;
 import model.MyResponsePoint;
 import model.dialogWindow.group.GroupModel;
 import view.MainWindow;
 import view.centerPane.ImagePanel;
 import static controller.Configuration.SELECTION_TRESSHOLD;
+import static model.ImagePanelModel.*;
 
 public class ImagePaneController implements IController, MouseWheelListener, MouseListener, MouseMotionListener{
 
@@ -147,9 +149,10 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		//		System.out.println("click: " + this.view.getPaneInfo() + ";; X: " + (e.getX() - this.view.getX_offset()) + 
-		//				", Y: " + (e.getY() - this.view.getY_offset()));
-		if(this.getModel().getActualSnapshot() != -1){
+		if(e.getButton() == MouseEvent.BUTTON2){
+			createNewPoint((e.getX() - this.view.getX_offset())/this.view.getRatio(), 
+				(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio());
+		} else if(this.getModel().getActualSnapshot() != -1){
 
 			if(this.getModel().getGroups() != null){
 				if(this.getModel().getGroups().size() != 0){
@@ -172,12 +175,38 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 									ctrl.setModel(null);
 								}
 								this.view.repaint();
+								return;
 							}
 						}
 					}
 				}
 			}
 		}
+	}
+	public void createNewPoint(double x,double y){
+		double z = model.getActualSnapshot();
+		double tmp = z;
+		switch(model.getType()){
+			case DICOM + AXIS_X: z=x; x=tmp; break;
+			case DICOM + AXIS_Y: z=y; y=tmp; break;
+			case TMS   + AXIS_X: z=x; x=tmp; break;
+			case TMS   + AXIS_Y: z=y; y=tmp; break;
+		}
+		for (GroupModel group : this.getModel().getGroups()) {
+			if(group.getName().equals(Configuration.UNASSIGN_GROUP)){
+				Response r = new Response();
+				MyResponsePoint point = new MyResponsePoint(x,y,Configuration.RADIUS,r);
+				point.setZ(z);
+				point.setGroup(group);
+				group.getPoints().add(point);
+				System.out.println("Bod: ["+x+";"+y+";"+z+"] vytvoren");
+				for(MyResponsePoint mrp: group.getPoints()){
+					System.out.println("Bod: ["+mrp.getRealX()+";"+mrp.getRealY()+";"+mrp.getRealZ()+"]");
+				}
+				break;
+			}
+		}
+		
 	}
 	@Override
 	public void mouseMoved(MouseEvent e){

@@ -17,6 +17,7 @@ public class Configuration {
 	
 	public static final int WHITE_PIXEL_TRESSHOLD = 10;
 	public static final int MIN_AMPLITUDE_VALUE = 1000;
+	public static final int RADIUS = 4;
 	
 	public static final String GROUP_SEMICOLON = ";";
 	public static final String GROUP_TILDE = "~";

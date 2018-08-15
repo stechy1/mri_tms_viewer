@@ -137,7 +137,7 @@ public class TriggerMarkers {
 			doc.getDocumentElement().normalize();
 			return doc;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("Nenalezeno validni XML: "+path);
 			return null;
 		}
 	}

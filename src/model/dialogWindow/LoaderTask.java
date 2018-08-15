@@ -163,7 +163,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			MyDicom dicom = this.model.getMriDicom().get(this.model.getActualSnapshot());
 			//MyDicom dicom = this.model.getTmsDicom().get(this.model.getActualSnapshot()); //TODO
 			r.calculateCoords(dicom,coords);
-			MyResponsePoint point = new MyResponsePoint((int)coords[0],(int)coords[1],1,r);
+			MyResponsePoint point = new MyResponsePoint((int)coords[0],(int)coords[1],Configuration.RADIUS,r);
 			point.setZ((int)coords[2]);
 			point.setGroup(group);
 			group.getPoints().add(point);
@@ -184,7 +184,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				}
 			}
 			MyResponsePoint calc_target = target.get(index);
-			source_current.getResponse().getData().put("regDist:",Math.sqrt(dist));
+			source_current.getResponse().getData().put("regDist (mm):",Math.sqrt(dist));
 			source_current.setX(calc_target.getRealX());
 			source_current.setY(calc_target.getRealY());
 			source_current.setZ(calc_target.getRealZ());
