@@ -16,6 +16,7 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	private int minSize = 5;
 	private GroupModel group;
 	private boolean ignoreSize = true;
+	private transient boolean active = false;
 	public MyPoint(double x, double y, double height, double width) {
 		super();
 		this.x = x;
@@ -98,11 +99,22 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	}
 	@Override
 	public double getHeight() {
-		return height;
+		if(isActive()){
+			return height*2;
+		}else{
+			return height;
+		}
+	}
+	public boolean isActive(){
+		return this.active;
 	}
 	@Override
 	public double getWidth() {
-		return widht;
+		if(isActive()){
+			return widht*2;
+		}else{
+			return widht;
+		}
 	}
 	@Override
 	public boolean isEmpty() {
@@ -123,13 +135,7 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		return this.group;
 	}
 	public void setActive(boolean active){
-		if(active){
-			this.height*=2;
-			this.widht*=2;
-		}else{
-			this.height/=2;
-			this.widht/=2;
-		}
+		this.active = active;
 	}
 	public void setIgnoreSize(boolean ignoreSize){
 		this.ignoreSize = ignoreSize;
