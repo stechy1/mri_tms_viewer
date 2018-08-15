@@ -196,6 +196,14 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		for (GroupModel group : this.getModel().getGroups()) {
 			if(group.getName().equals(Configuration.UNASSIGN_GROUP)){
 				Response r = new Response();
+				// #######   ###   ###     ###
+				//    #     #   #  #  #   #   #
+				//    #    #     # #   # #     #
+				//    #    #     # #   # #     #
+				//    #     #   #  #  #   #   #
+				//    #      ###   ###     ###
+				// do response pridat nejake informace / pridat moznost v GUI pridat
+				// 	informaci runce
 				MyResponsePoint point = new MyResponsePoint(x,y,Configuration.RADIUS,r);
 				point.setZ(z);
 				point.setGroup(group);
