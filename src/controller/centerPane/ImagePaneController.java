@@ -152,6 +152,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		if(e.getButton() == MouseEvent.BUTTON2){
 			createNewPoint((e.getX() - this.view.getX_offset())/this.view.getRatio(), 
 				(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio());
+			this.view.repaint();
 		} else if(this.getModel().getActualSnapshot() != -1){
 
 			if(this.getModel().getGroups() != null){
