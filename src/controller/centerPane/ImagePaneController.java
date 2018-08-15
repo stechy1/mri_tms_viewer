@@ -7,6 +7,7 @@ import enums.Controllers;
 import interfaces.IController;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
@@ -21,7 +22,7 @@ import view.MainWindow;
 import view.centerPane.ImagePanel;
 import static controller.Configuration.SELECTION_TRESSHOLD;
 
-public class ImagePaneController implements IController, MouseWheelListener, MouseListener{
+public class ImagePaneController implements IController, MouseWheelListener, MouseListener, MouseMotionListener{
 
 
 	private ImagePanel view;
@@ -177,12 +178,13 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			}
 		}
 	}
-
+	@Override
+	public void mouseMoved(MouseEvent e){
+		this.view.setCursorPosition(e.getX(),e.getY());
+	}
 	@Override public void mouseEntered(MouseEvent e) {}
 	@Override public void mouseExited(MouseEvent e) {}
 	@Override public void mousePressed(MouseEvent e) {}
 	@Override public void mouseReleased(MouseEvent e) {}
-
-
-
+	@Override public void mouseDragged(MouseEvent e) {}
 }

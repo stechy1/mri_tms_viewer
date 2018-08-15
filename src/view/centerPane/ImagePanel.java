@@ -33,7 +33,10 @@ public class ImagePanel extends JPanel{
 
 
 	private int x_offset, y_offset, img_width, img_height, basic_size;
+	private int x_cursor, y_cursor;
 	private double ratio;
+	private Image img;
+	private boolean hard_repaint = true;
 
 	public ImagePanel(ImagePanelModel model) {
 
@@ -43,6 +46,7 @@ public class ImagePanel extends JPanel{
 
 		this.addMouseWheelListener(controller);
 		this.addMouseListener(controller);
+		this.addMouseMotionListener(controller);
 	}
 
 	public ImagePanel() {
@@ -52,12 +56,34 @@ public class ImagePanel extends JPanel{
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
-		Image img = createImage(this.getWidth(),this.getHeight());
-		Graphics g_img = img.getGraphics();
-		paint_buffer((Graphics2D)g_img);
-		g.drawImage(img,0,0,null);
+		Graphics2D g2d = (Graphics2D)g;
+		if(hard_repaint){
+			this.img = createImage(this.getWidth(),this.getHeight());
+			Graphics g_img = img.getGraphics();
+			paintBuffer((Graphics2D)g_img);
+		}
+		if(img!=null){
+			g.drawImage(img,0,0,null);
+		}
+		if(Configuration.showCoords){
+			drawPosition(g2d,x_cursor,y_cursor);
+		}
 	}
-	public void paint_buffer(Graphics2D g2) {
+	public void setCursorPosition(int x,int y){
+		this.x_cursor = x;
+		this.y_cursor = y;
+		if(!Configuration.showCoords){
+			return;
+		}
+		hard_repaint = false;
+		repaint();
+		hard_repaint = true;
+	}
+	public void drawPosition(Graphics2D g2,int x,int y){
+		g2.drawString("["+String.format("%.2f",(x-this.x_offset)*ImagePanelModel.getXSpacing()/ratio)+";"+
+				String.format("%.2f",(img_height-y+this.y_offset)*ImagePanelModel.getYSpacing()/ratio)+"]",x,y); 
+	}
+	public void paintBuffer(Graphics2D g2) {
 		AffineTransform at = g2.getTransform();
 
 		ImagePaneController ctrl = (ImagePaneController) MainWindow.getController(Controllers.IMAGE_PANE_CTRL);
