@@ -13,6 +13,7 @@ public class LeftControlPanel extends JPanel {
 	private JButton btnLoadMri;
 	private JButton btnLoadTms;
 	private JButton btnSnapshotInfo;
+	private JButton btnPointsInfo;
 	private JButton btnSaveCurrentSnapshot;
 	private JButton btnSaveAllSnapshots;
 	private JButton btnSettings;
@@ -34,7 +35,7 @@ public class LeftControlPanel extends JPanel {
 		gridBagLayout.columnWidths = new int[]{0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		this.btnLoadMri = new JButton("Nacti MRI");
@@ -68,6 +69,17 @@ public class LeftControlPanel extends JPanel {
 		gbc_btnSnapshotInfo.gridy = 2;
 		add(this.btnSnapshotInfo, gbc_btnSnapshotInfo);
 		
+		this.btnPointsInfo = new JButton("Informace o bodech");
+		this.btnPointsInfo.setActionCommand("pointsInfo");
+		this.btnPointsInfo.addActionListener(controller);
+		this.btnPointsInfo.setEnabled(false);
+		GridBagConstraints gbc_btnPointsInfo = new GridBagConstraints();
+		gbc_btnPointsInfo.insets = new Insets(0, 0, 5, 0);
+		gbc_btnPointsInfo.fill = GridBagConstraints.BOTH;
+		gbc_btnPointsInfo.gridx = 0;
+		gbc_btnPointsInfo.gridy = 3;
+		add(this.btnPointsInfo, gbc_btnPointsInfo);
+		
 		this.btnSaveCurrentSnapshot = new JButton("Uložit aktuální obrázek");
 		this.btnSaveCurrentSnapshot.setActionCommand("saveCurrent");
 		this.btnSaveCurrentSnapshot.addActionListener(controller);
@@ -76,7 +88,7 @@ public class LeftControlPanel extends JPanel {
 		gbc_btnSaveCurrentSnapshot.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveCurrentSnapshot.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnSaveCurrentSnapshot.gridx = 0;
-		gbc_btnSaveCurrentSnapshot.gridy = 3;
+		gbc_btnSaveCurrentSnapshot.gridy = 4;
 		add(this.btnSaveCurrentSnapshot, gbc_btnSaveCurrentSnapshot);
 		
 		this.btnSaveAllSnapshots = new JButton("Uložit všechny obrázky");
@@ -86,7 +98,7 @@ public class LeftControlPanel extends JPanel {
 		GridBagConstraints gbc_btnSaveAllSnapshots = new GridBagConstraints();
 		gbc_btnSaveAllSnapshots.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveAllSnapshots.gridx = 0;
-		gbc_btnSaveAllSnapshots.gridy = 4;
+		gbc_btnSaveAllSnapshots.gridy = 5;
 		add(this.btnSaveAllSnapshots, gbc_btnSaveAllSnapshots);
 		
 		this.btnSaveGroup = new JButton("Ulož skupiny");
@@ -97,7 +109,7 @@ public class LeftControlPanel extends JPanel {
 		gbc_btnSaveGroup.fill = GridBagConstraints.BOTH;
 		gbc_btnSaveGroup.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveGroup.gridx = 0;
-		gbc_btnSaveGroup.gridy = 5;
+		gbc_btnSaveGroup.gridy = 6;
 		add(this.btnSaveGroup, gbc_btnSaveGroup);
 		
 		this.btnSettings = new JButton("Nastavení");
@@ -108,7 +120,7 @@ public class LeftControlPanel extends JPanel {
 		gbc_btnSettings.anchor = GridBagConstraints.SOUTH;
 		gbc_btnSettings.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnSettings.gridx = 0;
-		gbc_btnSettings.gridy = 6;
+		gbc_btnSettings.gridy = 7;
 		add(this.btnSettings, gbc_btnSettings);
 	}
 
@@ -122,6 +134,10 @@ public class LeftControlPanel extends JPanel {
 
 	public JButton getBtnSnapshotInfo(){
 		return this.btnSnapshotInfo;
+	}
+
+	public JButton getBtnPointsInfo(){
+		return this.btnPointsInfo;
 	}
 
 	public JButton getBtnSaveGroup(){

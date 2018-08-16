@@ -57,6 +57,7 @@ public class LeftControlPanelController implements IController, ActionListener {
 		this.view.getBtnSaveCurrentSnapshot().setEnabled(enabled);		
 		this.view.getBtnSaveAllSnapshots().setEnabled(enabled);		
 		this.view.getBtnSnapshotInfo().setEnabled(enabled);		
+		this.view.getBtnPointsInfo().setEnabled(enabled);		
 		enabled = ipm.getTmsDicom().size()>0;
 		this.view.getBtnSaveGroup().setEnabled(enabled);		
 	}
