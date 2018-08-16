@@ -171,8 +171,8 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			point.setGroup(group);
 			group.getPoints().add(point);
 		}
-		//closestPointRegistration(group.getPoints(),convertTMSDicomsToAreaPoints(this.model.getTmsDicom()));
 		directionRegistration(group.getPoints(),this.model.getMriDicom());
+		//closestPointRegistration(group.getPoints(),convertTMSDicomsToAreaPoints(this.model.getTmsDicom()));
 	}
 
 	public static int getPixelValue(int x,int y,int z,List<MyDicom> data) throws IndexOutOfBoundsException{
@@ -200,7 +200,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 						counter=1;
 					}
 				}catch(IndexOutOfBoundsException e){
-					source.getResponse().getData().put("regDist:",0.0);
+					source.getResponse().getData().put("regDirDist (mm):",0.0);
 					break;
 				}
 			}else{
@@ -211,7 +211,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				double dy = (y-source.getRealY())*Configuration.pixelSpace;
 				double dz = (z-source.getRealZ())*Configuration.sliceThickness;
 				double dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
-				source.getResponse().getData().put("regDist:",dist);
+				source.getResponse().getData().put("regDirDist (mm):",dist);
 				source.setX(x);
 				source.setY(y);
 				source.setZ(z);
@@ -219,7 +219,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			}
 		}
 	}
-	/*public void closestPointRegistration(ArrayList<MyResponsePoint> source,ArrayList<MyResponsePoint> target){
+	public void closestPointRegistration(ArrayList<MyResponsePoint> source,ArrayList<MyResponsePoint> target){
 		for(int a=0; a<source.size(); a++){
 			MyResponsePoint source_current = source.get(a);
 			double dist = Double.MAX_VALUE;
@@ -233,12 +233,12 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				}
 			}
 			MyResponsePoint calc_target = target.get(index);
-			source_current.getResponse().getData().put("regDist (mm):",Math.sqrt(dist));
+			source_current.getResponse().getData().put("regClsDist (mm):",Math.sqrt(dist));
 			source_current.setX(calc_target.getRealX());
 			source_current.setY(calc_target.getRealY());
 			source_current.setZ(calc_target.getRealZ());
 		}
-	}*/
+	}
 	/*private void AssignAmplitudesToPoints(ArrayList<MyResponsePoint> points) {
 		int minValue = 255, maxValue = 0;
 		for (MyResponsePoint myPoint : points) {

@@ -24,6 +24,9 @@ public class Configuration {
 	public static final String GROUP_TILDE = "~";
 	public static final String GROUP_COMMA = ",";
 	public static final String GROUPS = "groups.out";
+	public static final String X_STRING = "X (mm):";
+	public static final String Y_STRING = "Y (mm):";
+	public static final String Z_STRING = "Z (mm):";
 	
 	public static final String UNASSIGN_GROUP = "nepřiřazené body";
 	public static final Color UNASSIGN_COLOR = new Color(255, 10, 10);

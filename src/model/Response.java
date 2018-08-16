@@ -69,8 +69,8 @@ public class Response implements Serializable{
 		//System.out.println(img_coords[0]+","+img_coords[1]+","+img_coords[2]);
 		//System.out.println(matrix.getData()[3]+","+matrix.getData()[7]+","+matrix.getData()[11]);
 		//TODO not include in release:
-		data.put("X (mm)",img_coords[0]*Configuration.pixelSpace);
-		data.put("Y (mm)",img_coords[1]*Configuration.pixelSpace);
-		data.put("Z (mm)",img_coords[2]*Configuration.sliceThickness);
+		data.put(Configuration.X_STRING,img_coords[0]*Configuration.pixelSpace);
+		data.put(Configuration.Y_STRING,img_coords[1]*Configuration.pixelSpace);
+		data.put(Configuration.Z_STRING,img_coords[2]*Configuration.sliceThickness);
 	}
 }

@@ -1,6 +1,7 @@
 package view.centerPane;
 import static controller.UtilityClass.getTagValue;
 import static controller.UtilityClass.stringToDouble;
+import static model.ImagePanelModel.*;
 
 import controller.Configuration;
 import controller.QuickHull;
@@ -22,6 +23,7 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import model.ImagePanelModel;
@@ -152,6 +154,7 @@ public class ImagePanel extends JPanel{
 								g2.translate(0,this.getHeight());
 								g2.scale(1,-1);
 								drawPoints(g2, pointsInLayer);
+								drawConnections(g2, pointsInLayer);
 								g2.setTransform(at);
 								drawCoords(g2, pointsInLayer);
 
@@ -268,6 +271,57 @@ public class ImagePanel extends JPanel{
 		}
 	}
 
+	private void drawConnections(Graphics2D g2, ArrayList<MyResponsePoint> points) {
+		g2.setColor(Color.GREEN);
+		for (MyResponsePoint myPoint : points) {
+			Map<String,Double> mp = myPoint.getResponse().getData();
+			double px,py,pz;
+			if(mp.containsKey(Configuration.X_STRING)){
+				px = mp.get(Configuration.X_STRING)/ImagePanelModel.getXSpacing();
+			}else{
+				continue;
+			}
+			if(mp.containsKey(Configuration.Y_STRING)){
+				py = mp.get(Configuration.Y_STRING)/ImagePanelModel.getYSpacing();
+			}else{
+				continue;
+			}
+			if(mp.containsKey(Configuration.Z_STRING)){
+				pz = mp.get(Configuration.Z_STRING)/ImagePanelModel.getZSpacing();
+			}else{
+				continue;
+			}
+			double cx = myPoint.getRealX();
+			double cy = myPoint.getRealY();
+			double cz = myPoint.getRealZ();
+			switch(ImagePanelModel.getType()){
+				case DICOM + AXIS_Z:
+					g2.drawLine((int)(px*ratio+x_offset),(int)(py*ratio+y_offset),
+						(int)(cx*ratio+x_offset),(int)(cy*ratio+y_offset));
+					break;
+				case DICOM + AXIS_X:
+					g2.drawLine((int)(py*ratio+x_offset),(int)(pz*ratio+y_offset),
+						(int)(cy*ratio+x_offset),(int)(cz*ratio+y_offset));
+					break;
+				case DICOM + AXIS_Y:
+					g2.drawLine((int)(px*ratio+x_offset),(int)(pz*ratio+y_offset),
+						(int)(cx*ratio+x_offset),(int)(cz*ratio+y_offset));
+					break;
+				case TMS   + AXIS_Z:
+					g2.drawLine((int)(px*ratio+x_offset),(int)(py*ratio+y_offset),
+						(int)(cx*ratio+x_offset),(int)(cy*ratio+y_offset));
+					break;
+				case TMS   + AXIS_X:
+					g2.drawLine((int)(py*ratio+x_offset),(int)(pz*ratio+y_offset),
+						(int)(cy*ratio+x_offset),(int)(cz*ratio+y_offset));
+					break;
+				case TMS   + AXIS_Y:
+					g2.drawLine((int)(px*ratio+x_offset),(int)(pz*ratio+y_offset),
+						(int)(cx*ratio+x_offset),(int)(cz*ratio+y_offset));
+					break;
+			}
+		}
+	}
 	private void drawPoints(Graphics2D g2, ArrayList<MyResponsePoint> points) {
 		for (MyResponsePoint myPoint : points) {
 			g2.fillOval((int) ((myPoint.getCenterX()-myPoint.getWidth()/2) * ratio + this.x_offset), 
