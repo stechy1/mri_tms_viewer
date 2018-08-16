@@ -17,9 +17,12 @@ public class Matrix4x4 implements Serializable{
 	}
 
 	public Matrix4x4(Matrix4x4 cpy){
-		System.arraycopy(cpy.matrix,0,matrix,0,cpy.matrix.length);
+		copyOf(cpy);
 	}
 
+	public void copyOf(Matrix4x4 cpy){
+		System.arraycopy(cpy.matrix,0,matrix,0,cpy.matrix.length);
+	}
 	public void multiply_by_vector(double[] data,double[] res){
 		res[0] = matrix[0]*data[0]+matrix[1]*data[1]+matrix[2]*data[2]+matrix[3]*data[3];
 		res[1] = matrix[4]*data[0]+matrix[5]*data[1]+matrix[6]*data[2]+matrix[7]*data[3];

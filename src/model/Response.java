@@ -58,12 +58,13 @@ public class Response implements Serializable{
 	public void calculateCoords(MyDicom mridicom,double[] img_coords){
 		Matrix4x4 mri = getMriMatrix(mridicom);
 		Matrix4x4 inv = mri.inverse();
-		double[] vec = {matrix.getData()[3],matrix.getData()[7],matrix.getData()[11],matrix.getData()[15]};
-		inv.multiply_by_vector(vec,img_coords);
-		/*Matrix4x4 conv = inv.multiply(matrix);
+		/*double[] vec = {matrix.getData()[3],matrix.getData()[7],matrix.getData()[11],matrix.getData()[15]};
+		inv.multiply_by_vector(vec,img_coords);*/
+		Matrix4x4 conv = inv.multiply(matrix);
+		matrix.copyOf(conv);
 		img_coords[0] = conv.getData()[3]/conv.getData()[15];
 		img_coords[1] = conv.getData()[7]/conv.getData()[15];
-		img_coords[2] = conv.getData()[11]/conv.getData()[15];*/
+		img_coords[2] = conv.getData()[11]/conv.getData()[15];
 		//System.out.println(mri+"->\n"+inv+"*\n"+matrix+"=\n"+conv);
 		//System.out.println(img_coords[0]+","+img_coords[1]+","+img_coords[2]);
 		//System.out.println(matrix.getData()[3]+","+matrix.getData()[7]+","+matrix.getData()[11]);

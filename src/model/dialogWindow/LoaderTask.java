@@ -121,16 +121,19 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		for(int x = 0; x < img.getWidth() ; x ++){
 			for(int y = 0 ; y < img.getHeight() ; y++){
 				int color = img.getRGB(x, y);
-				int  red = (color & 0x00ff0000) >> 16;
-				int  green = (color & 0x0000ff00) >> 8;
-				int  blue = color & 0x000000ff;
-				int total = (int) (red+green+blue)/3;
+				int total = colorAverage(color);
 				if(total > Configuration.WHITE_PIXEL_TRESSHOLD){
 					area.add(new MyResponsePoint(x, y, 1));
 				}
 			}
 		}
 		return area;
+	}
+	public static int colorAverage(int color){
+		int red = (color & 0x00ff0000) >> 16;
+		int green = (color & 0x0000ff00) >> 8;
+		int blue = color & 0x000000ff;
+		return (int) (red+green+blue)/3;
 	}
 	/** list pixelu, ktere maji hodnotu vetsi nez tresshold z configu. 
 	 * @param area
@@ -168,9 +171,55 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			point.setGroup(group);
 			group.getPoints().add(point);
 		}
-		closestPointRegistration(group.getPoints(),convertTMSDicomsToAreaPoints(this.model.getTmsDicom()));
+		//closestPointRegistration(group.getPoints(),convertTMSDicomsToAreaPoints(this.model.getTmsDicom()));
+		directionRegistration(group.getPoints(),this.model.getMriDicom());
 	}
-	public void closestPointRegistration(ArrayList<MyResponsePoint> source,ArrayList<MyResponsePoint> target){
+
+	public static int getPixelValue(int x,int y,int z,List<MyDicom> data) throws IndexOutOfBoundsException{
+		return data.get(z).getBufferedImage().getRGB(x,y);
+	}
+	public void directionRegistration(ArrayList<MyResponsePoint> source,List<MyDicom> target){
+		for(MyResponsePoint res: source){
+			directionRegistration(res,target);
+		}
+	}
+	public void directionRegistration(MyResponsePoint source,List<MyDicom> target){
+		final int overshoot = 10;//px
+		double[] vec = new double[]{0,0,0,1};
+		double[] res = new double[4];
+		for(int a=0,counter=0;;a++){
+			vec[0]=a;
+			source.getResponse().getMatrix().multiply_by_vector(vec,res);
+			double x = res[0]/res[3];
+			double y = res[1]/res[3];
+			double z = res[2]/res[3];
+			if(counter<=0){
+				try{
+					int value = colorAverage(getPixelValue((int)x,(int)y,(int)z,target));
+					if(value>Configuration.WHITE_MRI_PIXEL_THRESHOLD){
+						counter=1;
+					}
+				}catch(IndexOutOfBoundsException e){
+					source.getResponse().getData().put("regDist:",0.0);
+					break;
+				}
+			}else{
+				counter++;
+			}
+			if(counter>=overshoot){
+				double dx = (x-source.getRealX())*Configuration.pixelSpace;
+				double dy = (y-source.getRealY())*Configuration.pixelSpace;
+				double dz = (z-source.getRealZ())*Configuration.sliceThickness;
+				double dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
+				source.getResponse().getData().put("regDist:",dist);
+				source.setX(x);
+				source.setY(y);
+				source.setZ(z);
+				break;
+			}
+		}
+	}
+	/*public void closestPointRegistration(ArrayList<MyResponsePoint> source,ArrayList<MyResponsePoint> target){
 		for(int a=0; a<source.size(); a++){
 			MyResponsePoint source_current = source.get(a);
 			double dist = Double.MAX_VALUE;
@@ -189,7 +238,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			source_current.setY(calc_target.getRealY());
 			source_current.setZ(calc_target.getRealZ());
 		}
-	}
+	}*/
 	/*private void AssignAmplitudesToPoints(ArrayList<MyResponsePoint> points) {
 		int minValue = 255, maxValue = 0;
 		for (MyResponsePoint myPoint : points) {

@@ -16,6 +16,7 @@ public class Configuration {
 	public static final int SELECTION_TRESSHOLD = 2;
 	
 	public static final int WHITE_PIXEL_TRESSHOLD = 10;
+	public static final int WHITE_MRI_PIXEL_THRESHOLD = 20;
 	public static final int MIN_AMPLITUDE_VALUE = 1000;
 	public static final int RADIUS = 4;
 	
