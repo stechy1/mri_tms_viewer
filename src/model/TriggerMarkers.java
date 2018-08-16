@@ -13,7 +13,7 @@ import static controller.Configuration.VALUE;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -43,21 +43,21 @@ public class TriggerMarkers {
 		loadResponses(triggerMarkerXml);
 	}
 
-	private String forEach(String doc,String tagName,Function<Node,String> func){
+	private String forEach(String doc,String tagName,BiFunction<Node,Integer,String> func){
 		Document dc = initDocument(doc);
 		NodeList list = dc.getElementsByTagName(tagName);
 		return forEach(func,list);
 	}
 
-	private String forEach(Node node,String tagName,Function<Node,String> func){
+	private String forEach(Node node,String tagName,BiFunction<Node,Integer,String> func){
 		NodeList list = ((Element)node).getElementsByTagName(tagName);
 		return forEach(func,list);
 	}
 
-	private String forEach(Function<Node,String> func,NodeList list){
+	private String forEach(BiFunction<Node,Integer,String> func,NodeList list){
 		for(int a=0; a<list.getLength(); a++){
 			Node node = list.item(a);
-			String ret = func.apply(node);
+			String ret = func.apply(node,a);
 			if (ret!=null){
 				return ret;
 			}
@@ -66,9 +66,10 @@ public class TriggerMarkers {
 	}
 
 	private void loadResponses(String triggerMarkerXml) {
-		forEach(triggerMarkerXml,TRIGGER_MARKER,(n1)->{
+		forEach(triggerMarkerXml,TRIGGER_MARKER,(n1,x)->{
 			Response res = new Response();
-			forEach(n1,MATRIX,(n2)->{
+			res.getData().put("ID: ",(double)x);
+			forEach(n1,MATRIX,(n2,num)->{
 				for(int a=0,c=0; a<4; a++){
 					for(int b=0; b<4; b++, c++){
 						res.getMatrix().getData()[c] = Double.valueOf(n2.getAttributes().getNamedItem("data"+a+b).getTextContent());
@@ -76,7 +77,7 @@ public class TriggerMarkers {
 				}
 				return null;
 			});
-			forEach(n1,VALUE,(n2)->{
+			forEach(n1,VALUE,(n2,num)->{
 				res.getData().put(n2.getAttributes().getNamedItem(KEY).getTextContent(),Double.valueOf(n2.getAttributes().getNamedItem(RESPONSE).getTextContent()));
 				return null;
 			});
