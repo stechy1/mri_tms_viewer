@@ -19,6 +19,7 @@ import javax.swing.ScrollPaneConstants;
 
 import java.awt.GridBagConstraints;
 import model.DicomTagsTable;
+import model.PointsDataTable;
 import model.ImagePanelModel;
 import view.MainWindow;
 import javax.swing.JScrollPane;
@@ -29,13 +30,13 @@ import java.awt.Insets;
 public class ShowDicomTags extends JFrame {
 	
 	private DicomTagsTable dicomTableMRI;
-	private DicomTagsTable dicomTableTMS;
+	private PointsDataTable pointsDataTable;
 	
 	private JPanel contentPane; 
 	
 	private JTabbedPane tabs;
 	private JScrollPane scrollPaneMri;
-	private JScrollPane scrollPaneTms;
+	private JScrollPane scrollPanePoints;
 	private JPanel controlPanel;
 	private JButton btnOk;
 	
@@ -71,8 +72,6 @@ public class ShowDicomTags extends JFrame {
 		
 		this.setContentPane(contentPane);
 		
-		
-		
 		this.tabs = new JTabbedPane();
 		
 		GridBagConstraints gbc_tabs = new GridBagConstraints();
@@ -107,17 +106,19 @@ public class ShowDicomTags extends JFrame {
 		this.scrollPaneMri.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.scrollPaneMri.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		this.tabs.addTab("MRI info", null, this.scrollPaneMri, null);
-		
-		//this.dicomTableTMS = new DicomTagsTable(ipm.getTmsDicom().get(ipm.getActualSnapshot()));
-		//this.scrollPaneTms = new JScrollPane();
-		//this.tabs.addTab("TMS info", null, this.scrollPaneTms, null);
+
+		this.pointsDataTable= new PointsDataTable(ipm.getGroups());
+		this.scrollPanePoints = new JScrollPane(pointsDataTable);
+		this.scrollPanePoints.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.scrollPanePoints.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		this.tabs.addTab("Body", null, this.scrollPanePoints, null);
+	}
+	
+	public PointsDataTable getPointsDataTable() {
+		return pointsDataTable;
 	}
 	
 	public DicomTagsTable getDicomTableMRI() {
 		return dicomTableMRI;
-	}
-	
-	public DicomTagsTable getDicomTableTMS() {
-		return dicomTableTMS;
 	}
 }
