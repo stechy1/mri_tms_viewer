@@ -11,6 +11,7 @@ import view.MainWindow;
 public class OptionPane extends JPanel {
 	private JCheckBox check_ruler;
 	private JCheckBox check_coords;
+	private JCheckBox check_threshold;
 	public OptionPane() {
 
 		initComponents();
@@ -31,11 +32,19 @@ public class OptionPane extends JPanel {
 		this.check_coords.addActionListener(controller);
 		add(this.check_coords);
 		
+		this.check_threshold = new JCheckBox("Prahuj snimky");
+		this.check_threshold.setSelected(Configuration.threshold);
+		this.check_threshold.addActionListener(controller);
+		add(this.check_threshold);
+		
 	}
 	public JCheckBox getRulers() {
 		return this.check_ruler;
 	}
 	public JCheckBox getCoords() {
 		return this.check_coords;
+	}
+	public JCheckBox getThreshold() {
+		return this.check_threshold;
 	}
 }

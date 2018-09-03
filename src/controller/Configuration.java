@@ -15,8 +15,8 @@ public class Configuration {
 	
 	public static final int SELECTION_TRESSHOLD = 2;
 	
-	public static final int WHITE_PIXEL_TRESSHOLD = 10;
-	public static final int WHITE_MRI_PIXEL_THRESHOLD = 20;
+	public static final int WHITE_PIXEL_TRESSHOLD = 100;
+	public static final int WHITE_MRI_PIXEL_THRESHOLD = 100;
 	public static final int MIN_AMPLITUDE_VALUE = 1000;
 	public static final int RADIUS = 4;
 	
@@ -41,6 +41,7 @@ public class Configuration {
 	public static double sliceThickness = 1;
 	public static boolean drawRulers = false;
 	public static boolean showCoords = false;
+	public static boolean threshold = false;
 	
 	public static final String BIN_DATA = "BinData";
 	public static final String PATIENT_DATA = "PatientData.xml";

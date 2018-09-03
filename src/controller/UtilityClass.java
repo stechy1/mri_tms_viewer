@@ -11,6 +11,8 @@ import java.util.Date;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import view.MainWindow;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 
 public class UtilityClass {
 
@@ -18,6 +20,9 @@ public class UtilityClass {
 	 * @param text text to show
 	 * @param title title of dialog
 	 */
+	public static byte[] getRaster(BufferedImage buf){
+		return ((DataBufferByte)buf.getRaster().getDataBuffer()).getData();
+	}
 	public static void showInfoNotification(String text, String title){
 		showNotification(text, title, JOptionPane.INFORMATION_MESSAGE);
 	}

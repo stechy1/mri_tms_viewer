@@ -1,4 +1,5 @@
 package model.dialogWindow;
+import static controller.UtilityClass.getRaster;
 import javax.swing.SwingWorker;
 import javax.swing.JProgressBar;
 import controller.centerPane.ImagePaneController;
@@ -184,10 +185,11 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		}
 	}
 	public void directionRegistration(MyResponsePoint source,List<MyDicom> target){
-		final int overshoot = 10;//px
+		final int overshoot = 3;//px
+		final int max_len = 100;
 		double[] vec = new double[]{0,0,0,1};
 		double[] res = new double[4];
-		for(int a=0,counter=0;;a++){
+		for(int a=0,counter=0;a<max_len;a++){
 			vec[0]=a;
 			source.getResponse().getMatrix().multiply_by_vector(vec,res);
 			double x = res[0]/res[3];
@@ -195,18 +197,20 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			double z = res[2]/res[3];
 			if(counter<=0){
 				try{
-					int value = colorAverage(getPixelValue((int)x,(int)y,(int)z,target));
-					if(value>Configuration.WHITE_MRI_PIXEL_THRESHOLD){
+					BufferedImage img = target.get((int)z).getBufferedImage();
+					byte[] data = UtilityClass.getRaster(img);
+					byte value = data[(int)x+(int)y*img.getWidth()];
+					if((((int)value)&0xff)>Configuration.WHITE_MRI_PIXEL_THRESHOLD){
 						counter=1;
 					}
 				}catch(IndexOutOfBoundsException e){
-					source.getResponse().getData().put("regDirDist (mm):",0.0);
-					break;
+					source.getResponse().getData().put("regDirDist (mm):",Double.NaN);
+					return;
 				}
 			}else{
 				counter++;
 			}
-			if(counter>=overshoot){
+			if(counter>overshoot){
 				double dx = (x-source.getRealX())*Configuration.pixelSpace;
 				double dy = (y-source.getRealY())*Configuration.pixelSpace;
 				double dz = (z-source.getRealZ())*Configuration.sliceThickness;
@@ -215,9 +219,10 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				source.setX(x);
 				source.setY(y);
 				source.setZ(z);
-				break;
+				return;
 			}
 		}
+		source.getResponse().getData().put("regDirDist (mm):",Double.NaN);
 	}
 	public void closestPointRegistration(ArrayList<MyResponsePoint> source,ArrayList<MyResponsePoint> target){
 		for(int a=0; a<source.size(); a++){
@@ -364,9 +369,6 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			this.model.setAcrossXTms(across_x);
 			this.model.setAcrossYTms(across_y);	
 		}
-	}
-	public static byte[] getRaster(BufferedImage buf){
-		return ((DataBufferByte)buf.getRaster().getDataBuffer()).getData();
 	}
 	public void loadTmsFiles(){
 		if(folder != null){

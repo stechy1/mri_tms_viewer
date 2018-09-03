@@ -56,6 +56,8 @@ public class OptionPaneController implements IController, ActionListener {
 			Configuration.drawRulers = this.view.getRulers().isSelected();
 		}else if(e.getSource() == this.view.getCoords()){
 			Configuration.showCoords = this.view.getCoords().isSelected();
+		}else if(e.getSource() == this.view.getThreshold()){
+			Configuration.threshold = this.view.getThreshold().isSelected();
 		}
 		notifyController();
 	}

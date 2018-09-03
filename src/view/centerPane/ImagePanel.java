@@ -108,14 +108,14 @@ public class ImagePanel extends JPanel{
 							}else{
 								img = new BufferedImage(img.getColorModel(),img.copyData(null),img.getColorModel().isAlphaPremultiplied(),null);
 							}
-
-							//Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
-							//druhy parametr kontrast... 
-							RescaleOp resOp = new RescaleOp(model.convertBrightness(), model.convertContrast(), null);
-
-							resOp.filter(img, img);
-
-
+							if(Configuration.threshold){
+								threshold(img);
+							}else{
+								//Prvni parametr svetlost... 0.0 nic neni, 1.0 puvodni, 2.0 cerno
+								//druhy parametr kontrast... 
+								RescaleOp resOp = new RescaleOp(model.convertBrightness(), model.convertContrast(), null);
+								resOp.filter(img, img);
+							}
 							double widthRatio = (double) this.getWidth() / img.getWidth(null);
 							double heightRatio = (double) this.getHeight() / img.getHeight(null);
 
@@ -218,6 +218,16 @@ public class ImagePanel extends JPanel{
 		}
 	}
 
+	public void threshold(BufferedImage img){
+		byte[] data = UtilityClass.getRaster(img);
+		for(int a=0; a<data.length; a++){
+			if((((int)data[a])&0xff)>Configuration.WHITE_MRI_PIXEL_THRESHOLD){
+				data[a]=-1;
+			}else{
+				data[a]=0;
+			}
+		}
+	}
 	private void drawRulers(Graphics2D g2){
 		int[] mm_per_line = {5,10,50,100};
 		int[] line_lengths = {2,4,8,16};
