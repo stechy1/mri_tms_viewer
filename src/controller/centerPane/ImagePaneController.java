@@ -28,7 +28,6 @@ import static model.ImagePanelModel.*;
 
 public class ImagePaneController implements IController, MouseWheelListener, MouseListener, MouseMotionListener{
 
-	private boolean exploded = false;
 	private ImagePanel view;
 	private ImagePanelModel model; 	
 
@@ -55,20 +54,9 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		return view;
 	}
 
-	public void tryToImplode(){
-		if(exploded){
-
-		}
-	}
-	public void tryToExplode(){
-
-	}
 	@Override
 	public void setModel(Object model) {
-		tryToImplode();
 		this.model = (ImagePanelModel) model;
-		tryToExplode();
-		notifyController();
 	}
 
 	/*----------------*
@@ -138,12 +126,12 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		if(active==null){
 			return;
 		}
-		if(involved.size()<2){
-			return;
+		if(involved.size()>=2){
+			for(MyResponsePoint r:involved){
+				r.restoreCoords();
+			}
 		}
-		for(MyResponsePoint r:involved){
-			r.restoreCoords();
-		}
+		involved.clear();
 	}
 	public void explode(){
 		if(active==null){
@@ -151,7 +139,6 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		}
 		active.backupCoords();
 		List<MyResponsePoint> list = getView().getVisiblePoints();
-		involved.clear();
 		for(MyResponsePoint mrp:list){
 			double dx = mrp.getX()-active.getX();
 			double dy = mrp.getY()-active.getY();
@@ -183,7 +170,6 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	}
 	public void changeSide(int side){
 		this.getModel().setType(side);
-		notifyController();
 	}
 
 	@Override
@@ -215,7 +201,9 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	public void setPoint(MyResponsePoint point){
 		implode();
 		this.active = point;
-		explode();
+		if(Configuration.explode){
+			explode();
+		}
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -244,13 +232,15 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 									setPoint(null);
 									ctrl.setModel(null);
 								}
-								this.view.repaint();
+								notifyController();
 								return;
 							}
 						}
 					}
 				}
 			}
+			implode();
+			notifyController();
 		}
 	}
 	public void createNewPoint(double x,double y){

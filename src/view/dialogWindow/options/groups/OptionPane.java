@@ -12,6 +12,7 @@ public class OptionPane extends JPanel {
 	private JCheckBox check_ruler;
 	private JCheckBox check_coords;
 	private JCheckBox check_threshold;
+	private JCheckBox check_explode;
 	public OptionPane() {
 
 		initComponents();
@@ -37,6 +38,11 @@ public class OptionPane extends JPanel {
 		this.check_threshold.addActionListener(controller);
 		add(this.check_threshold);
 		
+		this.check_explode = new JCheckBox("Roztahnuti blizkych bodu");
+		this.check_explode.setSelected(Configuration.explode);
+		this.check_explode.addActionListener(controller);
+		add(this.check_explode);
+		
 	}
 	public JCheckBox getRulers() {
 		return this.check_ruler;
@@ -46,5 +52,8 @@ public class OptionPane extends JPanel {
 	}
 	public JCheckBox getThreshold() {
 		return this.check_threshold;
+	}
+	public JCheckBox getExplode(){
+		return this.check_explode;
 	}
 }

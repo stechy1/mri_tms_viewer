@@ -43,6 +43,7 @@ public class Configuration {
 	public static boolean drawRulers = false;
 	public static boolean showCoords = false;
 	public static boolean threshold = false;
+	public static boolean explode = false;
 	
 	public static final String BIN_DATA = "BinData";
 	public static final String PATIENT_DATA = "PatientData.xml";
