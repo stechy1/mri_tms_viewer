@@ -158,6 +158,10 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		}
 		center_of_mass[0]/=size;
 		center_of_mass[1]/=size;
+		//explodeDirection(center_of_mass);
+		explodeCircle(center_of_mass);
+	}
+	public void explodeDirection(double[] center_of_mass){
 		for(MyResponsePoint mrp:involved){
 			double dx = center_of_mass[0]-mrp.getX();
 			double dy = center_of_mass[1]-mrp.getY();
@@ -166,6 +170,17 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			mrp.backupCoords();
 			mrp.setX(center_of_mass[0]-dx*ratio);
 			mrp.setY(center_of_mass[1]-dy*ratio);
+		}
+	}
+	public void explodeCircle(double[] center_of_mass){
+		int len = involved.size();
+		for(int a=0; a<len; a++){
+			MyResponsePoint mrp = involved.get(a);
+			double cx = Configuration.MIN_ALLOWED_DISTANCE*Math.cos(2*a*Math.PI/len);
+			double cy = Configuration.MIN_ALLOWED_DISTANCE*Math.sin(2*a*Math.PI/len);
+			mrp.backupCoords();
+			mrp.setX(center_of_mass[0]+cx);
+			mrp.setY(center_of_mass[1]+cy);
 		}
 	}
 	public void changeSide(int side){
