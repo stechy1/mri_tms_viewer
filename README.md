@@ -1,4 +1,4 @@
-#MRI/TMS viewer
+# MRI/TMS viewer
 Aplikace pro vizualizaci magnetické rezonance
 
 ## Závislosti
