@@ -170,6 +170,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 	}
 	public void changeSide(int side){
 		this.getModel().setType(side);
+		notifyController();
 	}
 
 	@Override
@@ -179,7 +180,6 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		if(e.isControlDown()){
 			int types = this.getModel().getTypes();
 			changeSide((this.getModel().getType()+steps+types)%types);
-			notifyController();
 		}else{
 			int move = this.model.getActualSnapshot() + steps;
 			this.model.setActualSnapshot(move<0?0:move);
