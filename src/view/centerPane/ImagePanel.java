@@ -75,16 +75,24 @@ public class ImagePanel extends JPanel{
 		if(Configuration.showCoords){
 			drawPosition(g2d,x_cursor,y_cursor);
 		}
+		if(Configuration.explode){
+			drawFieldOfAction(g2d,x_cursor,y_cursor);
+		}
 	}
 	public void setCursorPosition(int x,int y){
 		this.x_cursor = x;
 		this.y_cursor = y;
-		if(!Configuration.showCoords){
-			return;
+		if(Configuration.showCoords || Configuration.explode){
+			hard_repaint = false;
+			repaint();
+			hard_repaint = true;
 		}
-		hard_repaint = false;
-		repaint();
-		hard_repaint = true;
+	}
+	public void drawFieldOfAction(Graphics2D g2,int x,int y){
+		g2.setColor(Color.BLUE);
+		int d = (int)(2*Configuration.MIN_ALLOWED_DISTANCE*ratio);
+		int r = d>>1;
+		g2.drawOval(x-r,y-r,d,d);
 	}
 	public void drawPosition(Graphics2D g2,int x,int y){
 		g2.drawString("[ "+ImagePanelModel.getXAxis()+": "+String.format("%.2f",(x-this.x_offset)*ImagePanelModel.getXSpacing()/ratio)
