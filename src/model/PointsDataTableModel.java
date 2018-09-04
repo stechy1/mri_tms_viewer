@@ -36,9 +36,9 @@ public class PointsDataTableModel extends AbstractTableModel {
 		try{
 			double val = Double.valueOf((String)value);
 			switch(col){
-				case 1: model.get(row).setX(val/Configuration.pixelSpace); break;
-				case 2: model.get(row).setY(val/Configuration.pixelSpace); break;
-				case 3: model.get(row).setZ(val/Configuration.sliceThickness); break;
+				case 1: model.get(row).setRealX(val/Configuration.pixelSpace); break;
+				case 2: model.get(row).setRealY(val/Configuration.pixelSpace); break;
+				case 3: model.get(row).setRealZ(val/Configuration.sliceThickness); break;
 				default:model.get(row).getResponse().getData().put(columnName[col-3],val); break;
 			}
 		}catch(Exception e){}

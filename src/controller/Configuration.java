@@ -13,7 +13,8 @@ public class Configuration {
 	public static final Color BACKGROUD_CONTROLLER = new Color(250, 250, 250);
 	public static final String LOADER_GIF_PATH = "resources"+File.separator+"loading.gif";
 	
-	public static final int SELECTION_TRESSHOLD = 2;
+	public static final int SELECTION_TRESSHOLD = 4;
+	public static final double MIN_ALLOWED_DISTANCE = 10;
 	
 	public static final int WHITE_PIXEL_TRESSHOLD = 100;
 	public static final int WHITE_MRI_PIXEL_THRESHOLD = 100;

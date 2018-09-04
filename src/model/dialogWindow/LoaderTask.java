@@ -97,7 +97,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		}
 		double diameter = getDiameter(x2-x1, y2-y1);
 		MyResponsePoint mrp = new MyResponsePoint(x1, y1, diameter);
-		mrp.setZ(layer);
+		mrp.setRealZ(layer);
 		return mrp;
 	}
 	private ArrayList<MyResponsePoint> convertTMSDicomsToAreaPoints(List<MyDicom> dcm){
@@ -155,7 +155,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 		this.model.getGroups().add(group);
 		/*for (int i = 0 ; i < this.model.getTmsDicom().size(); i++){
 			for (MyResponsePoint myPoint : convertTMSDicomToAreaPoints(this.model.getTmsDicom().get(i))) {
-				myPoint.setZ(i);
+				myPoint.setRealZ(i);
 				myPoint.setGroup(group);
 				group.getPoints().add(myPoint);
 			}
@@ -168,7 +168,7 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			//MyDicom dicom = this.model.getTmsDicom().get(this.model.getActualSnapshot()); //TODO
 			r.calculateCoords(dicom,coords);
 			MyResponsePoint point = new MyResponsePoint((int)coords[0],(int)coords[1],Configuration.RADIUS,r);
-			point.setZ((int)coords[2]);
+			point.setRealZ((int)coords[2]);
 			point.setGroup(group);
 			group.getPoints().add(point);
 		}
@@ -216,9 +216,9 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 				double dz = (z-source.getRealZ())*Configuration.sliceThickness;
 				double dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
 				source.getResponse().getData().put("regDirDist (mm):",dist);
-				source.setX(x);
-				source.setY(y);
-				source.setZ(z);
+				source.setRealX(x);
+				source.setRealY(y);
+				source.setRealZ(z);
 				return;
 			}
 		}
@@ -239,9 +239,9 @@ public class LoaderTask extends SwingWorker<Void,Integer>{
 			}
 			MyResponsePoint calc_target = target.get(index);
 			source_current.getResponse().getData().put("regClsDist (mm):",Math.sqrt(dist));
-			source_current.setX(calc_target.getRealX());
-			source_current.setY(calc_target.getRealY());
-			source_current.setZ(calc_target.getRealZ());
+			source_current.setRealX(calc_target.getRealX());
+			source_current.setRealY(calc_target.getRealY());
+			source_current.setRealZ(calc_target.getRealZ());
 		}
 	}
 	/*private void AssignAmplitudesToPoints(ArrayList<MyResponsePoint> points) {

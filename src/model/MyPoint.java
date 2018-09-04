@@ -17,6 +17,7 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	private GroupModel group;
 	private boolean ignoreSize = true;
 	private transient boolean active = false;
+	private transient double back_x,back_y,back_z;
 	public MyPoint(double x, double y, double height, double width) {
 		super();
 		this.x = x;
@@ -32,6 +33,16 @@ public class MyPoint extends Ellipse2D implements Serializable{
 			this.widht = minSize;
 		}
 	}
+	public void restoreCoords(){
+		x=back_x;
+		y=back_y;
+		z=back_z;
+	}
+	public void backupCoords(){
+		back_x=x;
+		back_y=y;
+		back_z=z;
+	}
 	protected MyPoint(MyPoint mp){
 		this.x = mp.x;
 		this.y = mp.y;
@@ -45,13 +56,13 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		this.group = mp.group;
 		this.ignoreSize = mp.ignoreSize;
 	}
-	public void setX(double x) {
+	public void setRealX(double x) {
 		this.x = x;
 	}
-	public void setY(double y) {
+	public void setRealY(double y) {
 		this.y = y;
 	}
-	public void setZ(double z) {
+	public void setRealZ(double z) {
 		this.z = z;
 	}
 	public double getRealX(){
@@ -63,6 +74,13 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	public double getRealZ(){
 		return z;
 	}	
+	public void setX(double x) {
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_X): this.y=x; break;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_X): this.y=x; break;
+			default: this.x=x;
+		}
+	}
 	@Override
 	public double getX() {
 		switch(ImagePanelModel.getType()){
@@ -72,6 +90,13 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		}
 	}
 
+	public void setY(double y) {
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_Z): this.y=y; break;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_Z): this.y=y; break;
+			default: this.z=y;
+		}
+	}
 	@Override
 	public double getY() {
 		switch(ImagePanelModel.getType()){
@@ -87,6 +112,15 @@ public class MyPoint extends Ellipse2D implements Serializable{
 			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_Y): return y;
 			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_Y): return y;
 			default: return z;
+		}
+	}
+	public void setZ(double z) {
+		switch(ImagePanelModel.getType()){
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_X): this.x=z; break;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_X): this.x=z; break;
+			case (ImagePanelModel.DICOM+ImagePanelModel.AXIS_Y): this.y=z; break;
+			case (ImagePanelModel.TMS+ImagePanelModel.AXIS_Y): this.y=z; break;
+			default: this.z=z;
 		}
 	}
 	@Override
@@ -150,8 +184,8 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	public void importPoint(String in) {
 		String[] tokens = in.split(Configuration.GROUP_COMMA);
 		for (int i = 0; i < tokens.length; i++) {
-			this.setX(stringToDouble(tokens[0]));
-			this.setY(stringToDouble(tokens[1]));
+			this.setRealX(stringToDouble(tokens[0]));
+			this.setRealY(stringToDouble(tokens[1]));
 			this.height = stringToDouble(tokens[2]);
 		}
 	}
@@ -166,7 +200,7 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "x: " + this.getCenterX() + ", y: " + this.getCenterY() + ", z: " + this.getZ();
+		return "x: " + this.x + ", y: " + this.y + ", z: " + this.z;
 	}
 
 	public String exportPoint() {
@@ -184,7 +218,7 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		//matrix[7]=y;
 		//matrix[11]=z;
 		MyResponsePoint mp = new MyResponsePoint(x,y,height,widht,response);
-		mp.setZ(z);
+		mp.setRealZ(z);
 		mp.setMinSize(minSize);
 		mp.setGroup(group);
 		mp.setIgnoreSize(ignoreSize);

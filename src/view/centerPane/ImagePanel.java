@@ -22,6 +22,7 @@ import java.awt.image.RescaleOp;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -39,6 +40,7 @@ public class ImagePanel extends JPanel{
 	private double ratio;
 	private Image img;
 	private boolean hard_repaint = true;
+	private List<MyResponsePoint> visible_points = new ArrayList<MyResponsePoint>();
 
 	public ImagePanel(ImagePanelModel model) {
 
@@ -55,6 +57,9 @@ public class ImagePanel extends JPanel{
 		this(new ImagePanelModel());
 	}
 
+	public List<MyResponsePoint> getVisiblePoints(){
+		return visible_points;
+	}
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
@@ -143,11 +148,13 @@ public class ImagePanel extends JPanel{
 						int rowHeight = 16;
 						int rowSpace = 5;
 
+						visible_points.clear();
 						for (GroupModel	group : model.getGroups()) {
 							if(group.getPoints().size() != 0){
 								
 								//vykresleni bodu z vrstvy
 								ArrayList<MyResponsePoint> pointsInLayer = group.getPointFromLayer(model.getActualSnapshot());
+								visible_points.addAll(pointsInLayer);
 								
 								g2.setColor(group.getLayerColor());
 
@@ -333,11 +340,14 @@ public class ImagePanel extends JPanel{
 		}
 	}
 	private void drawPoints(Graphics2D g2, ArrayList<MyResponsePoint> points) {
-		for (MyResponsePoint myPoint : points) {
-			g2.fillOval((int) ((myPoint.getCenterX()-myPoint.getWidth()/2) * ratio + this.x_offset), 
-					(int) ((myPoint.getCenterY()-myPoint.getHeight()/2) * ratio + this.y_offset), 
-					(int) (myPoint.getWidth() * ratio), 
-					(int) (myPoint.getHeight() * ratio));
+		int len = points.size();
+		for (int a=0; a<len; a++) {
+			MyResponsePoint myPoint1 = points.get(a);
+			int x = (int) ((myPoint1.getCenterX()-myPoint1.getWidth()/2) * ratio + this.x_offset); 
+			int y = (int) ((myPoint1.getCenterY()-myPoint1.getHeight()/2) * ratio + this.y_offset); 
+			int rx = (int) (myPoint1.getHeight() * ratio); 
+			int ry = (int) (myPoint1.getWidth() * ratio); 
+				g2.fillOval(x,y,rx,ry);
 		}
 	}
 	private void drawCoords(Graphics2D g2, ArrayList<MyResponsePoint> points) {

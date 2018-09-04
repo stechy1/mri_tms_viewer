@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.ArrayList;
 import model.ImagePanelModel;
 import model.Response;
 import model.MyResponsePoint;
@@ -26,11 +28,12 @@ import static model.ImagePanelModel.*;
 
 public class ImagePaneController implements IController, MouseWheelListener, MouseListener, MouseMotionListener{
 
-
+	private boolean exploded = false;
 	private ImagePanel view;
 	private ImagePanelModel model; 	
 
 	private MyResponsePoint active;
+	private List<MyResponsePoint> involved = new ArrayList<MyResponsePoint>();
 
 	public ImagePaneController(ImagePanel view, ImagePanelModel model) {
 		this.view = view;
@@ -52,9 +55,19 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		return view;
 	}
 
+	public void tryToImplode(){
+		if(exploded){
+
+		}
+	}
+	public void tryToExplode(){
+
+	}
 	@Override
 	public void setModel(Object model) {
+		tryToImplode();
 		this.model = (ImagePanelModel) model;
+		tryToExplode();
 		notifyController();
 	}
 
@@ -121,6 +134,53 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		return Controllers.IMAGE_PANE_CTRL;
 	}
 
+	public void implode(){
+		if(active==null){
+			return;
+		}
+		if(involved.size()<2){
+			return;
+		}
+		for(MyResponsePoint r:involved){
+			r.restoreCoords();
+		}
+	}
+	public void explode(){
+		if(active==null){
+			return;
+		}
+		active.backupCoords();
+		List<MyResponsePoint> list = getView().getVisiblePoints();
+		involved.clear();
+		for(MyResponsePoint mrp:list){
+			double dx = mrp.getX()-active.getX();
+			double dy = mrp.getY()-active.getY();
+			double dist = Math.sqrt(dx*dx+dy*dy);
+			if(dist<Configuration.MIN_ALLOWED_DISTANCE){
+				involved.add(mrp);
+			}
+		}
+		int size = involved.size();
+		if(size<2){
+			return;
+		}
+		double[] center_of_mass = new double[2];
+		for(MyResponsePoint mrp:involved){
+			center_of_mass[0] += mrp.getX();
+			center_of_mass[1] += mrp.getY();
+		}
+		center_of_mass[0]/=size;
+		center_of_mass[1]/=size;
+		for(MyResponsePoint mrp:involved){
+			double dx = center_of_mass[0]-mrp.getX();
+			double dy = center_of_mass[1]-mrp.getY();
+			double dist = Math.sqrt(dx*dx+dy*dy);
+			double ratio = Configuration.MIN_ALLOWED_DISTANCE/dist;
+			mrp.backupCoords();
+			mrp.setX(center_of_mass[0]-dx*ratio);
+			mrp.setY(center_of_mass[1]-dy*ratio);
+		}
+	}
 	public void changeSide(int side){
 		this.getModel().setType(side);
 		notifyController();
@@ -140,12 +200,22 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		}
 	}
 
+	public boolean containsPixel(MyResponsePoint point,int x,int y){
+		double px = (x - this.view.getX_offset())/this.view.getRatio();
+		double py = (this.view.getHeight()-y-this.view.getY_offset())/this.view.getRatio();
+		return contains(point,px,py);
+	}
 	public boolean contains(MyResponsePoint point,double x,double y){
 		double cx = point.getCenterX();
 		double cy = point.getCenterY();
-		double w2 = point.getWidth()/2;
-		double h2 = point.getHeight()/2;
+		double w2 = point.getWidth()/2+SELECTION_TRESSHOLD/this.view.getRatio();
+		double h2 = point.getHeight()/2+SELECTION_TRESSHOLD/this.view.getRatio();
 		return x<cx+w2 && x>cx-w2 && y<cy+h2 && y>cy-h2;
+	}
+	public void setPoint(MyResponsePoint point){
+		implode();
+		this.active = point;
+		explode();
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -160,19 +230,18 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 					for (GroupModel group : this.getModel().getGroups()) {
 						for(MyResponsePoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
-							if(contains(point,(e.getX() - this.view.getX_offset())/this.view.getRatio(), 
-									(this.view.getHeight() - e.getY() - this.view.getY_offset())/this.view.getRatio())){
+							if(containsPixel(point,e.getX(),e.getY())){
 								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
 								if(active!=null) {
 									active.setActive(false);
 								}
 								if(point!=active){
 									point.setActive(true);
-									this.active=point;
+									setPoint(point);
 									ctrl.setModel(point);
 									this.getModel().remember(point);
 								}else{
-									this.active=null;
+									setPoint(null);
 									ctrl.setModel(null);
 								}
 								this.view.repaint();
@@ -205,7 +274,7 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 				// do response pridat nejake informace / pridat moznost v GUI pridat
 				// 	informaci runce
 				MyResponsePoint point = new MyResponsePoint(x,y,Configuration.RADIUS,r);
-				point.setZ(z);
+				point.setRealZ(z);
 				point.setGroup(group);
 				group.getPoints().add(point);
 				System.out.println("Bod: ["+x+";"+y+";"+z+"] vytvoren");
