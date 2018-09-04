@@ -89,7 +89,7 @@ public class EnhanceImagePane extends JPanel {
 		this.BrightnessSlider.addMouseWheelListener(controller);
 		this.BrightnessSlider.setMaximum(100);
 		this.BrightnessSlider.setMinimum(0);
-		this.BrightnessSlider.setValue(30);
+		this.BrightnessSlider.setValue(50);
 		this.BrightnessSlider.setBorder(new EmptyBorder(5, 0, 0, 5));
 		GridBagConstraints gbc_slider = new GridBagConstraints();
 		gbc_slider.fill = GridBagConstraints.HORIZONTAL;
@@ -133,7 +133,7 @@ public class EnhanceImagePane extends JPanel {
 		this.ContrastSlider.addMouseWheelListener(controller);
 		this.ContrastSlider.setMinimum(0);
 		this.ContrastSlider.setMaximum(100);
-		this.ContrastSlider.setValue(30);
+		this.ContrastSlider.setValue(50);
 		GridBagConstraints gbc_contrastSlider = new GridBagConstraints();
 		gbc_contrastSlider.fill = GridBagConstraints.HORIZONTAL;
 		gbc_contrastSlider.insets = new Insets(0, 0, 0, 5);
