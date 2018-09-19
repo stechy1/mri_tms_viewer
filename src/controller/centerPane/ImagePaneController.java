@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.JTable;
 import model.ImagePanelModel;
 import model.Response;
 import model.MyResponsePoint;
@@ -236,6 +237,10 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			ctrl.setModel(null);
 		}
 		notifyController();
+		IController pdtc = MainWindow.getController(Controllers.TABLE_POINTS_CTRL);
+		try{
+			((JTable)pdtc.getModel()).repaint();
+		}catch(Exception e){}
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {

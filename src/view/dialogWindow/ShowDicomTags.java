@@ -61,8 +61,6 @@ public class ShowDicomTags extends JFrame {
 		
 		ShowDicomTagsController controller = new ShowDicomTagsController(this);
 		MainWindow.addController(controller);
-		PointsDataTableController controller2 = new PointsDataTableController(this);
-		MainWindow.addController(controller2);
 		
 		this.contentPane = new JPanel();
 		
@@ -115,6 +113,8 @@ public class ShowDicomTags extends JFrame {
 		this.scrollPanePoints.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.scrollPanePoints.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		this.tabs.addTab("Body", null, this.scrollPanePoints, null);
+		PointsDataTableController controller2 = new PointsDataTableController(this);
+		MainWindow.addController(controller2);
 		this.pointsDataTable.addMouseListener(controller2);
 	}
 	
