@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import controller.UtilityClass;
 import controller.dialogWindow.ShowDicomTagsController;
+import controller.dialogWindow.PointsDataTableController;
 import enums.Controllers;
 import ij.plugin.DICOM;
 
@@ -60,6 +61,8 @@ public class ShowDicomTags extends JFrame {
 		
 		ShowDicomTagsController controller = new ShowDicomTagsController(this);
 		MainWindow.addController(controller);
+		PointsDataTableController controller2 = new PointsDataTableController(this);
+		MainWindow.addController(controller2);
 		
 		this.contentPane = new JPanel();
 		
@@ -112,6 +115,7 @@ public class ShowDicomTags extends JFrame {
 		this.scrollPanePoints.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.scrollPanePoints.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		this.tabs.addTab("Body", null, this.scrollPanePoints, null);
+		this.pointsDataTable.addMouseListener(controller2);
 	}
 	
 	public PointsDataTable getPointsDataTable() {

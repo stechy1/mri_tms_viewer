@@ -220,6 +220,23 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			explode();
 		}
 	}
+	public void setActive(MyResponsePoint mrp){
+		SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
+		if(active!=null) {
+			active.setActive(false);
+		}
+		if(mrp!=active){
+			mrp.setActive(true);
+			setPoint(mrp);
+			ctrl.setModel(mrp);
+			this.getModel().remember(mrp);
+			this.getModel().setActualSnapshot((int)mrp.getZ());
+		}else{
+			setPoint(null);
+			ctrl.setModel(null);
+		}
+		notifyController();
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON2){
@@ -230,24 +247,10 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 			if(this.getModel().getGroups() != null){
 				if(this.getModel().getGroups().size() != 0){
-
 					for (GroupModel group : this.getModel().getGroups()) {
 						for(MyResponsePoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
 							if(containsPixel(point,e.getX(),e.getY())){
-								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
-								if(active!=null) {
-									active.setActive(false);
-								}
-								if(point!=active){
-									point.setActive(true);
-									setPoint(point);
-									ctrl.setModel(point);
-									this.getModel().remember(point);
-								}else{
-									setPoint(null);
-									ctrl.setModel(null);
-								}
-								notifyController();
+								setActive(point);
 								return;
 							}
 						}
