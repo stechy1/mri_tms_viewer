@@ -351,10 +351,10 @@ public class ImagePanel extends JPanel{
 		int len = points.size();
 		for (int a=0; a<len; a++) {
 			MyResponsePoint myPoint1 = points.get(a);
-			int x = (int) ((myPoint1.getCenterX()-myPoint1.getWidth()/2) * ratio + this.x_offset); 
-			int y = (int) ((myPoint1.getCenterY()-myPoint1.getHeight()/2) * ratio + this.y_offset); 
-			int rx = (int) (myPoint1.getHeight() * ratio); 
-			int ry = (int) (myPoint1.getWidth() * ratio); 
+			int x = (int) ((myPoint1.getCenterX()*ratio-myPoint1.getWidth()/2) + this.x_offset); 
+			int y = (int) ((myPoint1.getCenterY()*ratio-myPoint1.getHeight()/2) + this.y_offset); 
+			int rx = (int) (myPoint1.getHeight()); 
+			int ry = (int) (myPoint1.getWidth()); 
 				g2.fillOval(x,y,rx,ry);
 		}
 	}

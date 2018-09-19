@@ -9,7 +9,7 @@ public class Configuration {
 	public static int width = 384;
 	
 	public static final String TITLE_OF_APP = "TMS/MRI viewer";
-	public static final Dimension DIMENSION_OF_APP = new Dimension(800,450);
+	public static final Dimension DIMENSION_OF_APP = new Dimension(800,500);
 	public static final Color BACKGROUD_CONTROLLER = new Color(250, 250, 250);
 	public static final String LOADER_GIF_PATH = "resources"+File.separator+"loading.gif";
 	
@@ -19,7 +19,7 @@ public class Configuration {
 	public static final int WHITE_PIXEL_TRESSHOLD = 100;
 	public static final int WHITE_MRI_PIXEL_THRESHOLD = 100;
 	public static final int MIN_AMPLITUDE_VALUE = 1000;
-	public static final int RADIUS = 4;
+	public static final int RADIUS = 8;
 	
 	public static final String GROUP_SEMICOLON = ";";
 	public static final String GROUP_TILDE = "~";

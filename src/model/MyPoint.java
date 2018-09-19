@@ -15,17 +15,14 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	private int pixelValue;
 	private int minSize = 5;
 	private GroupModel group;
-	private boolean ignoreSize = true;
 	private transient boolean active = false;
 	private transient double back_x,back_y,back_z;
 	public MyPoint(double x, double y, double height, double width) {
 		super();
 		this.x = x;
 		this.y = y;
-		if(!ignoreSize){
-			this.height = height;
-			this.widht = width;
-		}
+		this.height = height;
+		this.widht = width;
 		if(this.height < minSize){
 			this.height = minSize;
 		}
@@ -54,7 +51,6 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		this.pixelValue = mp.pixelValue;
 		this.minSize = mp.minSize;
 		this.group = mp.group;
-		this.ignoreSize = mp.ignoreSize;
 	}
 	public void setRealX(double x) {
 		this.x = x;
@@ -171,9 +167,6 @@ public class MyPoint extends Ellipse2D implements Serializable{
 	public void setActive(boolean active){
 		this.active = active;
 	}
-	public void setIgnoreSize(boolean ignoreSize){
-		this.ignoreSize = ignoreSize;
-	}
 	@Override
 	public void setFrame(double x, double y, double w, double h) {
 		this.x = x;
@@ -221,7 +214,6 @@ public class MyPoint extends Ellipse2D implements Serializable{
 		mp.setRealZ(z);
 		mp.setMinSize(minSize);
 		mp.setGroup(group);
-		mp.setIgnoreSize(ignoreSize);
 		return mp;
 	}	
 }

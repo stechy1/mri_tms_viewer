@@ -26,8 +26,6 @@ public class MyLoader extends JFrame {
 	
 	private JLabel lblTitle;
 	private JProgressBar progressBar;
-	private JLabel lblImage;
-
 	
 	/**
 	 * Create the frame.
@@ -63,14 +61,6 @@ public class MyLoader extends JFrame {
 		gbc_lblTitle.gridy = 0;
 		this.contentPane.add(this.lblTitle, gbc_lblTitle);
 				
-		this.lblImage = new JLabel(new ImageIcon(Configuration.LOADER_GIF_PATH));
-		GridBagConstraints gbc_lblImage = new GridBagConstraints();
-		gbc_lblImage.gridx = 0;
-		gbc_lblImage.gridy = 1;
-		this.contentPane.add(this.lblImage, gbc_lblImage);
-		
-		
-		
 		this.progressBar = new JProgressBar(0, 100);
 		this.progressBar.setStringPainted(true);
 		this.progressBar.setValue(0);
