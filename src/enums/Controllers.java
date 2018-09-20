@@ -17,7 +17,8 @@ public enum Controllers {
 	GROUPS_OPTION_PANE_CTRL("groups_option_pane_ctrl", 9),
 	OPTION_PANE_CTRL("option_pane_ctrl", 10),
 	
-	OPTIONS_WINDOW_CTRL("options_window_ctrl", 11);
+	OPTIONS_WINDOW_CTRL("options_window_ctrl", 11),
+	TABLE_POINTS_CTRL("table_points_ctrl",12);
 	
 	
 	private String title;

@@ -75,16 +75,24 @@ public class ImagePanel extends JPanel{
 		if(Configuration.showCoords){
 			drawPosition(g2d,x_cursor,y_cursor);
 		}
+		if(Configuration.explode){
+			drawFieldOfAction(g2d,x_cursor,y_cursor);
+		}
 	}
 	public void setCursorPosition(int x,int y){
 		this.x_cursor = x;
 		this.y_cursor = y;
-		if(!Configuration.showCoords){
-			return;
+		if(Configuration.showCoords || Configuration.explode){
+			hard_repaint = false;
+			repaint();
+			hard_repaint = true;
 		}
-		hard_repaint = false;
-		repaint();
-		hard_repaint = true;
+	}
+	public void drawFieldOfAction(Graphics2D g2,int x,int y){
+		g2.setColor(Color.BLUE);
+		int d = (int)(2*Configuration.MIN_ALLOWED_DISTANCE*ratio);
+		int r = d>>1;
+		g2.drawOval(x-r,y-r,d,d);
 	}
 	public void drawPosition(Graphics2D g2,int x,int y){
 		g2.drawString("[ "+ImagePanelModel.getXAxis()+": "+String.format("%.2f",(x-this.x_offset)*ImagePanelModel.getXSpacing()/ratio)
@@ -343,10 +351,10 @@ public class ImagePanel extends JPanel{
 		int len = points.size();
 		for (int a=0; a<len; a++) {
 			MyResponsePoint myPoint1 = points.get(a);
-			int x = (int) ((myPoint1.getCenterX()-myPoint1.getWidth()/2) * ratio + this.x_offset); 
-			int y = (int) ((myPoint1.getCenterY()-myPoint1.getHeight()/2) * ratio + this.y_offset); 
-			int rx = (int) (myPoint1.getHeight() * ratio); 
-			int ry = (int) (myPoint1.getWidth() * ratio); 
+			int x = (int) ((myPoint1.getCenterX()*ratio-myPoint1.getWidth()/2) + this.x_offset); 
+			int y = (int) ((myPoint1.getCenterY()*ratio-myPoint1.getHeight()/2) + this.y_offset); 
+			int rx = (int) (myPoint1.getHeight()); 
+			int ry = (int) (myPoint1.getWidth()); 
 				g2.fillOval(x,y,rx,ry);
 		}
 	}

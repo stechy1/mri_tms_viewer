@@ -25,7 +25,10 @@ public class PointsDataTableModel extends AbstractTableModel {
 		this.columnName = set.toArray(new String[set.size()]);
 		fireTableRowsInserted(0, model.size()-1);
 	}
-	
+
+	public MyResponsePoint getPointAt(int row){
+		return model.get(row);
+	}	
 	@Override
 	public boolean isCellEditable(int row, int col){
 		return col>=1;

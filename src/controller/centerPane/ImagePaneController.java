@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.JTable;
 import model.ImagePanelModel;
 import model.Response;
 import model.MyResponsePoint;
@@ -158,6 +159,10 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 		}
 		center_of_mass[0]/=size;
 		center_of_mass[1]/=size;
+		//explodeDirection(center_of_mass);
+		explodeCircle(center_of_mass);
+	}
+	public void explodeDirection(double[] center_of_mass){
 		for(MyResponsePoint mrp:involved){
 			double dx = center_of_mass[0]-mrp.getX();
 			double dy = center_of_mass[1]-mrp.getY();
@@ -166,6 +171,17 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			mrp.backupCoords();
 			mrp.setX(center_of_mass[0]-dx*ratio);
 			mrp.setY(center_of_mass[1]-dy*ratio);
+		}
+	}
+	public void explodeCircle(double[] center_of_mass){
+		int len = involved.size();
+		for(int a=0; a<len; a++){
+			MyResponsePoint mrp = involved.get(a);
+			double cx = Configuration.MIN_ALLOWED_DISTANCE*Math.cos(2*a*Math.PI/len);
+			double cy = Configuration.MIN_ALLOWED_DISTANCE*Math.sin(2*a*Math.PI/len);
+			mrp.backupCoords();
+			mrp.setX(center_of_mass[0]+cx);
+			mrp.setY(center_of_mass[1]+cy);
 		}
 	}
 	public void changeSide(int side){
@@ -205,6 +221,27 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 			explode();
 		}
 	}
+	public void setActive(MyResponsePoint mrp){
+		SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
+		if(active!=null) {
+			active.setActive(false);
+		}
+		if(mrp!=active){
+			mrp.setActive(true);
+			setPoint(mrp);
+			ctrl.setModel(mrp);
+			this.getModel().remember(mrp);
+			this.getModel().setActualSnapshot((int)mrp.getZ());
+		}else{
+			setPoint(null);
+			ctrl.setModel(null);
+		}
+		notifyController();
+		IController pdtc = MainWindow.getController(Controllers.TABLE_POINTS_CTRL);
+		try{
+			((JTable)pdtc.getModel()).repaint();
+		}catch(Exception e){}
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON2){
@@ -215,24 +252,10 @@ public class ImagePaneController implements IController, MouseWheelListener, Mou
 
 			if(this.getModel().getGroups() != null){
 				if(this.getModel().getGroups().size() != 0){
-
 					for (GroupModel group : this.getModel().getGroups()) {
 						for(MyResponsePoint point : group.getPointFromLayer(this.model.getActualSnapshot())){
 							if(containsPixel(point,e.getX(),e.getY())){
-								SettingSnapshotPaneController ctrl = (SettingSnapshotPaneController) MainWindow.getController(Controllers.SETTING_SNAPSHOT_PANE_CTRL);
-								if(active!=null) {
-									active.setActive(false);
-								}
-								if(point!=active){
-									point.setActive(true);
-									setPoint(point);
-									ctrl.setModel(point);
-									this.getModel().remember(point);
-								}else{
-									setPoint(null);
-									ctrl.setModel(null);
-								}
-								notifyController();
+								setActive(point);
 								return;
 							}
 						}

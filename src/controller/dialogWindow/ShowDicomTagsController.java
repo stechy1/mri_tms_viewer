@@ -18,41 +18,24 @@ public class ShowDicomTagsController implements IController, ActionListener {
 	public ShowDicomTagsController(ShowDicomTags view) {
 		this.view = view;
 	}
-	
-	
 	@Override
-	public void notifyController() {
-		
-	}
-
+	public void notifyController() {}
 	@Override
-	public void notifyAllControllers() {
-		
-	}
-
+	public void notifyAllControllers() {}
 	@Override
 	public Controllers getType() {
 		return Controllers.SHOW_DICOM_TAGS_CTRL;
 	}
-
 	@Override
 	public Object getView() {
 		return this.view;
 	}
-
 	@Override
 	public Object getModel() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
-	public void setModel(Object model) {
-		// TODO Auto-generated method stub
-
-	}
-
-
+	public void setModel(Object model) {}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){

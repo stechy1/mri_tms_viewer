@@ -40,7 +40,7 @@ public class SettingSnapshotPaneController implements IController, ItemListener,
 			this.view.getValues().removeAll();
 			for(Map.Entry<String,Double> entry: this.model.getResponse().getData().entrySet()){
 				this.view.getValues().add(new JLabel(entry.getKey()));
-				JTextField jtf = new JTextField(entry.getValue().toString());
+				JTextField jtf = new JTextField(String.format("%.2f",entry.getValue()));
 				this.view.getValues().add(jtf);
 				jtf.addKeyListener(new KeyAdapter(){
 					public void keyReleased(KeyEvent e){
