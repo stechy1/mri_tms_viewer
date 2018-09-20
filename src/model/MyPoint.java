@@ -1,12 +1,11 @@
 package model;
-import static controller.Configuration.SELECTION_TRESSHOLD;
 import static controller.UtilityClass.stringToDouble;
-import java.io.Serializable;
-import java.awt.geom.Ellipse2D;
-import java.util.Map;
+
 import controller.Configuration;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.Map;
 import model.dialogWindow.group.GroupModel;
 public class MyPoint extends Ellipse2D implements Serializable{
 	static final long serialVersionUID = 8581091178539691643L;
